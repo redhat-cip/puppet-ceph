@@ -48,7 +48,9 @@ define ceph::mon (
   file { '$mon_data_expanded':
     ensure  => directory,
     recurse => true,
-
+    owner   => 'root',
+    group   => 0,
+    mode    => '0750',
   }
 
 #FIXME: first step to make the monitor secret disappear from "ps" output ?
