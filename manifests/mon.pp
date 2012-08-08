@@ -83,7 +83,7 @@ define ceph::mon (
     creates => "${mon_data_expanded}/keyring",
     before  => [
       Exec['ceph-admin-key'],
-      Exec['ceph-osd-bootstrap-key'],
+      #Exec['ceph-osd-bootstrap-key'],
       Service["ceph-mon.${name}"],
     ],
     require => Package['ceph'],
