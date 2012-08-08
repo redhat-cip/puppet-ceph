@@ -72,6 +72,7 @@ define ceph::mon (
 --cap mon 'allow *'",
     creates => "/var/lib/ceph/tmp/keyring.mon.${name}",
     before  => Exec['ceph-mon-mkfs'],
+    require => Package['ceph'],
   }
 
   exec { 'ceph-mon-mkfs':
@@ -83,6 +84,7 @@ define ceph::mon (
       Exec['ceph-osd-bootstrap-key'],
       Service["ceph-mon.${name}"],
     ],
+    require => Package['ceph'],
   }
 
   service { "ceph-mon.${name}":
