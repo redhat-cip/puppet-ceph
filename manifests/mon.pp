@@ -38,6 +38,7 @@ define ceph::mon (
   $monitor_secret,
   $auth_type = 'cephx',
   $mon_data = '/var/lib/ceph',
+  $mon_port = 6789,
   $mon_addr = $ipaddress
 ) {
 
