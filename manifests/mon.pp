@@ -122,22 +122,23 @@ define ceph::mon (
 #      require => Exec['ceph-osd-bootstrap-key'],
 #    }
 
-    #FIXME: How to make sure the file exists _before_ it's read ?
-    @@file { 'ceph-osd-bootstrap-key':
-      path     => '/etc/ceph/client.osd-bootstrap.keyring',
-      mode     => '0640',
-      owner    => 'root',
-      group    => 0,
-      command => generate("/bin/sh", "-c", "ceph-auth-tool \
-/etc/ceph/client.osd-bootstrap.keyring \
---create-keyring \
---name=client.osd-bootstrap \
---add-key $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
-  auth get-or-create-key client.bootstrap-osd \
-    mon 'allow command osd create ...; allow command osd crush set ...; \
-    allow command auth add * osd allow\\ * mon allow\\ rwx; \
-    allow command mon getmap')"),
-    }
+#FIXME: generate() is called _before_ ceph is installed !!!
+#    #FIXME: How to make sure the file exists _before_ it's read ?
+#    @@file { 'ceph-osd-bootstrap-key':
+#      path     => '/etc/ceph/client.osd-bootstrap.keyring',
+#      mode     => '0640',
+#      owner    => 'root',
+#      group    => 0,
+#      command => generate("/bin/sh", "-c", "ceph-auth-tool \
+#/etc/ceph/client.osd-bootstrap.keyring \
+#--create-keyring \
+#--name=client.osd-bootstrap \
+#--add-key $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
+#  auth get-or-create-key client.bootstrap-osd \
+#    mon 'allow command osd create ...; allow command osd crush set ...; \
+#    allow command auth add * osd allow\\ * mon allow\\ rwx; \
+#    allow command mon getmap')"),
+#    }
   }
 
 
