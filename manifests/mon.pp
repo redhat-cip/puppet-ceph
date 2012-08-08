@@ -48,7 +48,7 @@ define ceph::mon (
 
   $mon_data_expanded = "${mon_data}/mon.${name}"
 
-  file { '$mon_data_expanded':
+  file { $mon_data_expanded:
     ensure  => directory,
     recurse => true,
     owner   => 'root',
