@@ -90,11 +90,11 @@ define ceph::mon (
   }
 
   service { "ceph-mon.${name}":
-    ensure => running,
-    start  => "service ceph start mon.${name}",
-    stop   => "service ceph stop mon.${name}",
-    status => "service ceph stop mon.${name}",
-    onlyif => "test -f ${mon_data_expanded}/keyring",
+    ensure  => running,
+    start   => "service ceph start mon.${name}",
+    stop    => "service ceph stop mon.${name}",
+    status  => "service ceph stop mon.${name}",
+    require => Exec['ceph-mon-mkfs'],
   }
 
 
