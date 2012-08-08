@@ -69,14 +69,13 @@ define ceph::mon (
 --name=mon. \
 --add-key='${monitor_secret}' \
 --cap mon 'allow *'",
-    onlyif  => "test ! -f ${mon_data_expanded}/keyring",
+    creates => "/var/lib/ceph/tmp/keyring.mon.${name}",
     before  => Exec['ceph-mon-mkfs'],
   }
 
   exec { 'ceph-mon-mkfs':
     command => "ceph-mon --mkfs -i ${name} \
 --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
-#    onlyif  => "test ! -f ${mon_data_expanded}/keyring",
     creates => "${mon_data_expanded}/keyring",
     before  => [
       Exec['ceph-admin-key'],
