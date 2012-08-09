@@ -99,7 +99,7 @@ define ceph::mon (
 
   if ceph_mon_has_quorum {
     exec { 'ceph-admin-key':
-      command => "ceph-auth-tool /etc/ceph/client.admin.keyring \
+      command => "ceph-authtool /etc/ceph/keyring \
 --create-keyring \
 --name=client.admin \
 --add-key \
@@ -108,7 +108,8 @@ define ceph::mon (
       mon 'allow *' \
       osd 'allow *' \
       mds allow)",
-      creates => '/etc/ceph/client.admin.keyring',
+      creates => '/etc/ceph/keyring',
+      require => Service["ceph-mon.${name}"]
     }
 
 #    exec { 'ceph-osd-bootstrap-key':
@@ -128,7 +129,7 @@ define ceph::mon (
 #      mode     => '0640',
 #      owner    => 'root',
 #      group    => 0,
-#      command => generate("/bin/sh", "-c", "ceph-auth-tool \
+#      command => generate("/bin/sh", "-c", "ceph-authtool \
 #/etc/ceph/client.osd-bootstrap.keyring \
 #--create-keyring \
 #--name=client.osd-bootstrap \
