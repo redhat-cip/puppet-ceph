@@ -92,7 +92,7 @@ define ceph::mon (
     ensure  => running,
     start   => "service ceph start mon.${name}",
     stop    => "service ceph stop mon.${name}",
-    status  => "service ceph stop mon.${name}",
+    status  => "service ceph status mon.${name}",
     require => Exec['ceph-mon-mkfs'],
   }
 
