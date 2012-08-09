@@ -1,0 +1,46 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+  config.vm.box = "wheezy"
+  config.vm.box_url = "https://labs.enovance.com/pub/wheezy.box"
+
+  config.vm.define :mon1 do |mon1|
+    mon1.vm.host_name = "ceph-mon0"
+    mon1.vm.network :hostonly, "192.168.251.11"
+    mon1.vm.provision :shell, :path => "mon.sh"
+  end
+
+  config.vm.define :mon2 do |mon2|
+  mon2.vm.host_name = "ceph-mon1"
+    mon2.vm.network :hostonly, "192.168.251.12"
+    mon2.vm.provision :shell, :path => "mon.sh"
+  end
+
+  config.vm.define :mon3 do |mon3|
+    mon3.vm.host_name = "ceph-mon2"
+    mon3.vm.network :hostonly, "192.168.251.13"
+    mon3.vm.provision :shell, :path => "mon.sh"
+  end
+
+  config.vm.define :osd1 do |osd1|
+    osd1.vm.host_name = "osd1.test"
+    osd1.vm.network :hostonly, "192.168.251.101"
+    osd1.vm.provision :shell, :path => "osd.sh"
+  end
+
+  config.vm.define :osd2 do |osd2|
+    osd2.vm.host_name = "osd2.test"
+    osd2.vm.network :hostonly, "192.168.251.102"
+    osd2.vm.provision :shell, :path => "osd.sh"
+  end
+
+  config.vm.define :osd3 do |osd3|
+    osd3.vm.host_name = "osd3.test"
+    osd3.vm.network :hostonly, "192.168.251.103"
+    osd3.vm.provision :shell, :path => "osd.sh"
+  end
+
+end
+
+
