@@ -1,0 +1,8 @@
+[global]
+<% if @auth_type -%>
+  auth supported = <%= @auth_type %>
+<% end -%>
+  keyring = /etc/ceph/keyring
+
+  fsid = <%= @fsid %>
+

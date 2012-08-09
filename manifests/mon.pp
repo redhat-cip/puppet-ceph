@@ -85,7 +85,7 @@ define ceph::mon (
       #Exec['ceph-osd-bootstrap-key'],
       Service["ceph-mon.${name}"],
     ],
-    require => Package['ceph'],
+    require => [Package['ceph'], File['/etc/ceph/ceph.conf']],
   }
 
   service { "ceph-mon.${name}":
@@ -140,5 +140,8 @@ define ceph::mon (
 #    }
   }
 
-
+  ceph::conf::mon { $name:
+    mon_addr => $mon_addr,
+    mon_data => $mon_data,
+  }
 }
