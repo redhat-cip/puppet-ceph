@@ -15,6 +15,8 @@ Status
 
 This module is currently in active development and must be considered unstable.
 
+It is being developped on Debian/Wheezy, using the Ceph package from Debian/Sid.
+
 Features
 ========
 
