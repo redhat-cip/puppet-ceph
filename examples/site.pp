@@ -18,10 +18,6 @@ class ceph_mon (
     mon_addr       => $ipaddress_eth1,
   }
 
-  class { 'ceph::conf':
-    fsid      => $::fsid,
-    auth_type => 'cephx',
-  }
 }
 
 node 'ceph-mon0.test' {
@@ -35,5 +31,3 @@ node 'ceph-mon1.test' {
 node 'ceph-mon2.test' {
   class { 'ceph_mon': id => 2 }
 }
-
-
