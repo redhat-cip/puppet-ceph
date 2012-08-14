@@ -55,15 +55,6 @@ define ceph::mon (
     mode    => '0755',
   }
 
-#FIXME: first step to make the monitor secret disappear from "ps" output ?
-#  file { '/tmp/mon_keyring.tmp':
-#    ensure  => present,
-#    owner   => 'root',
-#    group   => 0,
-#    mode    => '0600',
-#    content => $monitor_secret,
-#  }
-
   #FIXME: monitor_secret will appear in "ps" output …
   exec { 'ceph-mon-keyring':
     command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
@@ -96,53 +87,39 @@ define ceph::mon (
     require => Exec['ceph-mon-mkfs'],
   }
 
-
-  if ceph_mon_has_quorum {
-    exec { 'ceph-admin-key':
-      command => "ceph-authtool /etc/ceph/keyring \
+  exec { 'ceph-admin-key':
+    command => "ceph-authtool /etc/ceph/keyring \
 --create-keyring \
 --name=client.admin \
 --add-key \
-  $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
-    auth get-or-create-key client.admin \
-      mon 'allow *' \
-      osd 'allow *' \
-      mds allow)",
-      creates => '/etc/ceph/keyring',
-      require => Service["ceph-mon.${name}"]
+$(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
+  auth get-or-create-key client.admin \
+    mon 'allow *' \
+    osd 'allow *' \
+    mds allow)",
+    creates => '/etc/ceph/keyring',
+    require => Service["ceph-mon.${name}"],
+    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon${name}.asok \
+mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
+  }
+
+  # FIXME: implement this custom fact
+  # it should be a call to
+  #   ceph --name mon. --keyring ${mon_data_expanded}/keyring \
+  #    auth get-or-create-key client.bootstrap-osd \
+  #      mon 'allow command osd create ...; allow command osd crush set ...; \
+  #      allow command auth add * osd allow\\ * mon allow\\ rwx; \
+  #      allow command mon getmap'
+  # ceph_bootstrap_osd_key is a custom fact
+  if $::ceph_bootstrap_osd_key {
+    @@ceph::key { 'bootstrap-osd':
+      secret => $::ceph_bootstrap_osd_key,
     }
-
-#    exec { 'ceph-osd-bootstrap-key':
-#    }
-#
-#    file { '/etc/ceph/client.osd-bootstrap.keyring':
-#      mode    => '0640',
-#      owner   => 'root',
-#      group   => 0,
-#      require => Exec['ceph-osd-bootstrap-key'],
-#    }
-
-#FIXME: generate() is called _before_ ceph is installed !!!
-#    #FIXME: How to make sure the file exists _before_ it's read ?
-#    @@file { 'ceph-osd-bootstrap-key':
-#      path     => '/etc/ceph/client.osd-bootstrap.keyring',
-#      mode     => '0640',
-#      owner    => 'root',
-#      group    => 0,
-#      command => generate("/bin/sh", "-c", "ceph-authtool \
-#/etc/ceph/client.osd-bootstrap.keyring \
-#--create-keyring \
-#--name=client.osd-bootstrap \
-#--add-key $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
-#  auth get-or-create-key client.bootstrap-osd \
-#    mon 'allow command osd create ...; allow command osd crush set ...; \
-#    allow command auth add * osd allow\\ * mon allow\\ rwx; \
-#    allow command mon getmap')"),
-#    }
   }
 
   ceph::conf::mon { $name:
     mon_addr => $mon_addr,
     mon_data => $mon_data,
   }
+
 }

@@ -59,6 +59,7 @@ define ceph::osd (
     }
   }
 
+  # FIXME: this does not work, functions are executed on the puppet master !!!
   if file_exists('/var/lib/ceph/tmp/bootstrap-osd.keyring') {
 
     $osd_id = generate("\
