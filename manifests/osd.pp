@@ -76,7 +76,7 @@ ceph osd create ${name} \
       require => Anchor['key_ok'],
     }
 
-    if !defined(ceph-get-monmap) {
+    if !defined(Exec['ceph-get-monmap']) {
       exec { 'ceph-get-monmap':
         command => 'ceph mon getmap -o /var/lib/ceph/tmp/monmap',
         creates => '/var/lib/ceph/tmp/monmap'
