@@ -90,6 +90,7 @@ ceph-osd -c /etc/ceph.conf \
 -i ${osd_id} \
 --mkfs \
 --mkkey \
+--osd-uuid ${name}
 --monmap /var/lib/ceph/tmp/monmap",
       creates => "${osd_data_expanded}/keyring",
       before  => [
