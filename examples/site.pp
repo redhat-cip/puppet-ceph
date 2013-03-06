@@ -9,6 +9,8 @@ class ceph_mon (
   $id
 ) {
 
+  include ceph::apt::ceph
+
   ceph::mon { $id:
     fsid           => $::fsid,
     monitor_secret => $::mon_secret,
