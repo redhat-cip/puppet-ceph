@@ -44,6 +44,11 @@ define ceph::mon (
 
   include 'ceph::package'
 
+  class { 'ceph::conf':
+    fsid      => $fsid,
+    auth_type => $auth_type,
+  }
+
   $mon_data_expanded = "${mon_data}/mon.${name}"
 
   file { $mon_data_expanded:
