@@ -47,9 +47,7 @@ define ceph::osd (
   $osd_addr = $ipaddress,
 ) {
 
-  if ! defined(Class['ceph::package']) {
-    class { 'ceph::package': }
-  }
+  include 'ceph::package'
 
   Package['ceph'] -> Ceph::Key <<| title == 'bootstrap-osd' |>>
 

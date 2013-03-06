@@ -42,9 +42,7 @@ define ceph::mon (
   $mon_addr = $ipaddress
 ) {
 
-  if ! defined(Class['ceph::package']) {
-    class { 'ceph::package': }
-  }
+  include 'ceph::package'
 
   $mon_data_expanded = "${mon_data}/mon.${name}"
 

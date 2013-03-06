@@ -24,9 +24,7 @@ class ceph::conf (
   $auth_type = 'cephx',
 ) {
 
-  if ! defined(Class['ceph::package']) {
-    class { 'ceph::package': }
-  }
+  include 'ceph::package'
 
   concat { '/etc/ceph/ceph.conf':
     owner   => 'root',
