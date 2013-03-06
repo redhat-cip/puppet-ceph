@@ -28,7 +28,7 @@ if hostname | grep -q "ceph-mon0"; then
     update-alternatives --set ruby /usr/bin/ruby1.8
 
     # This lens seems to be broken currently on wheezy/sid ?
-    test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug
+    # test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug
     augtool << EOT
 set /files/etc/puppet/puppet.conf/agent/pluginsync true
 set /files/etc/puppet/puppet.conf/agent/server ceph-mon0.test
@@ -39,10 +39,11 @@ EOT
     # Autosign certificates from our test setup
     echo "*.test" > /etc/puppet/autosign.conf
 
-    git clone git://github.com/fcharlier/puppet-ceph.git /etc/puppet/modules/ceph
-    git clone git://github.com/ripienaar/puppet-concat.git /etc/puppet/modules/concat
+    puppet module install ripienaar/concat
+    puppet module install puppetlabs/apt
+    git clone /vagrant /etc/puppet/modules/ceph
+    ln -s /etc/puppet/modules/ceph/examples/site.pp /etc/puppet/manifests/
 
-    cp /etc/puppet/modules/ceph/examples/site.pp /etc/puppet/manifests/
     service puppetmaster restart
 else
     aptitude install -y augeas-tools
@@ -56,10 +57,6 @@ save
 EOT
 
 fi
-
-# Enable sid source for ceph
-grep -q "sid" /etc/apt/sources.list || echo "deb http://ftp2.fr.debian.org/debian/ sid main" >> /etc/apt/sources.list
-aptitude update
 
 # And finally, run the puppet agent
 puppet agent --verbose --debug --onetime --no-daemonize

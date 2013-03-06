@@ -1,3 +1,3 @@
 #! /bin/sh
 
-/vagrant/common.sh
+/vagrant/examples/common.sh
