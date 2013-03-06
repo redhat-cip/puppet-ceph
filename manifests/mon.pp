@@ -102,7 +102,7 @@ $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
     mds allow)",
     creates => '/etc/ceph/keyring',
     require => Service["ceph-mon.${name}"],
-    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon${name}.asok \
+    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 
