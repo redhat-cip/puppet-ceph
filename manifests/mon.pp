@@ -74,7 +74,7 @@ define ceph::mon (
       #Exec['ceph-osd-bootstrap-key'],
       Service["ceph-mon.${name}"],
     ],
-    require => [Package['ceph'], File['/etc/ceph/ceph.conf']],
+    require => [Package['ceph'], Concat['/etc/ceph/ceph.conf']],
   }
 
   service { "ceph-mon.${name}":

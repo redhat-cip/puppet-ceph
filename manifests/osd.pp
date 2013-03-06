@@ -96,7 +96,7 @@ ceph-osd -c /etc/ceph.conf \
         #Exec['ceph-osd-bootstrap-key'],
         Service["ceph-osd.${osd_id}"],
       ],
-      require => [Anchor['key_ok'], File['/etc/ceph/ceph.conf']],
+      require => [Anchor['key_ok'], Concat['/etc/ceph/ceph.conf']],
     }
 
     exec { "ceph-osd-register-${osd_id}":
