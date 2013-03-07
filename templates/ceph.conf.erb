@@ -1,8 +1,16 @@
 [global]
 <% if @auth_type -%>
-  auth supported = <%= @auth_type %>
+  auth cluster required = <%= @auth_type %>
+  auth service required = <%= @auth_type %>
+  auth client required = <%= @auth_type %>
 <% end -%>
   keyring = /etc/ceph/keyring
 
   fsid = <%= @fsid %>
 
+[osd]
+  osd journal size = <%= @journal_size_mb %>
+<% if @cluster_network && @public_network -%>
+  cluster network = <%= @cluster_network %>
+  public network = <%= @public_network %>
+<% end -%>

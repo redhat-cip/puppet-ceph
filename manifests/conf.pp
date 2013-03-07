@@ -14,6 +14,7 @@
 # == Authors
 #
 #  François Charlier francois.charlier@enovance.com
+#  Sébastien Han     sebastien.han@enovance.com
 #
 # == Copyright
 #
@@ -22,6 +23,9 @@
 class ceph::conf (
   $fsid,
   $auth_type = 'cephx',
+  $journal_size_mb = 4096,
+  $cluster_network = undef,
+  $public_network = undef
 ) {
 
   include 'ceph::package'
@@ -29,7 +33,7 @@ class ceph::conf (
   concat { '/etc/ceph/ceph.conf':
     owner   => 'root',
     group   => 0,
-    mode    => '0660',
+    mode    => '0664',
     require => Package['ceph'],
   }
 
