@@ -20,6 +20,19 @@ Vagrant::Config.run do |config|
       osd.vm.host_name = "osd#{i}.test"
       osd.vm.network :hostonly, "192.168.251.10#{i}", { :nic_type => 'virtio' }
       osd.vm.provision :shell, :path => "examples/osd.sh"
+      (0..1).each do |d|
+        osd.vm.customize [ "createhd", "--filename", "disk-"+:id.to_s+"-#{d}", "--size", "5000" ]
+        osd.vm.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-"+:id.to_s+"-#{d}.vdi" ]
+      end
+    end
+  end
+
+  config.vm.define "disk" do |vm|
+    vm.vm.host_name = "vm.test"
+    vm.vm.provision :puppet, :manifest_file => "disk.pp"
+    (0..1).each do |d|
+      vm.vm.customize [ "createhd", "--filename", "disk-"+:id.to_s+"-#{d}", "--size", "5000" ]
+      vm.vm.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-"+:id.to_s+"-#{d}.vdi" ]
     end
   end
 
