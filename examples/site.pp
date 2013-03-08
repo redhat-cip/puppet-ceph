@@ -15,7 +15,7 @@ class ceph_mon (
     fsid           => $::fsid,
     monitor_secret => $::mon_secret,
     auth_type      => 'cephx',
-    mon_data       => '/var/lib/ceph',
+    mon_data       => '/var/lib/ceph/mon',
     mon_port       => 6789,
     mon_addr       => $ipaddress_eth1,
   }

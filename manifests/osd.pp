@@ -40,7 +40,7 @@
 define ceph::osd (
   $fsid,
   $osd_device,
-  $osd_data = '/var/lib/ceph',
+  $osd_data = '/var/lib/ceph/osd',
   $osd_journal_path = undef,
   $osd_journal_is_file = false,
   $osd_journal_size = undef,

@@ -33,12 +33,16 @@ class ceph::package (
 
   file { '/var/lib/ceph':
     ensure => directory,
-    #FIXME: ensure user/group/perms
+    owner   => 'root',
+    group   => 0,
+    mode    => '0755'
   }
 
   file { '/var/run/ceph':
     ensure => directory,
-    #FIXME: ensure user/group/perms
+    owner   => 'root',
+    group   => 0,
+    mode    => '0755'
   }
 
 }

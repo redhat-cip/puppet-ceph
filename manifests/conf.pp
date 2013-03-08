@@ -30,10 +30,16 @@ class ceph::conf (
 
   include 'ceph::package'
 
+  if $auth_type = 'cephx' {
+    $mode = '0660'
+  } else {
+    $mode = '0664'
+  }
+
   concat { '/etc/ceph/ceph.conf':
     owner   => 'root',
     group   => 0,
-    mode    => '0664',
+    mode    => $mode,
     require => Package['ceph'],
   }
 
