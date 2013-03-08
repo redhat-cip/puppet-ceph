@@ -5,16 +5,30 @@ Exec {
   path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
 }
 
-class ceph_mon (
-  $id
+class role_ceph (
+  $fsid,
+  $auth_type = 'cephx'
 ) {
+  class { 'ceph::conf':
+    fsid      => $fsid,
+    auth_type => $auth_type,
+  }
 
   include ceph::apt::ceph
 
-  ceph::mon { $id:
+}
+
+class role_ceph_mon (
+  $id
+) {
+
+  class { 'role_ceph':
     fsid           => $::fsid,
-    monitor_secret => $::mon_secret,
     auth_type      => 'cephx',
+  }
+
+  ceph::mon { $id:
+    monitor_secret => $::mon_secret,
     mon_data       => '/var/lib/ceph/mon',
     mon_port       => 6789,
     mon_addr       => $ipaddress_eth1,
@@ -23,13 +37,26 @@ class ceph_mon (
 }
 
 node 'ceph-mon0.test' {
-  class { 'ceph_mon': id => 0 }
+  class { 'role_ceph_mon': id => 0 }
 }
 
 node 'ceph-mon1.test' {
-  class { 'ceph_mon': id => 1 }
+  class { 'role_ceph_mon': id => 1 }
 }
 
 node 'ceph-mon2.test' {
-  class { 'ceph_mon': id => 2 }
+  class { 'role_ceph_mon': id => 2 }
+}
+
+node /ceph-osd.?\.test/ {
+
+  class { 'role_ceph':
+    fsid           => $::fsid,
+    auth_type      => 'cephx',
+  }
+
+  ceph::osd { ['/dev/sdb', '/dev/sdc']:
+    fsid     => $::fsid,
+    osd_addr => $ipaddress_eth0,
+  }
 }

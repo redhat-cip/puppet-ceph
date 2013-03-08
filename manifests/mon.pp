@@ -34,9 +34,7 @@
 # Copyright 2012 eNovance <licensing@enovance.com>
 #
 define ceph::mon (
-  $fsid,
   $monitor_secret,
-  $auth_type = 'cephx',
   $mon_data = '/var/lib/ceph/mon',
   $mon_port = 6789,
   $mon_addr = $ipaddress
@@ -44,19 +42,7 @@ define ceph::mon (
 
   include 'ceph::package'
 
-  class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
-  }
-
   $mon_data_expanded = "${mon_data}/mon.${name}"
-
-  file { $mon_data_expanded:
-    ensure  => directory,
-    owner   => 'root',
-    group   => 0,
-    mode    => '0755',
-  }
 
   #FIXME: monitor_secret will appear in "ps" output …
   exec { 'ceph-mon-keyring':
@@ -74,11 +60,6 @@ define ceph::mon (
     command => "ceph-mon --mkfs -i ${name} \
 --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
     creates => "${mon_data_expanded}/keyring",
-    before  => [
-      Exec['ceph-admin-key'],
-      #Exec['ceph-osd-bootstrap-key'],
-      Service["ceph-mon.${name}"],
-    ],
     require => [Package['ceph'], Concat['/etc/ceph/ceph.conf']],
   }
 
@@ -106,6 +87,19 @@ $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 
+  exec { 'ceph-bootstrap-osd-key':
+    command => "ceph --name mon. --keyring ${mon_data_expanded}/keyring \
+auth get-or-create-key client.bootstrap-osd \
+mon 'allow command osd create ...; allow command osd crush set ...; \
+allow command auth add * osd allow \\ * mon allow\\ rwx; \
+allow command mon getmap'",
+    require => Service["ceph-mon.${name}"],
+    onlyif  => [
+      "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
+mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
+    ]
+  }
+
   # FIXME: implement this custom fact
   # it should be a call to
   #   ceph --name mon. --keyring ${mon_data_expanded}/keyring \
@@ -122,7 +116,6 @@ mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
 
   ceph::conf::mon { $name:
     mon_addr => $mon_addr,
-    mon_data => $mon_data,
   }
 
 }

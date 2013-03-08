@@ -22,15 +22,17 @@
 #
 class ceph::conf (
   $fsid,
-  $auth_type = 'cephx',
+  $auth_type       = 'cephx',
   $journal_size_mb = 4096,
   $cluster_network = undef,
-  $public_network = undef
+  $public_network  = undef,
+  $mon_data        = '/var/lib/ceph/mon',
+  $osd_data        = '/var/lib/ceph/osd'
 ) {
 
   include 'ceph::package'
 
-  if $auth_type = 'cephx' {
+  if $auth_type == 'cephx' {
     $mode = '0660'
   } else {
     $mode = '0664'

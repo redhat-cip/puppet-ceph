@@ -1,13 +1,11 @@
 # Configure a ceph osd
 #
 # == Name
+# FIXME: use device path and get the device's uuid with blkid
 #   This resource's name must be a uuid. (get one with `uuidgen -r`.)
 # == Parameters
 # [*fsid*] The cluster's fsid.
 #   Mandatory. Get one with `uuidgen -r`.
-#
-# [*osd_device*] The osd device
-#   Mandatory.
 #
 # [*osd_data*] Base path for osd data. Data will be put in a osd.$id folder.
 #   Optional. Defaults to '/var/lib/ceph.
@@ -41,6 +39,7 @@ define ceph::osd (
   $fsid,
   $osd_device,
   $osd_data = '/var/lib/ceph/osd',
+  auth_type = 'cephx',
   $osd_journal_path = undef,
   $osd_journal_is_file = false,
   $osd_journal_size = undef,
@@ -48,6 +47,11 @@ define ceph::osd (
 ) {
 
   include 'ceph::package'
+
+  class { 'ceph::conf':
+    fsid      => $fsid,
+    auth_type => $auth_type,
+  }
 
   Package['ceph'] -> Ceph::Key <<| title == 'bootstrap-osd' |>>
 
