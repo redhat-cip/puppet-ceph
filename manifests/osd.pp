@@ -47,13 +47,13 @@ define ceph::osd (
 
   include 'ceph::package'
 
-  Package['ceph'] -> Ceph::Key <<| title == 'bootstrap-osd' |>>
-
-  if !defined(Anchor['key_ok']) {
-    anchor { 'key_ok':
-      require => Ceph::Key['bootstrap-osd'],
-    }
-  }
+#  Package['ceph'] -> Ceph::Key <<| title == 'bootstrap-osd' |>>
+#
+#  if !defined(Anchor['key_ok']) {
+#    anchor { 'key_ok':
+#      require => Ceph::Key['bootstrap-osd'],
+#    }
+#  }
 
   Ceph::Key<<| title == "bootstrap-osd" |>>
 
