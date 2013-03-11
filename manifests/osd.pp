@@ -47,11 +47,6 @@ define ceph::osd (
 
   include 'ceph::package'
 
-  class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
-  }
-
   Package['ceph'] -> Ceph::Key <<| title == 'bootstrap-osd' |>>
 
   if !defined(Anchor['key_ok']) {
