@@ -37,7 +37,6 @@
 #
 define ceph::osd (
   $fsid,
-  $osd_device,
   $osd_data = '/var/lib/ceph/osd',
   auth_type = 'cephx',
   $osd_journal_path = undef,
