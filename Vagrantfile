@@ -17,7 +17,7 @@ Vagrant::Config.run do |config|
 
   (0..2).each do |i|
     config.vm.define "osd#{i}" do |osd|
-      osd.vm.host_name = "osd#{i}.test"
+      osd.vm.host_name = "ceph-osd#{i}.test"
       osd.vm.network :hostonly, "192.168.251.10#{i}", { :nic_type => 'virtio' }
       osd.vm.provision :shell, :path => "examples/osd.sh"
       (0..1).each do |d|

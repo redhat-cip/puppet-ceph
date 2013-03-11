@@ -5,7 +5,7 @@ define ceph::key (
 ) {
 
   #FIXME: inline-template to extract capabilities
-  $capabilities_str = ""
+  $capabilities_str = ''
 
   exec { "ceph-key-${name}":
     command => "ceph-authtool ${keyring_path} --create-keyring --name=${name} --add-key='${secret}' ${capabilities_str}",
