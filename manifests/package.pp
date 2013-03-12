@@ -24,11 +24,6 @@ class ceph::package (
     ensure => $package_ensure
   }
 
-  package { 'xfsprogs':
-    ensure => present
-  }
-
-
   #FIXME: Ensure ceph user/group
 
   file { '/var/lib/ceph':
