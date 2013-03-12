@@ -8,7 +8,7 @@ define ceph::key (
   $capabilities_str = ''
 
   exec { "ceph-key-${name}":
-    command => "ceph-authtool ${keyring_path} --create-keyring --name=${name} --add-key='${secret}' ${capabilities_str}",
+    command => "ceph-authtool ${keyring_path} --create-keyring --name='client.${name}' --add-key='${secret}' ${capabilities_str}",
     creates => $keyring_path,
     require => Package['ceph'],
   }
