@@ -28,19 +28,5 @@ class ceph::osd (
 
   Package['ceph'] -> Ceph::Key <<| title == 'admin' |>>
 
-  # Required or not ?
-  #Ceph::Key<<| title == 'admin' |>>
-
-  if !defined(Anchor['key_ok']) {
-    anchor { 'key_ok':
-      require => Ceph::Key['admin'],
-    }
-  }
-
-  exec { 'ceph-get-monmap':
-    command => 'ceph mon getmap -o /var/lib/ceph/tmp/monmap',
-    creates => '/var/lib/ceph/tmp/monmap'
-  }
-
 }
 
