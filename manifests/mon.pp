@@ -100,17 +100,9 @@ mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
     ]
   }
 
-  # FIXME: implement this custom fact
-  # it should be a call to
-  #   ceph --name mon. --keyring ${mon_data_expanded}/keyring \
-  #    auth get-or-create-key client.bootstrap-osd \
-  #      mon 'allow command osd create ...; allow command osd crush set ...; \
-  #      allow command auth add * osd allow\\ * mon allow\\ rwx; \
-  #      allow command mon getmap'
-  # ceph_bootstrap_osd_key is a custom fact
-  if $::ceph_bootstrap_osd_key {
+  if !empty($::ceph_osd_bootstrap_key) {
     @@ceph::key { 'bootstrap-osd':
-      secret => $::ceph_bootstrap_osd_key,
+      secret => $::ceph_osd_bootstrap_key,
     }
   }
 
