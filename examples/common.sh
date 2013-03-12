@@ -33,6 +33,7 @@ if hostname | grep -q "ceph-mon0"; then
 set /files/etc/puppet/puppet.conf/agent/pluginsync true
 set /files/etc/puppet/puppet.conf/agent/server ceph-mon0.test
 set /files/etc/puppet/puppet.conf/master/storeconfigs true
+set /files/etc/puppet/puppet.conf/master/dbadapter sqlite3
 save
 EOT
 
