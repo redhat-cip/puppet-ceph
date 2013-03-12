@@ -102,7 +102,7 @@ mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
 
   if !empty($::ceph_admin_key) {
     @@ceph::key { 'admin':
-      secret       => $::ceph_osd_bootstrap_key,
+      secret       => $::ceph_admin_key,
       keyring_path => '/etc/ceph/keyring',
     }
   }
