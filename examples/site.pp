@@ -9,6 +9,7 @@ class role_ceph (
   $fsid,
   $auth_type = 'cephx'
 ) {
+
   class { 'ceph::conf':
     fsid      => $fsid,
     auth_type => $auth_type,
@@ -55,8 +56,7 @@ node /ceph-osd.?\.test/ {
     auth_type      => 'cephx',
   }
 
-  ceph::osd { ['/dev/sdb', '/dev/sdc']:
-    fsid     => $::fsid,
+  class { 'ceph::osd' :
     osd_addr => $ipaddress_eth0,
   }
 }
