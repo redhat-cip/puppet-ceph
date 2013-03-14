@@ -104,7 +104,7 @@ ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
 
     exec { "ceph-osd-crush-${osd_id}":
       command => "\
-ceph osd crush set ${osd_id} 1 host=${::hostname}",
+ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
       require => Exec["ceph-osd-register-${osd_id}"],
     }
 
