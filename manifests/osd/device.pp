@@ -63,7 +63,7 @@ define ceph::osd::device (
       public_addr  => $ipaddress_eth0,
     }
 
-    $osd_data = "${::ceph::osd::osd_data}/osd.${osd_id}"
+    $osd_data = regsubst($::ceph::conf::osd_data, '$id', $osd_id)
 
     file { $osd_data:
       ensure => directory,
