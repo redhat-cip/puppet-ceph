@@ -36,7 +36,7 @@ define ceph::mon (
   include 'ceph::package'
   include 'ceph::conf'
 
-  $mon_data_real = regsubst($::ceph::conf::mon_data, '$id', $name)
+  $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
 
   #FIXME: monitor_secret will appear in "ps" output …
   exec { 'ceph-mon-keyring':
