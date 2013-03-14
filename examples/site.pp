@@ -11,8 +11,10 @@ class role_ceph (
 ) {
 
   class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
+    fsid            => $fsid,
+    auth_type       => $auth_type,
+    cluster_network => "${::network_eth1}/24",
+    public_network  => "${::network_eth0}/24"
   }
 
   include ceph::apt::ceph
@@ -57,7 +59,8 @@ node /ceph-osd.?\.test/ {
   }
 
   class { 'ceph::osd' :
-    osd_addr => $ipaddress_eth0,
+    public_address  => $ipaddress_eth0,
+    cluster_address => $ipaddress_eth1,
   }
 
   ceph::osd::device { '/dev/sdb': }

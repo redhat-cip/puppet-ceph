@@ -27,7 +27,8 @@ class ceph::conf (
   $cluster_network = undef,
   $public_network  = undef,
   $mon_data        = '/var/lib/ceph/mon',
-  $osd_data        = '/var/lib/ceph/osd'
+  $osd_data        = '/var/lib/ceph/osd',
+  $osd_journal     = undef
 ) {
 
   include 'ceph::package'
@@ -36,6 +37,12 @@ class ceph::conf (
     $mode = '0660'
   } else {
     $mode = '0664'
+  }
+
+  if $osd_journal {
+    $osd_journal_real = $osd_journal
+  } else {
+    $osd_journal_real = "${osd_data}/osd.\$id/journal"
   }
 
   concat { '/etc/ceph/ceph.conf':
