@@ -32,7 +32,6 @@ class role_ceph_mon (
 
   ceph::mon { $id:
     monitor_secret => $::mon_secret,
-    mon_data       => '/var/lib/ceph/mon',
     mon_port       => 6789,
     mon_addr       => $ipaddress_eth1,
   }

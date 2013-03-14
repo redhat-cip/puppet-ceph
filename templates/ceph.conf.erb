@@ -9,7 +9,7 @@
   fsid = <%= @fsid %>
 
 [mon]
-  mon data = <%= @mon_data %>/mon.$id
+  mon data = <%= @mon_data %>
 
 [osd]
   osd journal size = <%= @journal_size_mb %>
@@ -18,6 +18,6 @@
   public network = <%= @public_network %>
 <% end -%>
   filestore flusher = false
-  osd data = <%= @osd_data %>/osd.$id
+  osd data = <%= @osd_data %>
   osd journal = <%= @osd_journal_real %>
 

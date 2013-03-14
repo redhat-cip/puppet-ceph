@@ -9,12 +9,6 @@
 # [*mon_secret*] The cluster's mon's secret key.
 #   Mandatory. Get one with `ceph-authtool /dev/stdout --name=mon. --gen-key`.
 #
-# [*auth_type*] Auth type.
-#   Optional. undef or 'cephx'. Defaults to 'cephx'.
-#
-# [*mon_data*] Base path for mon data. Data will be put in a mon.$id folder.
-#   Optional. Defaults to '/var/lib/ceph.
-#
 # [*mon_port*] The mon's port.
 #   Optional. Defaults to 6789.
 #
@@ -35,14 +29,14 @@
 #
 define ceph::mon (
   $monitor_secret,
-  $mon_data = '/var/lib/ceph/mon',
   $mon_port = 6789,
   $mon_addr = $ipaddress
 ) {
 
   include 'ceph::package'
+  include 'ceph::conf'
 
-  $mon_data_expanded = "${mon_data}/mon.${name}"
+  $mon_data_real = regsubst($::ceph::conf::mon_data, '$id', $name)
 
   #FIXME: monitor_secret will appear in "ps" output …
   exec { 'ceph-mon-keyring':
@@ -59,7 +53,7 @@ define ceph::mon (
   exec { 'ceph-mon-mkfs':
     command => "ceph-mon --mkfs -i ${name} \
 --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
-    creates => "${mon_data_expanded}/keyring",
+    creates => "${mon_data_real}/keyring",
     require => [Package['ceph'], Concat['/etc/ceph/ceph.conf']],
   }
 
@@ -76,7 +70,7 @@ define ceph::mon (
 --create-keyring \
 --name=client.admin \
 --add-key \
-$(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
+$(ceph --name mon. --keyring ${mon_data_real}/keyring \
   auth get-or-create-key client.admin \
     mon 'allow *' \
     osd 'allow *' \

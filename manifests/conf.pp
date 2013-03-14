@@ -26,8 +26,8 @@ class ceph::conf (
   $journal_size_mb = 4096,
   $cluster_network = undef,
   $public_network  = undef,
-  $mon_data        = '/var/lib/ceph/mon',
-  $osd_data        = '/var/lib/ceph/osd',
+  $mon_data        = '/var/lib/ceph/mon/mon.$id',
+  $osd_data        = '/var/lib/ceph/osd/osd.$id',
   $osd_journal     = undef
 ) {
 
@@ -42,7 +42,7 @@ class ceph::conf (
   if $osd_journal {
     $osd_journal_real = $osd_journal
   } else {
-    $osd_journal_real = "${osd_data}/osd.\$id/journal"
+    $osd_journal_real = "${osd_data}/journal"
   }
 
   concat { '/etc/ceph/ceph.conf':
