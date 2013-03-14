@@ -87,19 +87,6 @@ $(ceph --name mon. --keyring ${mon_data_expanded}/keyring \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 
-#  exec { 'ceph-bootstrap-osd-key':
-#    command => "ceph --name mon. --keyring ${mon_data_expanded}/keyring \
-#auth get-or-create-key client.bootstrap-osd \
-#mon 'allow command osd create ...; allow command osd crush set ...; \
-#allow command auth add * osd allow \\ * mon allow\\ rwx; \
-#allow command mon getmap'",
-#    require => Service["ceph-mon.${name}"],
-#    onlyif  => [
-#      "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
-#mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
-#    ]
-#  }
-
   if !empty($::ceph_admin_key) {
     @@ceph::key { 'admin':
       secret       => $::ceph_admin_key,
