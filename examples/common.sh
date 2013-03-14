@@ -63,3 +63,14 @@ fi
 
 # And finally, run the puppet agent
 puppet agent --verbose --debug --onetime --no-daemonize
+
+if hostname | grep -q "ceph-mon0"; then
+    puppet agent -vtd
+fi
+
+if hostname | grep -q "ceph-osd"; then
+    puppet agent -vtd
+    puppet agent -vtd
+    puppet agent -vtd
+    puppet agent -vtd
+fi
