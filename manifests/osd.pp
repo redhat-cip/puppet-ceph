@@ -19,7 +19,8 @@
 #
 
 class ceph::osd (
-  $osd_addr = $ipaddress,
+  $public_address = $::ipaddress,
+  $cluster_addres = $::ipaddress,
 ) {
 
   include 'ceph::package'
