@@ -63,4 +63,5 @@ node /ceph-osd.?\.test/ {
   }
 
   ceph::osd::device { '/dev/sdb': }
+  ceph::osd::device { '/dev/sdc': }
 }
