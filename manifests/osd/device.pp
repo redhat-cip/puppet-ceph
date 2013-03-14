@@ -97,7 +97,7 @@ ceph-osd -c /etc/ceph/ceph.conf \
 
     exec { "ceph-osd-register-${osd_id}":
       command => "\
-ceph auth add osd.${osd_id} 'allow *' mon 'allow rwx' \
+ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
 -i ${osd_data}/keyring",
       require => Exec["ceph-osd-mkfs-${osd_id}"],
     }
