@@ -89,34 +89,27 @@ ceph-osd -c /etc/ceph.conf \
 --mkfs \
 --mkkey",
       creates => "${osd_data}/keyring",
-#      before  => [
-#        Exec['ceph-admin-key'],
-#        #Exec['ceph-osd-bootstrap-key'],
-#        Service["ceph-osd.${osd_id}"],
-#      ],
       require => [
         Mount[$osd_data],
         Concat['/etc/ceph/ceph.conf'],
       ],
     }
 
-#    exec { "ceph-osd-register-${osd_id}":
-#      command => "\
-#ceph auth add osd.${osd_id} 'allow *' mon 'allow rwx' \
-#-i ${osd_data_expanded}/keyring \
-#--name client.bootstrap-osd \
-#--keyring /var/lib/ceph/tmp/bootstrap-osd.keyring",
-#      require => Exec["ceph-osd-mkfs-${osd_id}"],
-#    }
-#
-#    service { "ceph-osd.${osd_id}":
-#      ensure  => running,
-#      start   => "service ceph start osd.${osd_id}",
-#      stop    => "service ceph stop osd.${osd_id}",
-#      status  => "service ceph status osd.${osd_id}",
-#      require => Exec["ceph-osd-register-${osd_id}"],
-#    }
-#
+    exec { "ceph-osd-register-${osd_id}":
+      command => "\
+ceph auth add osd.${osd_id} 'allow *' mon 'allow rwx' \
+-i ${osd_data}/keyring",
+      require => Exec["ceph-osd-mkfs-${osd_id}"],
+    }
+
+    service { "ceph-osd.${osd_id}":
+      ensure  => running,
+      start   => "service ceph start osd.${osd_id}",
+      stop    => "service ceph stop osd.${osd_id}",
+      status  => "service ceph status osd.${osd_id}",
+      require => Exec["ceph-osd-register-${osd_id}"],
+    }
+
   }
 
 }
