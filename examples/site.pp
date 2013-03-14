@@ -59,4 +59,6 @@ node /ceph-osd.?\.test/ {
   class { 'ceph::osd' :
     osd_addr => $ipaddress_eth0,
   }
+
+  ceph::osd::device { '/dev/sdb': }
 }
