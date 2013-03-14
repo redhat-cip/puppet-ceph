@@ -84,7 +84,7 @@ define ceph::osd::device (
 
     exec { "ceph-osd-mkfs-${osd_id}":
       command => "\
-ceph-osd -c /etc/ceph.conf \
+ceph-osd -c /etc/ceph/ceph.conf \
 -i ${osd_id} \
 --mkfs \
 --mkkey",
