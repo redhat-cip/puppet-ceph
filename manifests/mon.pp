@@ -88,6 +88,7 @@ mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 
   if !empty($::ceph_admin_key) {
+    notify { "Exporting ceph admin key : ${::ceph_admin_key}" : }
     @@ceph::key { 'admin':
       secret       => $::ceph_admin_key,
       keyring_path => '/etc/ceph/keyring',
