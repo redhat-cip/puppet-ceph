@@ -62,8 +62,8 @@ define ceph::osd::device (
 
       ceph::conf::osd { $osd_id:
         device       => $name,
-        cluster_addr => $ipaddress_eth1,
-        public_addr  => $ipaddress_eth0,
+        cluster_addr => $::ceph::osd::cluster_address,
+        public_addr  => $::ceph::osd::public_address,
       }
 
       $osd_data = regsubst($::ceph::conf::osd_data, '\$id', $osd_id)
