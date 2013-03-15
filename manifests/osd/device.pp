@@ -54,7 +54,9 @@ define ceph::osd::device (
     }
 
     $osd_id_fact = "ceph_osd_id_${devname}1"
+    notify { "OSD ID FACT: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) %>')
+    notify { "OSD ID : ${osd_id}":}
 
     if $osd_id != 'undefined' {
 
@@ -80,15 +82,14 @@ define ceph::osd::device (
         require => [
           Exec["mkfs_${devname}"],
           File[$osd_data]
-          ],
+        ],
       }
 
       exec { "ceph-osd-mkfs-${osd_id}":
-        command => "\
-        ceph-osd -c /etc/ceph/ceph.conf \
-        -i ${osd_id} \
-        --mkfs \
-        --mkkey",
+        command => "ceph-osd -c /etc/ceph/ceph.conf \
+-i ${osd_id} \
+--mkfs \
+--mkkey",
         creates => "${osd_data}/keyring",
         require => [
           Mount[$osd_data],
@@ -98,14 +99,14 @@ define ceph::osd::device (
 
       exec { "ceph-osd-register-${osd_id}":
         command => "\
-        ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
-        -i ${osd_data}/keyring",
+ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
+-i ${osd_data}/keyring",
         require => Exec["ceph-osd-mkfs-${osd_id}"],
       }
 
       exec { "ceph-osd-crush-${osd_id}":
         command => "\
-        ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
+ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
         require => Exec["ceph-osd-register-${osd_id}"],
       }
 
@@ -118,6 +119,7 @@ define ceph::osd::device (
       }
 
     }
+
   }
 
 }
