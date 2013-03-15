@@ -118,7 +118,7 @@ ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
         stop      => "service ceph stop osd.${osd_id}",
         status    => "service ceph status osd.${osd_id}",
         require   => Exec["ceph-osd-crush-${osd_id}"],
-        subscribe => Concat["/etc/ceph/ceph.cponf"],
+        subscribe => Concat['/etc/ceph/ceph.conf'],
       }
 
     }
