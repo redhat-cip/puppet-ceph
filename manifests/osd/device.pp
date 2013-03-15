@@ -113,11 +113,12 @@ ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
       }
 
       service { "ceph-osd.${osd_id}":
-        ensure  => running,
-        start   => "service ceph start osd.${osd_id}",
-        stop    => "service ceph stop osd.${osd_id}",
-        status  => "service ceph status osd.${osd_id}",
-        require => Exec["ceph-osd-crush-${osd_id}"],
+        ensure    => running,
+        start     => "service ceph start osd.${osd_id}",
+        stop      => "service ceph stop osd.${osd_id}",
+        status    => "service ceph status osd.${osd_id}",
+        require   => Exec["ceph-osd-crush-${osd_id}"],
+        subscribe => Concat["/etc/ceph/ceph.cponf"],
       }
 
     }
