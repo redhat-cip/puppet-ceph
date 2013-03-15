@@ -57,7 +57,7 @@ Features
 
   • Insert OSD into crushmap ✗
 
-  • Working OSD ✗
+  • Working OSD ✓
 
 * Rspec tests ✗
 
@@ -85,7 +85,10 @@ Ceph MONs should be up :::
     vagrant ssh mon0 -c "sudo ceph mon stat"
     e3: 3 mons at {0=192.168.251.10:6789/0,1=192.168.251.11:6789/0,2=192.168.251.12:6789/0}, election epoch 4, quorum 0,1 0,1
 
-Launth one OSD :::
+Launch at least 2 OSDs :::
 
     vagrant up osd1
+    vagrant up osd2
+    vagrant up osd3
 
+This should work !
