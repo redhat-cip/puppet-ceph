@@ -54,9 +54,9 @@ define ceph::osd::device (
     }
 
     $osd_id_fact = "ceph_osd_id_${devname}1"
-    notify { "OSD ID FACT: ${osd_id_fact}": }
+    notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) %>')
-    notify { "OSD ID : ${osd_id}":}
+    notify { "OSD ID ${devname}: ${osd_id}":}
 
     if $osd_id != 'undefined' {
 
