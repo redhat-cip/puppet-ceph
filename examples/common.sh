@@ -3,6 +3,8 @@
 set -x
 set -e
 
+AGENT_OPTIONS="--onetime --verbose --ignorecache --no-daemonize --no-usecacheonfailure --no-splay --show_diff --debug"
+
 # ensure a correct domain name is set from dhclient
 grep -q 'supersede domain-name "test";' /etc/dhcp/dhclient.conf ||  {
     echo 'supersede domain-name "test";' >> /etc/dhcp/dhclient.conf
@@ -42,10 +44,14 @@ EOT
     # Autosign certificates from our test setup
     echo "*.test" > /etc/puppet/autosign.conf
 
-    puppet module install ripienaar/concat
-    puppet module install puppetlabs/apt
-    git clone /vagrant /etc/puppet/modules/ceph
-    ln -s /etc/puppet/modules/ceph/examples/site.pp /etc/puppet/manifests/
+    test -f /etc/puppet/modules/concat || puppet module install ripienaar/concat
+    test -f /etc/puppet/modules/apt || puppet module install puppetlabs/apt
+    test -f /etc/puppet/modules/ceph || git clone /vagrant /etc/puppet/modules/ceph
+
+    test -h /etc/puppet/manifests/site.pp || ln -s /etc/puppet/modules/ceph/examples/site.pp /etc/puppet/manifests/
+    pushd /etc/puppet/modules/ceph
+    git pull
+    popd
 
     service puppetmaster restart
 else
@@ -62,15 +68,21 @@ EOT
 fi
 
 # And finally, run the puppet agent
-puppet agent --verbose --debug --onetime --no-daemonize
+puppet agent $AGENT_OPTIONS
 
 if hostname | grep -q "ceph-mon0"; then
-    puppet agent -vtd
+    puppet agent $AGENT_OPTIONS
 fi
 
 if hostname | grep -q "ceph-osd"; then
-    puppet agent -vtd
-    puppet agent -vtd
-    puppet agent -vtd
-    puppet agent -vtd
+    for STEP in $(seq 0 4); do
+        echo ================
+        echo   STEP $STEP
+        echo ================
+        blkid > /tmp/blkid_step_$STEP
+        facter --puppet|egrep "blkid|ceph" > /tmp/facter_step_$STEP
+        ceph osd dump > /tmp/ceph-osd-dump_step_$STEP
+
+        puppet agent $AGENT_OPTIONS
+    done
 fi
