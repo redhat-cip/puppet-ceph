@@ -89,7 +89,9 @@ define ceph::osd::device (
         command => "ceph-osd -c /etc/ceph/ceph.conf \
 -i ${osd_id} \
 --mkfs \
---mkkey",
+--mkkey \
+--osd-uuid ${blkid}
+",
         creates => "${osd_data}/keyring",
         require => [
           Mount[$osd_data],
