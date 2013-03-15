@@ -45,7 +45,7 @@ define ceph::osd::device (
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
   notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) %>')
-  notify { "BLKID ${devname}: ${blkid": }
+  notify { "BLKID ${devname}: ${blkid}": }
 
   if $blkid != 'undefined' {
     exec { "ceph_osd_create_${devname}":
