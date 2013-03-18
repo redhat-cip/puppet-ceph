@@ -65,3 +65,11 @@ node /ceph-osd.?\.test/ {
   ceph::osd::device { '/dev/sdb': }
   ceph::osd::device { '/dev/sdc': }
 }
+
+node 'ceph-mds0.test' {
+    class { 'ceph_mds': id => 0 }
+}
+
+node 'ceph-mds1.test' {
+    class { 'ceph_mds': id => 1 }
+}
