@@ -51,6 +51,7 @@ define ceph::osd::device (
     exec { "ceph_osd_create_${devname}":
       command => "ceph osd create ${blkid}",
       unless  => "ceph osd dump | grep -sq ${blkid}",
+      require => Ceph::Key['admin'],
     }
 
     $osd_id_fact = "ceph_osd_id_${devname}1"
