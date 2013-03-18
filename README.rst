@@ -15,7 +15,7 @@ Status
 
 This module is currently in active development and must be considered unstable.
 
-It is being developped on Debian/Wheezy, using the Ceph package from Debian/Sid.
+It is being developped on Debian/Wheezy, targetting the Bobtail Ceph release.
 
 Features
 ========
@@ -27,7 +27,8 @@ Features
   • MON configuration ✓
 
   • MON service key ✓
-• MON filesystem creation ✓
+
+  • MON filesystem creation ✓
 
   • MON service ✓
 
@@ -35,7 +36,7 @@ Features
 
   • admin key ✓
 
-* Ceph OSDs ✗
+* Ceph OSDs ✓
 
   • OSD configuration ✓
 
@@ -43,7 +44,7 @@ Features
 
   • OSD device ✓
 
-    - OSD device formatting ✗
+    - OSD device formatting ✓
 
     - OSD device mounting ✓
 
@@ -55,11 +56,17 @@ Features
 
   • OSD registration ✓
 
-  • Insert OSD into crushmap ✗
+  • Insert OSD into crushmap ✓
 
   • Working OSD ✓
 
+* Ceph MDSs ?
+
+  • To be tested further ✗
+
 * Rspec tests ✗
+
+* Documentation ✗
 
 Testing
 =======
@@ -78,7 +85,11 @@ Launch three MONs :::
     vagrant up mon1
     vagrant up mon2
 
+Run puppet one more time to update the ceph configuration (uses exported resources) :::
+
     vagrant ssh mon0 -c 'sudo puppet agent -vt'
+    vagrant ssh mon1 -c 'sudo puppet agent -vt'
+    vagrant ssh mon2 -c 'sudo puppet agent -vt'
 
 Ceph MONs should be up :::
 
