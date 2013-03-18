@@ -72,10 +72,13 @@ fi
 # And finally, run the puppet agent
 puppet agent $AGENT_OPTIONS
 
-if hostname | grep -q "ceph-mon0"; then
+# Run two more times on MON servers to generate & export the admin key
+if hostname | grep -q "ceph-mon"; then
+    puppet agent $AGENT_OPTIONS
     puppet agent $AGENT_OPTIONS
 fi
 
+# Run 4/5 more times on OSD servers to get the admin key, format devices, get osd ids, etc. …
 if hostname | grep -q "ceph-osd"; then
     for STEP in $(seq 0 4); do
         echo ================
