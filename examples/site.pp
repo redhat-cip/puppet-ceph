@@ -36,6 +36,10 @@ class role_ceph_mon (
     mon_addr       => $ipaddress_eth2,
   }
 
+  class { 'ceph::key::admin':
+    export => $id == 0,
+  }
+
 }
 
 node 'ceph-mon0.test' {
