@@ -69,7 +69,7 @@ Using Vagrant
 
 Clone the repo & enter the created directory :::
 
-    git clone git://github.com/fcharlier/puppet-ceph.git
+    git clone git://github.com/enovance/puppet-ceph.git
     cd puppet-ceph
 
 Launch three MONs :::
