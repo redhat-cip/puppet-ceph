@@ -30,4 +30,11 @@ Vagrant::Config.run do |config|
     end
   end
 
+  (0..1).each do |i|
+    config.vm.define "mds#{i}" do |mds|
+      mds.vm.host_name = "ceph-mds#{i}.test"
+      mds.vm.network :hostonly, "192.168.251.15#{i}", { :nic_type => 'virtio' }
+      mds.vm.provision :shell, :path => "examples/mds.sh"
+    end
+  end
 end

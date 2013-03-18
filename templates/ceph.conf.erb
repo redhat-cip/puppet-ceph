@@ -18,8 +18,11 @@
   public network = <%= @public_network %>
 <% end -%>
   filestore flusher = false
-  osd data = <%= @osd_data %>
   osd journal = <%= @osd_journal_real %>
   osd mkfs type = xfs
   keyring = <%= @osd_data %>/keyring
+
+[mds]
+  mds data = /var/lib/ceph/mds/mds$i
+  keyring = <%= @mds_data %>/mds.$id/keyring
 
