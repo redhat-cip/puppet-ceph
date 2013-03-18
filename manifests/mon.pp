@@ -38,6 +38,10 @@ define ceph::mon (
 
   $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
 
+  ceph::conf::mon { $name:
+    mon_addr => $mon_addr,
+  }
+
   #FIXME: monitor_secret will appear in "ps" output …
   exec { 'ceph-mon-keyring':
     command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
@@ -65,8 +69,20 @@ define ceph::mon (
     require => Exec['ceph-mon-mkfs'],
   }
 
-  ceph::conf::mon { $name:
-    mon_addr => $mon_addr,
+  exec { 'ceph-admin-key':
+    command => "ceph-authtool /etc/ceph/keyring \
+--create-keyring \
+--name=client.admin \
+--add-key \
+$(ceph --name mon. --keyring ${mon_data_real}/keyring \
+  auth get-or-create-key client.admin \
+    mon 'allow *' \
+    osd 'allow *' \
+    mds allow)",
+    creates => '/etc/ceph/keyring',
+    require => Package['ceph'],
+    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
+mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 
 }

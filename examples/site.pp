@@ -36,13 +36,15 @@ class role_ceph_mon (
     mon_addr       => $ipaddress_eth2,
   }
 
-  class { 'ceph::key::admin':
-    export => $id == 0,
-  }
-
 }
 
 node 'ceph-mon0.test' {
+  if !empty($::ceph_admin_key) {
+    @@ceph::key { 'admin':
+      secret       => $::ceph_admin_key,
+      keyring_path => '/etc/ceph/keyring',
+    }
+  }
   class { 'role_ceph_mon': id => 0 }
 }
 
