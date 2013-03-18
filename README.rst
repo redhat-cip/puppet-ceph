@@ -94,7 +94,7 @@ Run puppet one more time to update the ceph configuration (uses exported resourc
 Ceph MONs should be up :::
 
     vagrant ssh mon0 -c "sudo ceph mon stat"
-    e3: 3 mons at {0=192.168.251.10:6789/0,1=192.168.251.11:6789/0,2=192.168.251.12:6789/0}, election epoch 4, quorum 0,1 0,1
+        e3: 3 mons at {0=192.168.251.10:6789/0,1=192.168.251.11:6789/0,2=192.168.251.12:6789/0}, election epoch 4, quorum 0,1 0,1
 
 Launch at least 2 OSDs :::
 
@@ -102,4 +102,11 @@ Launch at least 2 OSDs :::
     vagrant up osd2
     vagrant up osd3
 
-This should work !
+Now login on mon0 (for example) & check ceph health :::
+
+    vagrant ssh mon0 -c 'sudo ceph -s'
+       health HEALTH_OK
+       monmap e2: 2 mons at {0=192.168.252.10:6789/0,1=192.168.252.11:6789/0}, election epoch 4, quorum 0,1 0,1
+       osdmap e35: 6 osds: 6 up, 6 in
+        pgmap v158: 192 pgs: 192 active+clean; 0 bytes data, 242 MB used, 23601 MB / 23844 MB avail
+
