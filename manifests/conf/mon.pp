@@ -1,5 +1,6 @@
 define ceph::conf::mon (
   $mon_addr,
+  $mon_port,
 ) {
 
   @@concat::fragment { "ceph-mon-${name}.conf":

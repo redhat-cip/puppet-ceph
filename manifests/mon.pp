@@ -40,6 +40,7 @@ define ceph::mon (
 
   ceph::conf::mon { $name:
     mon_addr => $mon_addr,
+    mon_port => $mon_port,
   }
 
   #FIXME: monitor_secret will appear in "ps" output …
