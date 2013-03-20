@@ -1,14 +1,10 @@
 define ceph::key (
   $secret       = undef,
   $keyring_path = "/var/lib/ceph/tmp/${name}.keyring",
-  $capabilities = {},
 ) {
 
-  #FIXME: inline-template to extract capabilities
-  $capabilities_str = ''
-
   exec { "ceph-key-${name}":
-    command => "ceph-authtool ${keyring_path} --create-keyring --name='client.${name}' --add-key='${secret}' ${capabilities_str}",
+    command => "ceph-authtool ${keyring_path} --create-keyring --name='client.${name}' --add-key='${secret}'",
     creates => $keyring_path,
     require => Package['ceph'],
   }
