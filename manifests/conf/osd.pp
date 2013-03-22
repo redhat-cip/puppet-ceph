@@ -6,7 +6,7 @@ define ceph::conf::osd (
 
   concat::fragment { "ceph-osd-${name}.conf":
     target  => '/etc/ceph/ceph.conf',
-    order   => 100,
+    order   => '80',
     content => template('ceph/ceph.conf-osd.erb'),
   }
 

@@ -56,7 +56,7 @@ class ceph::conf (
 
   concat::fragment { 'ceph.conf':
     target  => '/etc/ceph/ceph.conf',
-    order   => 1,
+    order   => '01',
     content => template('ceph/ceph.conf.erb'),
   }
 
