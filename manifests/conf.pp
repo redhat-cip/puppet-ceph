@@ -28,7 +28,8 @@ class ceph::conf (
   $public_network  = undef,
   $mon_data        = '/var/lib/ceph/mon/mon.$id',
   $osd_data        = '/var/lib/ceph/osd/osd.$id',
-  $osd_journal     = undef
+  $osd_journal     = undef,
+  $mds_data        = '/var/lib/ceph/mds/mds.$id'
 ) {
 
   include 'ceph::package'

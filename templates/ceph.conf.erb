@@ -24,6 +24,6 @@
   keyring = <%= @osd_data %>/keyring
 
 [mds]
-  mds data = /var/lib/ceph/mds/mds$i
-  keyring = <%= @mds_data %>/mds.$id/keyring
+  mds data = <%= @mds_data %>
+  keyring = <%= @mds_data %>/keyring
 
