@@ -111,7 +111,7 @@ A MON host also needs the MONs secret : get it with `ceph-authtool --create /pat
 
     $mon_secret = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdw=='
 
-An Id
+An Id::
 
     $id = 0 # must be unique for each MON in the cluster
 
@@ -158,35 +158,35 @@ Testing
 Using Vagrant
 -------------
 
-Clone the repo & enter the created directory :::
+Clone the repo & enter the created directory ::
 
     git clone git://github.com/enovance/puppet-ceph.git
     cd puppet-ceph
 
-Launch three MONs :::
+Launch three MONs ::
 
     vagrant up mon0
     vagrant up mon1
     vagrant up mon2
 
-Run puppet one more time to update the ceph configuration (uses exported resources) :::
+Run puppet one more time to update the ceph configuration (uses exported resources) ::
 
     vagrant ssh mon0 -c 'sudo puppet agent -vt'
     vagrant ssh mon1 -c 'sudo puppet agent -vt'
     vagrant ssh mon2 -c 'sudo puppet agent -vt'
 
-Ceph MONs should be up :::
+Ceph MONs should be up ::
 
     vagrant ssh mon0 -c "sudo ceph mon stat"
         e3: 3 mons at {0=192.168.251.10:6789/0,1=192.168.251.11:6789/0,2=192.168.251.12:6789/0}, election epoch 4, quorum 0,1 0,1
 
-Launch at least 2 OSDs :::
+Launch at least 2 OSDs ::
 
     vagrant up osd1
     vagrant up osd2
     vagrant up osd3
 
-Now login on mon0 (for example) & check ceph health :::
+Now login on mon0 (for example) & check ceph health ::
 
     vagrant ssh mon0 -c 'sudo ceph -s'
        health HEALTH_OK
