@@ -67,6 +67,14 @@ TODO
 
 * Test/finish MDS/RadosGW code
 
+Contributing
+============
+
+Contributions are welcome, just fork on GitHub and send a pull-request !
+
+* When adding features, don't forget to add unit tests.
+
+* `puppet-lint <https://github.com/rodjek/puppet-lint>` should not produce too much errors too :)
 
 Using
 =====
