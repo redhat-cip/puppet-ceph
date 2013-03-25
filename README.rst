@@ -60,13 +60,91 @@ Features
 
   • Working OSD ✓
 
-* Ceph MDSs ?
+TODO
+====
 
-  • To be tested further ✗
+* Finish writing the rspec tests
 
-* Rspec tests ✗
+* Better OSD device placement possibilities
 
-* Documentation ✗
+* Test/finish MDS/RadosGW code
+
+
+Using
+=====
+
+To install a Ceph cluster you'll need at least *one* host to act as a MON and with the current crushmap defaults *two* hosts to act as OSDs. (The MON *might* be the same as an OSD, but has not been tested yet). And of course one puppetmaster :-)
+
+This module requires the puppet master to have `storeconfigs = true` set and a storage backend configured. On the puppet agents `pluginsync = true` is required too.
+
+Minimum Puppet manifest for all members of the Ceph cluster
+-----------------------------------------------------------
+
+A Ceph cluster needs a cluster `fsid` : get one with `uuidgen -r` (Install it with `apt-get install uuid-runtime`)::
+
+    $fsid ='some uuid from uuid-gen -r'
+
+The general configuration::
+
+    class { 'ceph::conf':
+      fsid            => $fsid,
+      auth_type       => 'cephx', # Currently only cephx is supported AND required
+      cluster_network => '10.0.0.0/24', # The cluster's «internal» network
+      public_network  => '192.168.0.0/24', # The cluster's «public» (where clients are) network
+    }
+
+APT configuration to install from the official Ceph repositories::
+
+    include ceph::apt::ceph
+
+
+Puppet manifest for a MON
+-------------------------
+
+A MON host also needs the MONs secret : get it with `ceph-authtool --create /path/to/keyring --gen-key -n mon.`::
+
+    $mon_secret = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdw=='
+
+An Id
+
+    $id = 0 # must be unique for each MON in the cluster
+
+And the mon declaration::
+
+    ceph::mon { $id:
+      monitor_secret => $mon_secret,
+      mon_addr       => '192.168.0.10', # The host's «public» IP address
+    }
+
+Then on **ONLY ONE** MON, export the admin key (required by the OSDs)::
+
+    if !empty($::ceph_admin_key) {
+      @@ceph::key { 'admin':
+        secret       => $::ceph_admin_key,
+        keyring_path => '/etc/ceph/keyring',
+      }
+    }
+
+
+**NOTE**: The puppet agent needs to be ran 3 times for the MON to be up and the admin key exported.
+
+Puppet manifest for an OSD
+--------------------------
+
+An OSD host also needs the global host configuration for OSDs::
+
+    class { 'ceph::osd':
+      public_address  => '192.168.0.100',
+      cluster_address => '10.0.0.100',
+    }
+
+And for each disk/device the path of the physical device to format::
+
+    ceph::osd::device { '/dev/sdb': }
+
+**WARNING**: this previous step will trash all the data from your disk !!!
+
+On an OSD, the puppet agent must be ran at least 4 times for the OSD to be formatted, registered on the OSDs and in the crushmap.
 
 Testing
 =======
