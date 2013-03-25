@@ -13,9 +13,7 @@ This is a Puppet_ module to install a Ceph_ cluster.
 Status
 ======
 
-This module is currently in active development and must be considered unstable.
-
-It is being developped on Debian/Wheezy, targetting the Bobtail Ceph release.
+Developped/tested on Debian/Wheezy, targetting the Bobtail Ceph release.
 
 Features
 ========
