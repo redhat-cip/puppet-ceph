@@ -88,7 +88,7 @@ Minimum Puppet manifest for all members of the Ceph cluster
 
 A Ceph cluster needs a cluster `fsid` : get one with `uuidgen -r` (Install it with `apt-get install uuid-runtime`)::
 
-    $fsid ='some uuid from uuid-gen -r'
+    $fsid ='some uuid from uuidgen -r'
 
 The general configuration::
 
