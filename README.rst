@@ -5,6 +5,11 @@ puppet-ceph
 About
 =====
 
+|BuildStatus|_
+
+.. |BuildStatus| image:: https://travis-ci.org/enovance/puppet-ceph.png?branch=master
+.. _BuildStatus: https://travis-ci.org/enovance/puppet-ceph
+
 This is a Puppet_ module to install a Ceph_ cluster.
 
 .. _Puppet: http://www.puppetlabs.com/
