@@ -32,7 +32,8 @@ if ceph_osd_dump
   end
 end
 
-Facter::Util::Resolution.exec("blkid").each do |line|
+blkid = Facter::Util::Resolution.exec("blkid")
+  blkid and blkid.each do |line|
   if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
     device = $1
     uuid = $2
