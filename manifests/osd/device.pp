@@ -48,7 +48,7 @@ size=1024m -n size=64k ${name}1",
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) %>')
   notify { "BLKID ${devname}: ${blkid}": }
 
-  if $blkid != 'undefined' {
+  if $blkid != '' {
     exec { "ceph_osd_create_${devname}":
       command => "ceph osd create ${blkid}",
       unless  => "ceph osd dump | grep -sq ${blkid}",
@@ -60,7 +60,7 @@ size=1024m -n size=64k ${name}1",
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) %>')
     notify { "OSD ID ${devname}: ${osd_id}":}
 
-    if $osd_id != 'undefined' {
+    if $osd_id != '' {
 
       ceph::conf::osd { $osd_id:
         device       => $name,
