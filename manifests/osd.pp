@@ -25,7 +25,7 @@ class ceph::osd (
 
   include 'ceph::package'
 
-  package { ['xfsprogs', 'parted']:}
+  ensure_packages( 'xfsprogs', 'parted' )
 
   Package['ceph'] -> Ceph::Key <<| title == 'admin' |>>
 

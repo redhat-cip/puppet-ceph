@@ -9,3 +9,4 @@ project_page 'https://github.com/enovance/puppet-ceph'
 
 dependency 'puppetlabs/apt', '>= 1.1.0'
 dependency 'ripienaar/concat', '>= 0.2.0'
+dependency 'puppetlabs/stdlib', '>= 4.1.0'
