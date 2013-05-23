@@ -21,6 +21,7 @@ define ceph::osd::device (
 
   include ceph::osd
   include ceph::conf
+  include ceph::params
 
   $devname = regsubst($name, '.*/', '')
 
@@ -116,6 +117,7 @@ ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
 
       service { "ceph-osd.${osd_id}":
         ensure    => running,
+        provider  => $::ceph::params::service_provider,
         start     => "service ceph start osd.${osd_id}",
         stop      => "service ceph stop osd.${osd_id}",
         status    => "service ceph status osd.${osd_id}",
