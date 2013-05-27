@@ -35,6 +35,7 @@ define ceph::mon (
 
   include 'ceph::package'
   include 'ceph::conf'
+  include 'ceph::params'
 
   $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
 
@@ -63,11 +64,12 @@ define ceph::mon (
   }
 
   service { "ceph-mon.${name}":
-    ensure  => running,
-    start   => "service ceph start mon.${name}",
-    stop    => "service ceph stop mon.${name}",
-    status  => "service ceph status mon.${name}",
-    require => Exec['ceph-mon-mkfs'],
+    ensure   => running,
+    provider => $::ceph::params::service_provider,
+    start    => "service ceph start mon.${name}",
+    stop     => "service ceph stop mon.${name}",
+    status   => "service ceph status mon.${name}",
+    require  => Exec['ceph-mon-mkfs'],
   }
 
   exec { 'ceph-admin-key':
