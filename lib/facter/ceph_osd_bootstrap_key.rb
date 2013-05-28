@@ -25,7 +25,7 @@ end
 ceph_osds = Hash.new
 ceph_osd_dump = Facter::Util::Resolution.exec("ceph osd dump")
 if ceph_osd_dump
-  ceph_osd_dump.each do |line|
+  ceph_osd_dump.each_line do |line|
     if line =~ /^osd\.(\d+).* ([a-f0-9\-]+)$/
       ceph_osds[$2] = $1
     end
@@ -33,7 +33,7 @@ if ceph_osd_dump
 end
 
 blkid = Facter::Util::Resolution.exec("blkid")
-  blkid and blkid.each do |line|
+  blkid and blkid.each_line do |line|
   if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
     device = $1
     uuid = $2
