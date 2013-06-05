@@ -10,6 +10,6 @@ class ceph::apt::ceph (
     location => "http://ceph.com/debian-${release}/",
     release  => $::lsbdistcodename,
     require  => Apt::Key['ceph'],
-    before   => Package['ceph'],
+    before   => Package['ceph-common'],
   }
 }

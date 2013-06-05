@@ -40,4 +40,5 @@ class ceph::package (
     mode   => '0755'
   }
 
+  include  'ceph::package::common'
 }
