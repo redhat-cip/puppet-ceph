@@ -1,0 +1,20 @@
+[client]
+<% if defined?(@rbd_cache) -%>
+  rbd cache = <%= @rbd_cache %>
+<% end -%>
+<% if defined?(@rbd_cache_size) -%>
+  rbd cache size = <%= @rbd_cache_size %>
+<% end -%>
+<% if defined?(@rbd_cache_max_dirty) -%>
+  rbd cache max dirty = <%= @rbd_cache_max_dirty %>
+<% end -%>
+<% if defined?(@rbd_cache_target_dirty) -%>
+  rbd cache target dirty = <%= @rbd_cache_target_dirty %>
+<% end -%>
+<% if defined?(@rbd_cache_max_dirty_age) -%>
+  rbd cache max dirty age = <%= @rbd_cache_max_dirty_age %>
+<% end -%>
+<% if defined?(@rbd_cache_writethrough_until_flush) -%>
+  rbd cache writethrough until flush = <%= @rbd_cache_writethrough_until_flush %>
+<% end -%>
+
