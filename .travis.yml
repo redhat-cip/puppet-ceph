@@ -1,6 +1,11 @@
-rvm: 1.8.7
+rvm:
+  - 1.8.7
+  - 1.9.3
 notifications:
   email:
     - <your email address>
 env:
   - PUPPET_VERSION=2.7.21
+  - PUPPET_VERSION=3.0.2
+  - PUPPET_VERSION=3.1.1
+  - PUPPET_VERSION=3.2.1

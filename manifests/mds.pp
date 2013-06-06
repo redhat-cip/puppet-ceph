@@ -33,6 +33,7 @@ define ceph::mds (
 ) {
 
   include 'ceph::package'
+  include 'ceph::params'
 
   class { 'ceph::conf':
     fsid      => $fsid,
@@ -56,9 +57,10 @@ define ceph::mds (
   }
 
   service { "ceph-mds.${name}":
-    ensure  => running,
-    start   => "service ceph start mds.${name}",
-    stop    => "service ceph stop mds.${name}",
-    status  => "service ceph status mds.${name}",
-    require => Exec['ceph-mds-keyring'],
+    ensure   => running,
+    provider => $::ceph::params::service_provider,
+    start    => "service ceph start mds.${name}",
+    stop     => "service ceph stop mds.${name}",
+    status   => "service ceph status mds.${name}",
+    require  => Exec['ceph-mds-keyring'],
   }
