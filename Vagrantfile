@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant::Config.run do |config|
-  config.vm.box = "wheezy"
-  config.vm.box_url = "https://labs.enovance.com/pub/wheezy.box"
+  config.vm.box = "wheezy64"
+  config.vm.box_url = "http://os.enocloud.com:8080/v1/AUTH_08972d4e0424497483de1c0a5123ea9b/public/wheezy64.box"
   
   config.vm.customize ["modifyvm", :id, "--nictype1", "virtio"]
   config.vm.customize ["modifyvm", :id, "--macaddress1", "auto"]
