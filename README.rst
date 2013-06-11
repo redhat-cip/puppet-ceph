@@ -63,6 +63,12 @@ Features
 
   • Working OSD ✓
 
+* Ceph Clients ✓
+  • Admin key ✓
+
+  • Pull client keys ✓
+
+
 TODO
 ====
 
@@ -156,6 +162,25 @@ And for each disk/device the path of the physical device to format::
 **WARNING**: this previous step will trash all the data from your disk !!!
 
 On an OSD, the puppet agent must be ran at least 4 times for the OSD to be formatted, registered on the OSDs and in the crushmap.
+
+Puppet manifest for a Client
+----------------------------
+
+A Client host also needs global client config which currently supports enabling caching::
+
+  class { 'ceph::client':
+    rbd_cache => true,
+    rbd_cache_writethrough_until_flush => true,
+  }
+
+And for each ceph client key to import, the name of the key without the `client.` part::
+
+  ceph::client::key { 'cinder':
+    group => 'cinder', # System group which will own the keyfile
+    mode  => '0640', # Permissions on the keyfile
+  }
+
+**NOTE**: Client keys must have been created in the ceph cluster before they can be added to a client host.
 
 Testing
 =======
