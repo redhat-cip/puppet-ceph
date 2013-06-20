@@ -60,7 +60,6 @@ size=1024m -n size=64k ${name}",
 
   $blkid_uuid_fact = "blkid_uuid_${devname}"
   notify {"$blkid_uuid_fact":}
-  notify {"$blkid_uuid_fact":}
   notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
   notify { "BLKID ${devname}: ${blkid}": }
