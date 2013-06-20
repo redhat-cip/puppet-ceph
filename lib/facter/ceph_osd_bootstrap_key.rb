@@ -35,8 +35,10 @@ end
 blkid = Facter::Util::Resolution.exec("blkid")
   blkid and blkid.each_line do |line|
   if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
-    device = $1
+    device_orig = $1
     uuid = $2
+    device = device_orig.sub(/.*\//, "")
+
 
     Facter.add("blkid_uuid_#{device}") do
       setcode do

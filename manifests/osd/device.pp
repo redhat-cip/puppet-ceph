@@ -23,28 +23,44 @@ define ceph::osd::device (
   include ceph::conf
   include ceph::params
 
+  # $name should be full devices path, like /dev/sda
+  # Replace everything before the last / so only the last element remains.
+  # /dev/sda => sda
   $devname = regsubst($name, '.*/', '')
 
-  exec { "mktable_gpt_${devname}":
-    command => "parted -a optimal --script ${name} mktable gpt",
-    unless  => "parted --script ${name} print|grep -sq 'Partition Table: gpt'",
-    require => Package['parted']
-  }
+  notify {"${devname}":}
 
-  exec { "mkpart_${devname}":
-    command => "parted -a optimal -s ${name} mkpart ceph 0% 100%",
-    unless  => "parted ${name} print | egrep '^ 1.*ceph$'",
-    require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
-  }
+  exec { "validate_$devname":
+   command => "/bin/echo",
+   #path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
+   #refreshonly => true,
+ }
+
+ # ToDo: Parametersize this, to all
+
+  # exec { "mktable_gpt_${devname}":
+  #   command => "parted -a optimal --script ${name} mktable gpt",
+  #   unless  => "parted --script ${name} print|grep -sq 'Partition Table: gpt'",
+  #   require => Package['parted']
+  # }
+
+  # exec { "mkpart_${devname}":
+  #   command => "parted -a optimal -s ${name} mkpart ceph 0% 100%",
+  #   unless  => "parted ${name} print | egrep '^ 1.*ceph$'",
+  #   require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
+  # }
 
   exec { "mkfs_${devname}":
     command => "mkfs.xfs -f -d agcount=${::processorcount} -l \
-size=1024m -n size=64k ${name}1",
-    unless  => "xfs_admin -l ${name}1",
-    require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
+size=1024m -n size=64k ${name}",
+    unless  => "xfs_admin -l ${name}",
+    #require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
+    require => [Package['xfsprogs']],
   }
 
-  $blkid_uuid_fact = "blkid_uuid_${devname}1"
+  $blkid_uuid_fact = "blkid_uuid_${devname}"
+  notify {"$blkid_uuid_fact":}
+  notify {"$blkid_uuid_fact":}
   notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
   notify { "BLKID ${devname}: ${blkid}": }
@@ -55,8 +71,10 @@ size=1024m -n size=64k ${name}1",
       unless  => "ceph osd dump | grep -sq ${blkid}",
       require => Ceph::Key['admin'],
     }
+  # Debug:
+  notify { "$blkid": }
 
-    $osd_id_fact = "ceph_osd_id_${devname}1"
+    $osd_id_fact = "ceph_osd_id_${devname}"
     notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
     notify { "OSD ID ${devname}: ${osd_id}":}
@@ -77,7 +95,7 @@ size=1024m -n size=64k ${name}1",
 
       mount { $osd_data:
         ensure  => mounted,
-        device  => "${name}1",
+        device  => "${name}",
         atboot  => true,
         fstype  => 'xfs',
         options => 'rw,noatime,inode64',
