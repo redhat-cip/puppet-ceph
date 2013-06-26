@@ -60,7 +60,7 @@ define ceph::osd::device (
     }
   }
   else {
-    $dev_partition = $full_dev_path}
+    $dev_partition = $full_dev_path
     exec { "mkfs_${devname}":
       command => "mkfs.xfs -f -d agcount=${::processorcount} -l size=1024m -n size=64k ${dev_partition}",
       unless  => "xfs_admin -l ${name}",
