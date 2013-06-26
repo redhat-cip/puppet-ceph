@@ -17,6 +17,9 @@
 #
 
 define ceph::osd::device (
+  $partition_table = true,
+  $partition_table_type = gpt,
+  $dmcrypt_device = false,
 ) {
 
   include ceph::osd
@@ -26,40 +29,47 @@ define ceph::osd::device (
   # $name should be full devices path, like /dev/sda
   # Replace everything before the last / so only the last element remains.
   # /dev/sda => sda
+  $full_dev_path = $name
   $devname = regsubst($name, '.*/', '')
 
-  notify {"${devname}":}
 
-  exec { "validate_$devname":
-   command => "/bin/echo",
-   #path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
-   #refreshonly => true,
- }
+  if $partition_table == true {
+    exec { "mktable_gpt_${devname}":
+      command => "parted -a optimal --script ${full_dev_path} mktable ${partition_table_type}",
+      unless  => "parted --script ${full_dev_path} print|grep -sq 'Partition Table: ${partition_table_type}'",
+      require => Package['parted']
+    }
 
- # ToDo: Parametersize this, to all
+    exec { "mkpart_${devname}":
+      command => "parted -a optimal -s ${full_dev_path} mkpart ceph 0% 100%",
+      unless  => "parted ${full_dev_path} print | egrep '^ 1.*ceph$'",
+      require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
+    }
 
-  # exec { "mktable_gpt_${devname}":
-  #   command => "parted -a optimal --script ${name} mktable gpt",
-  #   unless  => "parted --script ${name} print|grep -sq 'Partition Table: gpt'",
-  #   require => Package['parted']
-  # }
+    if $dmcrypt_device == false {
+      $dev_partition = "${full_dev_path}1"
+      }
+    elsif $dmcrypt_device == true {
+        $dev_partition = "${full_dev_path}p1"
+      }
 
-  # exec { "mkpart_${devname}":
-  #   command => "parted -a optimal -s ${name} mkpart ceph 0% 100%",
-  #   unless  => "parted ${name} print | egrep '^ 1.*ceph$'",
-  #   require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
-  # }
-
-  exec { "mkfs_${devname}":
-    command => "mkfs.xfs -f -d agcount=${::processorcount} -l \
-size=1024m -n size=64k ${name}",
-    unless  => "xfs_admin -l ${name}",
-    #require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
-    require => [Package['xfsprogs']],
+      exec { "mkfs_${devname}":
+      command => "mkfs.xfs -f -d agcount=${::processorcount} -l size=1024m -n size=64k ${dev_partition}",
+      unless  => "xfs_admin -l ${name}",
+      require => [Package['xfsprogs']],
+    }
+  }
+  else {
+    $dev_partition = $full_dev_path}
+    exec { "mkfs_${devname}":
+      command => "mkfs.xfs -f -d agcount=${::processorcount} -l size=1024m -n size=64k ${dev_partition}",
+      unless  => "xfs_admin -l ${name}",
+      require => [Package['xfsprogs']],
+    }
   }
 
   $blkid_uuid_fact = "blkid_uuid_${devname}"
-  notify {"$blkid_uuid_fact":}
+  notify {"${blkid_uuid_fact}": }
   notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
   notify { "BLKID ${devname}: ${blkid}": }
@@ -70,8 +80,6 @@ size=1024m -n size=64k ${name}",
       unless  => "ceph osd dump | grep -sq ${blkid}",
       require => Ceph::Key['admin'],
     }
-  # Debug:
-  notify { "$blkid": }
 
     $osd_id_fact = "ceph_osd_id_${devname}"
     notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
@@ -81,7 +89,7 @@ size=1024m -n size=64k ${name}",
     if $osd_id != 'undefined' {
 
       ceph::conf::osd { $osd_id:
-        device       => $name,
+        device       => $dev_partition,
         cluster_addr => $::ceph::osd::cluster_address,
         public_addr  => $::ceph::osd::public_address,
       }
@@ -94,7 +102,7 @@ size=1024m -n size=64k ${name}",
 
       mount { $osd_data:
         ensure  => mounted,
-        device  => "${name}",
+        device  => "${dev_partition}",
         atboot  => true,
         fstype  => 'xfs',
         options => 'rw,noatime,inode64',
