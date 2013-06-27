@@ -26,23 +26,14 @@
 # Copyright 2012 eNovance <licensing@enovance.com>
 #
 
-define ceph::mds (
-  $fsid,
-  $auth_type = 'cephx',
-  $mds_data = '/var/lib/ceph/mds',
-) {
-
+define ceph::mds {
   include 'ceph::package'
+  include 'ceph::conf'
   include 'ceph::params'
 
-  class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
-  }
+  ceph::conf::mds { $name: }
 
-  $mds_data_expanded = "${mds_data}/mds.${name}"
-
-  file { $mds_data_expanded:
+  file { "/var/lib/ceph/mds/mds.${name}":
     ensure  => directory,
     owner   => 'root',
     group   => 0,
@@ -50,9 +41,9 @@ define ceph::mds (
   }
 
   exec { 'ceph-mds-keyring':
-    command =>"ceph auth get-or-create mds.${name} mds 'allow ' osd 'allow *' mon 'allow rwx'",
+    command =>"ceph auth get-or-create mds.${name} mds 'allow' osd 'allow *' mon 'allow rwx' > /var/lib/ceph/mds/mds.${name}/keyring",
     creates => "/var/lib/ceph/mds/mds.${name}/keyring",
-    before => Service['ceph-mds.${name}'],
+    before  => Service["ceph-mds.${name}"],
     require => Package['ceph'],
   }
 
@@ -64,3 +55,4 @@ define ceph::mds (
     status   => "service ceph status mds.${name}",
     require  => Exec['ceph-mds-keyring'],
   }
+}
