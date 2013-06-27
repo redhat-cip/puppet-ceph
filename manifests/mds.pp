@@ -38,13 +38,14 @@ define ceph::mds {
     owner   => 'root',
     group   => 0,
     mode    => '0755',
+    require => [ Package['ceph'], Concat['/etc/ceph/ceph.conf'] ],
   }
 
   exec { 'ceph-mds-keyring':
     command =>"ceph auth get-or-create mds.${name} mds 'allow' osd 'allow *' mon 'allow rwx' > /var/lib/ceph/mds/mds.${name}/keyring",
     creates => "/var/lib/ceph/mds/mds.${name}/keyring",
     before  => Service["ceph-mds.${name}"],
-    require => Package['ceph'],
+    require => File["/var/lib/ceph/mds/mds.${name}"],
   }
 
   service { "ceph-mds.${name}":
@@ -55,4 +56,6 @@ define ceph::mds {
     status   => "service ceph status mds.${name}",
     require  => Exec['ceph-mds-keyring'],
   }
+
+  Ceph::Mon <| |> -> File["/var/lib/ceph/mds/mds.${name}"]
 }
