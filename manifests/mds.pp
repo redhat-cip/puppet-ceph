@@ -64,3 +64,4 @@ define ceph::mds (
     status   => "service ceph status mds.${name}",
     require  => Exec['ceph-mds-keyring'],
   }
+}
