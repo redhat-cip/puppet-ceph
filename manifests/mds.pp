@@ -40,9 +40,10 @@ define ceph::mds {
     mode    => '0755',
     require => [ Package['ceph'], Concat['/etc/ceph/ceph.conf'] ],
   }
+  $ceph_mds_keyring_command = "ceph auth get-or-create mds.${name} mds 'allow' osd 'allow *' mon 'allow rwx'"
 
   exec { 'ceph-mds-keyring':
-    command =>"ceph auth get-or-create mds.${name} mds 'allow' osd 'allow *' mon 'allow rwx' > /var/lib/ceph/mds/mds.${name}/keyring",
+    command => "${ceph_mds_keyring_command} && ${ceph_mds_keyring_command} > /var/lib/ceph/mds/mds.${name}/keyring",
     creates => "/var/lib/ceph/mds/mds.${name}/keyring",
     before  => Service["ceph-mds.${name}"],
     require => File["/var/lib/ceph/mds/mds.${name}"],
