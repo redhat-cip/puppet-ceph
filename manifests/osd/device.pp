@@ -48,18 +48,21 @@ define ceph::osd::device (
 
     if $dmcrypt_device == false {
       $dev_partition = "${full_dev_path}1"
+      $devname_partition = "${devname}1"
       }
     elsif $dmcrypt_device == true {
         $dev_partition = "${full_dev_path}p1"
+        $devname_partition = "${devname}p1"
       }
 
       exec { "mkfs_${devname}":
       command => "mkfs.xfs -f -d agcount=${::processorcount} -l size=1024m -n size=64k ${dev_partition}",
-      unless  => "xfs_admin -l ${name}",
+      unless  => "xfs_admin -l ${dev_partition}",
       require => [Package['xfsprogs']],
     }
   }
-  else {
+  elsif $partition_table == false {
+    notify {"Value of partition_table in l64:${partition_table}": }
     $dev_partition = $full_dev_path
     exec { "mkfs_${devname}":
       command => "mkfs.xfs -f -d agcount=${::processorcount} -l size=1024m -n size=64k ${dev_partition}",
@@ -68,11 +71,11 @@ define ceph::osd::device (
     }
   }
 
-  $blkid_uuid_fact = "blkid_uuid_${devname}"
+  $blkid_uuid_fact = "blkid_uuid_${devname_partition}"
   notify {"${blkid_uuid_fact}": }
-  notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
+  notify { "BLKID FACT ${devname_partition}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
-  notify { "BLKID ${devname}: ${blkid}": }
+  notify { "BLKID ${devname_partition}: ${blkid}": }
 
   if $blkid != 'undefined' {
     exec { "ceph_osd_create_${devname}":
@@ -81,10 +84,10 @@ define ceph::osd::device (
       require => Ceph::Key['admin'],
     }
 
-    $osd_id_fact = "ceph_osd_id_${devname}"
-    notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
+    $osd_id_fact = "ceph_osd_id_${devname_partition}"
+    notify { "OSD ID FACT ${devname_partition}: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
-    notify { "OSD ID ${devname}: ${osd_id}":}
+    notify { "OSD ID ${devname_partition}: ${osd_id}":}
 
     if $osd_id != 'undefined' {
 
