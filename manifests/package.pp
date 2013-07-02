@@ -28,16 +28,16 @@ class ceph::package (
 
   file { '/var/lib/ceph':
     ensure => directory,
-    owner   => 'root',
-    group   => 0,
-    mode    => '0755'
+    owner  => 'root',
+    group  => 0,
+    mode   => '0755'
   }
 
   file { '/var/run/ceph':
     ensure => directory,
-    owner   => 'root',
-    group   => 0,
-    mode    => '0755'
+    owner  => 'root',
+    group  => 0,
+    mode   => '0755'
   }
 
 }
