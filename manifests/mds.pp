@@ -1,16 +1,10 @@
 # Configure a ceph mds
 #
 # == Name
-#   This resource's name is the mon's id and must be numeric.
+#   This resource's name is the mds's id and must be numeric.
 # == Parameters
-# [*fsid*] The cluster's fsid.
-#   Mandatory. Get one with `uuidgen -r`.
 #
-# [*auth_type*] Auth type.
-#   Optional. undef or 'cephx'. Defaults to 'cephx'.
-#
-# [*mds_data*] Base path for mon data. Data will be put in a mon.$id folder.
-#   Optional. Defaults to '/var/lib/ceph/mds.
+# none
 #
 # == Dependencies
 #
@@ -31,22 +25,24 @@ define ceph::mds {
   include 'ceph::conf'
   include 'ceph::params'
 
+  $mds_data_real = regsubst($ceph::conf::mds_data, '\$id', $name)
+
   ceph::conf::mds { $name: }
 
-  file { "/var/lib/ceph/mds/mds.${name}":
+  file { $mds_data_real:
     ensure  => directory,
     owner   => 'root',
     group   => 0,
     mode    => '0755',
     require => [ Package['ceph'], Concat['/etc/ceph/ceph.conf'] ],
   }
-  $ceph_mds_keyring_command = "ceph auth get-or-create mds.${name} mds 'allow' osd 'allow *' mon 'allow rwx'"
 
+  $ceph_mds_keyring_command = "ceph auth get-or-create mds.${name} mds 'allow' osd 'allow *' mon 'allow rwx'"
   exec { 'ceph-mds-keyring':
-    command => "${ceph_mds_keyring_command} && ${ceph_mds_keyring_command} > /var/lib/ceph/mds/mds.${name}/keyring",
-    creates => "/var/lib/ceph/mds/mds.${name}/keyring",
+    command => "${ceph_mds_keyring_command} && ${ceph_mds_keyring_command} > ${mds_data_real}/keyring",
+    creates => "${mds_data_real}/keyring",
     before  => Service["ceph-mds.${name}"],
-    require => File["/var/lib/ceph/mds/mds.${name}"],
+    require => File[$mds_data_real],
   }
 
   service { "ceph-mds.${name}":
@@ -57,6 +53,4 @@ define ceph::mds {
     status   => "service ceph status mds.${name}",
     require  => Exec['ceph-mds-keyring'],
   }
-
-  Ceph::Mon <| |> -> File["/var/lib/ceph/mds/mds.${name}"]
 }
