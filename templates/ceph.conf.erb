@@ -7,9 +7,15 @@
   keyring = /etc/ceph/keyring
 
   fsid = <%= @fsid %>
+<% if @mon_osd_down_out_interval -%>
+  mon osd down out interval = <%= @mon_osd_down_out_interval -%>
+<% end -%>
 
 [mon]
   mon data = <%= @mon_data %>
+<% if @osd_pool_default_size -%>
+  osd pool default size = <%= @osd_pool_default_size -%>
+<% end -%>
 
 [osd]
   osd journal size = <%= @journal_size_mb %>

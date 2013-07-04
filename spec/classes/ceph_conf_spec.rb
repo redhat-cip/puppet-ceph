@@ -63,15 +63,17 @@ describe 'ceph::conf' do
 
     let :params do
       {
-        :fsid            => 'qwertyuiop',
-        :auth_type       => 'dummy',
-        :journal_size_mb => 8192,
-        :cluster_network => '10.0.0.0/16',
-        :public_network  => '10.1.0.0/16',
-        :mon_data        => '/opt/ceph/mon._id',
-        :osd_data        => '/opt/ceph/osd._id',
-        :osd_journal     => '/opt/ceph/journal/osd._id',
-        :mds_data        => '/opt/ceph/mds._id'
+        :fsid                      => 'qwertyuiop',
+        :auth_type                 => 'dummy',
+        :journal_size_mb           => 8192,
+        :cluster_network           => '10.0.0.0/16',
+        :public_network            => '10.1.0.0/16',
+        :mon_data                  => '/opt/ceph/mon._id',
+        :osd_data                  => '/opt/ceph/osd._id',
+        :osd_journal               => '/opt/ceph/journal/osd._id',
+        :mds_data                  => '/opt/ceph/mds._id',
+        :mon_osd_down_out_interval => 900,
+        :osd_pool_default_size     => 3
       }
     end
 
@@ -93,8 +95,11 @@ describe 'ceph::conf' do
           '  auth client required = dummy',
           '  keyring = /etc/ceph/keyring',
           '  fsid = qwertyuiop',
+          '  mon osd down out interval = 900',
           '[mon]',
-          '  mon data = /opt/ceph/mon._id', '[osd]',
+          '  mon data = /opt/ceph/mon._id',
+          '  osd pool default size = 3',
+          '[osd]',
           '  osd journal size = 8192',
           '  cluster network = 10.0.0.0/16',
           '  public network = 10.1.0.0/16',
