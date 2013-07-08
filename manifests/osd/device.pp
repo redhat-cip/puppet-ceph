@@ -45,9 +45,7 @@ size=1024m -n size=64k ${name}1",
   }
 
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
-  notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
-  notify { "BLKID ${devname}: ${blkid}": }
 
   if $blkid != 'undefined'  and defined( Ceph::Key['admin'] ){
     exec { "ceph_osd_create_${devname}":
@@ -57,9 +55,7 @@ size=1024m -n size=64k ${name}1",
     }
 
     $osd_id_fact = "ceph_osd_id_${devname}1"
-    notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
-    notify { "OSD ID ${devname}: ${osd_id}":}
 
     if $osd_id != 'undefined' {
 
