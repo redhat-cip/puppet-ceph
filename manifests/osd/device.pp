@@ -45,11 +45,9 @@ size=1024m -n size=64k ${name}1",
   }
 
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
-  notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
-  notify { "BLKID ${devname}: ${blkid}": }
 
-  if $blkid != 'undefined' {
+  if $blkid != 'undefined' and defined( Ceph::Key['admin'] ){
     exec { "ceph_osd_create_${devname}":
       command => "ceph osd create ${blkid}",
       unless  => "ceph osd dump | grep -sq ${blkid}",
@@ -57,9 +55,7 @@ size=1024m -n size=64k ${name}1",
     }
 
     $osd_id_fact = "ceph_osd_id_${devname}1"
-    notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
-    notify { "OSD ID ${devname}: ${osd_id}":}
 
     if $osd_id != 'undefined' {
 
@@ -82,37 +78,25 @@ size=1024m -n size=64k ${name}1",
         fstype  => 'xfs',
         options => 'rw,noatime,inode64',
         pass    => 2,
-        require => [
-          Exec["mkfs_${devname}"],
-          File[$osd_data]
-        ],
+        require => [ Exec[ "mkfs_${devname}" ], File[ $osd_data ] ],
       }
 
       exec { "ceph-osd-mkfs-${osd_id}":
-        command => "ceph-osd -c /etc/ceph/ceph.conf \
--i ${osd_id} \
---mkfs \
---mkkey \
---osd-uuid ${blkid}
-",
+        command => "ceph-osd -c /etc/ceph/ceph.conf -i ${osd_id} --mkfs --mkkey --osd-uuid ${blkid}",
         creates => "${osd_data}/keyring",
-        require => [
-          Mount[$osd_data],
-          Concat['/etc/ceph/ceph.conf'],
-          ],
+        require => [ Mount[$osd_data], Concat['/etc/ceph/ceph.conf'] ],
+        notify  => Exec[ "ceph-osd-register-${osd_id}" ],
       }
 
       exec { "ceph-osd-register-${osd_id}":
-        command => "\
-ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
--i ${osd_data}/keyring",
-        require => Exec["ceph-osd-mkfs-${osd_id}"],
+        command     => "ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx'  -i ${osd_data}/keyring",
+        refreshonly => true,
+        notify      => Exec[ "ceph-osd-crush-${osd_id}" ],
       }
 
       exec { "ceph-osd-crush-${osd_id}":
-        command => "\
-ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
-        require => Exec["ceph-osd-register-${osd_id}"],
+        command => "ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
+        refreshonly => true,
       }
 
       service { "ceph-osd.${osd_id}":
@@ -124,9 +108,6 @@ ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
         require   => Exec["ceph-osd-crush-${osd_id}"],
         subscribe => Concat['/etc/ceph/ceph.conf'],
       }
-
     }
-
   }
-
 }
