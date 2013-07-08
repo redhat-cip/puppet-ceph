@@ -73,7 +73,8 @@ describe 'ceph::conf' do
         :osd_journal               => '/opt/ceph/journal/osd._id',
         :mds_data                  => '/opt/ceph/mds._id',
         :mon_osd_down_out_interval => 900,
-        :osd_pool_default_size     => 3
+        :osd_pool_default_size     => 3,
+        :osd_crush_location        => 'room=A1 rack=B2'
       }
     end
 
@@ -108,6 +109,7 @@ describe 'ceph::conf' do
           '  osd journal = /opt/ceph/journal/osd._id',
           '  osd mkfs type = xfs',
           '  keyring = /opt/ceph/osd._id/keyring',
+          '  osd crush location = room=A1 rack=B2',
           '[mds]',
           '  mds data = /opt/ceph/mds._id',
           '  keyring = /opt/ceph/mds._id/keyring'

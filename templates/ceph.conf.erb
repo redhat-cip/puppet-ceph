@@ -28,6 +28,9 @@
   osd journal = <%= @osd_journal_real %>
   osd mkfs type = xfs
   keyring = <%= @osd_data %>/keyring
+<% if @osd_crush_location -%>
+  osd crush location = <%= @osd_crush_location -%>
+<% end -%>
 
 [mds]
   mds data = <%= @mds_data %>

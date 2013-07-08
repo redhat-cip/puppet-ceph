@@ -31,7 +31,8 @@ class ceph::conf (
   $osd_journal               = undef,
   $mds_data                  = '/var/lib/ceph/mds/mds.$id',
   $mon_osd_down_out_interval = undef,
-  $osd_pool_default_size     = undef
+  $osd_pool_default_size     = undef,
+  $osd_crush_location        = undef,
 ) {
 
   include 'ceph::package'
