@@ -51,6 +51,7 @@ define ceph::mon (
 --name=mon. \
 --add-key='${monitor_secret}' \
 --cap mon 'allow *'",
+    path    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
     creates => "/var/lib/ceph/tmp/keyring.mon.${name}",
     before  => Exec['ceph-mon-mkfs'],
     require => Package['ceph'],
@@ -59,8 +60,17 @@ define ceph::mon (
   exec { 'ceph-mon-mkfs':
     command => "ceph-mon --mkfs -i ${name} \
 --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
+    path    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
     creates => "${mon_data_real}/keyring",
-    require => [Package['ceph'], Concat['/etc/ceph/ceph.conf']],
+    require => [Package['ceph'], Concat['/etc/ceph/ceph.conf'],
+      File["/var/lib/ceph/mon/mon.${name}"]],
+  }
+
+  file { "/var/lib/ceph/mon/mon.${name}":
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
   }
 
   service { "ceph-mon.${name}":
@@ -82,6 +92,7 @@ $(ceph --name mon. --keyring ${mon_data_real}/keyring \
     mon 'allow *' \
     osd 'allow *' \
     mds allow)",
+    path    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
     creates => '/etc/ceph/keyring',
     require => Package['ceph'],
     onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \

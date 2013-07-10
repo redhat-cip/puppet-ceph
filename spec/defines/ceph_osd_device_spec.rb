@@ -30,18 +30,21 @@ class { 'ceph::osd':
 
     it { should contain_exec('mktable_gpt_device').with(
       'command' => 'parted -a optimal --script /dev/device mktable gpt',
+      'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
       'unless'  => "parted --script /dev/device print|grep -sq 'Partition Table: gpt'",
       'require' => 'Package[parted]'
     ) }
 
     it { should contain_exec('mkpart_device').with(
       'command' => 'parted -a optimal -s /dev/device mkpart ceph 0% 100%',
+      'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
       'unless'  => "parted /dev/device print | egrep '^ 1.*ceph$'",
       'require' => ['Package[parted]', 'Exec[mktable_gpt_device]']
     ) }
 
     it { should contain_exec('mkfs_device').with(
       'command' => 'mkfs.xfs -f -d agcount=8 -l size=1024m -n size=64k /dev/device1',
+      'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
       'unless'  => 'xfs_admin -l /dev/device1',
       'require' => ['Package[xfsprogs]', 'Exec[mkpart_device]']
     ) }
@@ -70,6 +73,7 @@ ceph::key { 'admin':
 
     it { should contain_exec('ceph_osd_create_device').with(
       'command' => 'ceph osd create dummy-uuid-1234',
+      'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
       'unless'  => 'ceph osd dump | grep -sq dummy-uuid-1234',
       'require' => 'Ceph::Key[admin]'
     ) }
@@ -107,17 +111,20 @@ ceph::key { 'admin':
       it { should contain_exec('ceph-osd-mkfs-56').with(
         'command' => 'ceph-osd -c /etc/ceph/ceph.conf -i 56 --mkfs --mkkey --osd-uuid dummy-uuid-1234
 ',
+        'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
         'creates' => '/var/lib/ceph/osd/osd.56/keyring',
         'require' => ['Mount[/var/lib/ceph/osd/osd.56]', 'Concat[/etc/ceph/ceph.conf]']
       ) }
 
       it { should contain_exec('ceph-osd-register-56').with(
         'command' => "ceph auth add osd.56 osd 'allow *' mon 'allow rwx' -i /var/lib/ceph/osd/osd.56/keyring",
+        'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
         'require' => 'Exec[ceph-osd-mkfs-56]'
       ) }
 
       it { should contain_exec('ceph-osd-crush-56').with(
         'command' => 'ceph osd crush set 56 1 root=default host=dummy-host',
+        'path'    => '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin',
         'require' => 'Exec[ceph-osd-register-56]'
       ) }
 
