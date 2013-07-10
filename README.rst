@@ -18,7 +18,8 @@ This is a Puppet_ module to install a Ceph_ cluster.
 Status
 ======
 
-Developped/tested on Debian GNU/Linux Wheezy, targetting the Bobtail Ceph release.
+Developped/tested on Debian GNU/Linux Wheezy, targetting the Cuttlefish Ceph release.
+This branch is made to deploy Ceph with puppet and eDeploy.
 
 Features
 ========
