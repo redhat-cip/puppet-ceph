@@ -1,5 +1,5 @@
 class ceph::apt::ceph (
-  $release = 'bobtail'
+  $release = 'cuttlefish'
 ) {
   apt::key { 'ceph':
     key        => '17ED316D',
