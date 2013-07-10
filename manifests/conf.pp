@@ -37,12 +37,6 @@ class ceph::conf (
 
   include 'ceph::package'
 
-  if $auth_type == 'cephx' {
-    $mode = '0660'
-  } else {
-    $mode = '0664'
-  }
-
   if $osd_journal {
     $osd_journal_real = $osd_journal
   } else {
@@ -52,7 +46,7 @@ class ceph::conf (
   concat { '/etc/ceph/ceph.conf':
     owner   => 'root',
     group   => 0,
-    mode    => $mode,
+    mode    => '0664',
     require => Package['ceph'],
   }
 

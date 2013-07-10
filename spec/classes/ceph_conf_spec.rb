@@ -21,7 +21,7 @@ describe 'ceph::conf' do
     it { should contain_concat('/etc/ceph/ceph.conf').with(
       'owner'   => 'root',
       'group'   => 0,
-      'mode'    => '0660',
+      'mode'    => '0664',
       'require' => 'Package[ceph]'
     ) }
 
