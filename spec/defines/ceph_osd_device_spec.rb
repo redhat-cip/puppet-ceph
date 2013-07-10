@@ -49,6 +49,17 @@ class { 'ceph::osd':
   end
 
   describe 'when the partition is created' do
+    let :pre_condition do
+    "class { 'ceph::conf': fsid => '12345' }
+class { 'ceph::osd':
+  public_address  => '10.1.0.156',
+  cluster_address => '10.0.0.56'
+}
+ceph::key { 'admin':
+  secret => 'dummy'
+}
+"
+    end
     let :facts do
       {
         :concat_basedir     => '/var/lib/puppet/lib/concat',
