@@ -113,6 +113,7 @@ ceph::key { 'admin':
 
       it { should contain_exec('ceph-osd-register-56').with(
         'command' => "ceph auth add osd.56 osd 'allow *' mon 'allow rwx' -i /var/lib/ceph/osd/osd.56/keyring",
+        'unless'  => "ceph auth list | egrep '^osd.56$'",
         'require' => 'Exec[ceph-osd-mkfs-56]'
       ) }
 
