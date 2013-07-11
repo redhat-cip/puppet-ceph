@@ -48,12 +48,9 @@ EOT
 
     test -f /etc/puppet/modules/concat || puppet module install ripienaar/concat
     test -f /etc/puppet/modules/apt || puppet module install puppetlabs/apt
-    test -f /etc/puppet/modules/ceph || git clone /vagrant /etc/puppet/modules/ceph
+    test -f /etc/puppet/modules/ceph || ln -s /vagrant /etc/puppet/modules/ceph
 
-    test -h /etc/puppet/manifests/site.pp || ln -s /etc/puppet/modules/ceph/examples/site.pp /etc/puppet/manifests/
-    pushd /etc/puppet/modules/ceph
-    git pull
-    popd
+    test -h /etc/puppet/manifests/site.pp || ln -s /vagrant/examples/site.pp /etc/puppet/manifests/
 
     service puppetmaster restart
 else
