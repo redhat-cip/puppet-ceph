@@ -187,9 +187,9 @@ Ceph MONs should be up ::
 
 Launch at least 2 OSDs ::
 
+    vagrant up osd0
     vagrant up osd1
     vagrant up osd2
-    vagrant up osd3
 
 Now login on mon0 (for example) & check ceph health ::
 
