@@ -17,6 +17,7 @@
 #
 
 define ceph::osd::device (
+  $mount_at_boot = true
 ) {
 
   include ceph::osd
@@ -78,7 +79,7 @@ size=1024m -n size=64k ${name}1",
       mount { $osd_data:
         ensure  => mounted,
         device  => "${name}1",
-        atboot  => true,
+        atboot  => $mount_at_boot,
         fstype  => 'xfs',
         options => 'rw,noatime,inode64',
         pass    => 2,
