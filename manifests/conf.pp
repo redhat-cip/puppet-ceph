@@ -32,13 +32,7 @@ class ceph::conf (
   $mds_data        = '/var/lib/ceph/mds/mds.$id'
 ) {
 
-  include 'ceph::package'
-
-  if $auth_type == 'cephx' {
-    $mode = '0660'
-  } else {
-    $mode = '0664'
-  }
+  include 'ceph::package::common'
 
   if $osd_journal {
     $osd_journal_real = $osd_journal
@@ -49,8 +43,8 @@ class ceph::conf (
   concat { '/etc/ceph/ceph.conf':
     owner   => 'root',
     group   => 0,
-    mode    => $mode,
-    require => Package['ceph'],
+    mode    => '0644',
+    require => Package['ceph-common'],
   }
 
   Concat::Fragment <<| target == '/etc/ceph/ceph.conf' |>>

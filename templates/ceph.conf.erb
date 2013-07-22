@@ -4,9 +4,11 @@
   auth service required = <%= @auth_type %>
   auth client required = <%= @auth_type %>
 <% end -%>
-  keyring = /etc/ceph/keyring
 
   fsid = <%= @fsid %>
+
+[client.admin]
+  keyring = /etc/ceph/ceph.client.admin.keyring
 
 [mon]
   mon data = <%= @mon_data %>

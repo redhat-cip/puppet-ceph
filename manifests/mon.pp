@@ -85,7 +85,7 @@ define ceph::mon (
   }
 
   exec { 'ceph-admin-key':
-    command => "ceph-authtool /etc/ceph/keyring \
+    command => "ceph-authtool /etc/ceph/ceph.client.admin.keyring \
 --create-keyring \
 --name=client.admin \
 --add-key \
@@ -94,7 +94,7 @@ $(ceph --name mon. --keyring ${mon_data_real}/keyring \
     mon 'allow *' \
     osd 'allow *' \
     mds allow)",
-    creates => '/etc/ceph/keyring',
+    creates => '/etc/ceph/ceph.client.admin.keyring',
     require => Package['ceph'],
     onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
