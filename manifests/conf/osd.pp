@@ -1,5 +1,6 @@
 define ceph::conf::osd (
   $device,
+  $partition='1',
   $cluster_addr,
   $public_addr,
 ) {
