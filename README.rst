@@ -77,9 +77,13 @@ Contributing
 
 Contributions are welcome, just fork on GitHub and send a pull-request !
 
+* Please try to keep each new feature / change / fix in a separate pull-request, it will greatly help speeding the merge of the pull-requests ;)
+
 * When adding features, don't forget to add unit tests.
 
 * puppet-lint (https://github.com/rodjek/puppet-lint) should not produce too much errors too :)
+
+* Some repo-collaborators might ask you some questions or to update your code. All these questions/requests are open to discussion, but please answer, dont just drop your code & abandon it after !
 
 Using
 =====
