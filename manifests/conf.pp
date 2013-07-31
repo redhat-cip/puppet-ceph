@@ -30,6 +30,8 @@ class ceph::conf (
   $osd_data        = '/var/lib/ceph/osd/osd.$id',
   $osd_journal     = undef,
   $mds_data        = '/var/lib/ceph/mds/mds.$id'
+  $conf_owner      = 'root',
+  $conf_group      = 0,
 ) {
 
   include 'ceph::package'
@@ -47,8 +49,8 @@ class ceph::conf (
   }
 
   concat { '/etc/ceph/ceph.conf':
-    owner   => 'root',
-    group   => 0,
+    owner   => $conf_owner,
+    group   => $conf_group,
     mode    => $mode,
     require => Package['ceph'],
   }
