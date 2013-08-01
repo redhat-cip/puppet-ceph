@@ -28,6 +28,7 @@ class ceph::conf (
   $cluster_network   = undef,
   $public_network    = undef,
   $mon_data          = '/var/lib/ceph/mon/mon.$id',
+  $mon_init_members  = undef,
   $osd_data          = '/var/lib/ceph/osd/osd.$id',
   $osd_journal       = undef,
   $mds_data          = '/var/lib/ceph/mds/mds.$id'

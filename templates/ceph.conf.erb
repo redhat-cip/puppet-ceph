@@ -12,6 +12,9 @@
 
 [mon]
   mon data = <%= @mon_data %>
+<% if @mon_init_members -%>
+  mon initial members = <%= @mon_init_members %>
+<% end -%>
 
 [osd]
   osd journal size = <%= @journal_size_mb %>
