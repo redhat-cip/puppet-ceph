@@ -29,7 +29,7 @@ class ceph::conf (
   $mon_data        = '/var/lib/ceph/mon/mon.$id',
   $osd_data        = '/var/lib/ceph/osd/osd.$id',
   $osd_journal     = undef,
-  $mds_data        = '/var/lib/ceph/mds/mds.$id'
+  $mds_data        = '/var/lib/ceph/mds/mds.$id',
   $conf_owner      = 'root',
   $conf_group      = 0,
 ) {
