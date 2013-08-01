@@ -5,7 +5,9 @@
   auth client required = <%= @auth_type %>
 <% end -%>
   keyring = /etc/ceph/keyring
-
+<% if @pool_default_size -%>
+  osd pool default size = <%= @pool_default_size %>
+<% end -%>
   fsid = <%= @fsid %>
 
 [mon]
