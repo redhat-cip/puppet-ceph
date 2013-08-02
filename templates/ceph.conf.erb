@@ -6,7 +6,7 @@
 <% end -%>
   keyring = /etc/ceph/keyring
 <% if @pool_default_size -%>
-  osd pool default size = <%= @pool_default_size %> 
+  osd pool default size = <%= @pool_default_size %>
 <% end -%>
 <% if @cluster_network && @public_network -%>
   cluster network = <%= @cluster_network %>
