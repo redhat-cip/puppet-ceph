@@ -11,6 +11,9 @@
   fsid = <%= @fsid %>
 
 [mon]
+<% if @mon_init_members -%>
+  mon initial members = <%= @mon_init_members %>
+<% end -%>
   mon data = <%= @mon_data %>
 
 [osd]

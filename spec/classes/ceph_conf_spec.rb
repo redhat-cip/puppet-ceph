@@ -70,6 +70,7 @@ describe 'ceph::conf' do
         :cluster_network   => '10.0.0.0/16',
         :public_network    => '10.1.0.0/16',
         :mon_data          => '/opt/ceph/mon._id',
+        :mon_init_members  => 'a , b , c',
         :osd_data          => '/opt/ceph/osd._id',
         :osd_journal       => '/opt/ceph/journal/osd._id',
         :mds_data          => '/opt/ceph/mds._id'
@@ -96,6 +97,7 @@ describe 'ceph::conf' do
           '  osd pool default size = 3',
           '  fsid = qwertyuiop',
           '[mon]',
+          '  mon initial members = a , b , c',
           '  mon data = /opt/ceph/mon._id', '[osd]',
           '  osd journal size = 8192',
           '  cluster network = 10.0.0.0/16',
