@@ -94,15 +94,39 @@ ceph::key { 'admin':
         'ensure' => 'directory'
       ) }
 
-      it { should contain_mount('/var/lib/ceph/osd/osd.56').with(
-        'ensure'  => 'mounted',
-        'device'  => '/dev/device1',
-        'atboot'  => true,
-        'fstype'  => 'xfs',
-        'options' => 'rw,noatime,inode64',
-        'pass'    => 2,
-        'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
-      ) }
+      context 'with mount_at_boot => true' do
+        let :params do
+          {
+            :mount_at_boot => true
+          }
+        end
+        it { should contain_mount('/var/lib/ceph/osd/osd.56').with(
+          'ensure'  => 'mounted',
+          'device'  => '/dev/device1',
+          'atboot'  => true,
+          'fstype'  => 'xfs',
+          'options' => 'rw,noatime,inode64',
+          'pass'    => 2,
+          'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
+        ) }
+      end
+
+      context 'with mount_at_boot => false' do
+        let :params do
+          {
+            :mount_at_boot => false
+          }
+        end
+        it { should contain_mount('/var/lib/ceph/osd/osd.56').with(
+          'ensure'  => 'mounted',
+          'device'  => '/dev/device1',
+          'atboot'  => false,
+          'fstype'  => 'xfs',
+          'options' => 'rw,noatime,inode64',
+          'pass'    => 2,
+          'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
+        ) }
+      end
 
       it { should contain_exec('ceph-osd-mkfs-56').with(
         'command' => 'ceph-osd -c /etc/ceph/ceph.conf -i 56 --mkfs --mkkey --osd-uuid dummy-uuid-1234
