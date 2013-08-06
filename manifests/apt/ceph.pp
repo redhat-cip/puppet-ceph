@@ -6,7 +6,7 @@ class ceph::apt::ceph (
 ) {
 
   if (undef == $apt_source_location) {
-    $real_apt_source_location = "http://ceph.com/debian-${release}"
+    $real_apt_source_location = "http://ceph.com/debian-${release}/"
   } else {
     $real_apt_source_location = $apt_source_location
   }
