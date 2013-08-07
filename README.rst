@@ -63,6 +63,12 @@ Features
 
   • Working OSD ✓
 
+* RadosGW ✓
+
+  • Setup service ✓
+
+  • User handling ✓
+
 TODO
 ====
 
@@ -70,7 +76,7 @@ TODO
 
 * Better OSD device placement possibilities
 
-* Test/finish MDS/RadosGW code
+* Test/finish MDS code
 
 Contributing
 ============
