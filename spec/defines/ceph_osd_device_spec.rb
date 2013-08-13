@@ -6,6 +6,8 @@ describe 'ceph::osd::device' do
     '/dev/device'
   end
 
+  let(:params) { {:journal => '/dev/journal', :journalsize => '1024'} }
+
   let :pre_condition do
     "class { 'ceph::conf': fsid => '12345' }
 class { 'ceph::osd':
@@ -49,6 +51,7 @@ class { 'ceph::osd':
   end
 
   describe 'when the partition is created' do
+
     let :pre_condition do
     "class { 'ceph::conf': fsid => '12345' }
 class { 'ceph::osd':
@@ -75,7 +78,7 @@ ceph::key { 'admin':
     ) }
 
     describe 'when the osd is created' do
-      let :facts do
+        let :facts do
         {
           :concat_basedir      => '/var/lib/puppet/lib/concat',
           :blkid_uuid_device1  => 'dummy-uuid-1234',
@@ -87,7 +90,9 @@ ceph::key { 'admin':
       it { should contain_ceph__conf__osd('56').with(
         'device'       => '/dev/device',
         'public_addr'  => '10.1.0.156',
-        'cluster_addr' => '10.0.0.56'
+        'cluster_addr' => '10.0.0.56',
+        'journal'      => '/dev/journal',
+        'journalsize'  => '1024'
       ) }
 
       it { should contain_file('/var/lib/ceph/osd/osd.56').with(
