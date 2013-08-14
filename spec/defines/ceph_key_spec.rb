@@ -7,11 +7,7 @@ describe 'ceph::key' do
   end
 
   describe 'with default parameters' do
-    it { should contain_exec('ceph-key-dummy').with(
-      'command' => "ceph-authtool /var/lib/ceph/tmp/dummy.keyring --create-keyring --name='client.dummy' --add-key=''",
-      'creates' => '/var/lib/ceph/tmp/dummy.keyring',
-      'require' => 'Package[ceph]'
-    )}
+    it { expect { should raise_error(Puppet::Error) } }
   end
 
   describe 'wen setting secret' do
@@ -27,10 +23,13 @@ describe 'ceph::key' do
 
   describe 'wen overriding keyring_path' do
     let :params do
-      { :keyring_path => '/dummy/path/for/keyring' }
+    {
+      'secret'       => 'shhh_dont_tell_anyone',
+      'keyring_path' => '/dummy/path/for/keyring',
+    }
     end
     it { should contain_exec('ceph-key-dummy').with(
-      'command' => "ceph-authtool /dummy/path/for/keyring --create-keyring --name='client.dummy' --add-key=''",
+      'command' => "ceph-authtool /dummy/path/for/keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone'",
       'creates' => '/dummy/path/for/keyring',
       'require' => 'Package[ceph]'
     )}
