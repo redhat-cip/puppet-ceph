@@ -63,6 +63,28 @@ Features
 
   • Working OSD ✓
 
+* Ceph RADOSGW - works on RHEL++, not Ubuntu
+
+  • Start RADOSGW daemon ✓
+
+    - with sysvinit ✓
+
+    - with upstart
+
+    - client key for radosgw ✓
+
+  • Configure apache ✓
+
+    - rgw.conf ✓
+
+  • Configure mod_fastcgi
+
+    - rpm from repoforge for RHEL++ ✓
+
+    - better package define for distro-independence 
+
+    - s3gw.fcgi ✓
+
 TODO
 ====
 
@@ -160,6 +182,16 @@ And for each disk/device the path of the physical device to format::
 **WARNING**: this previous step will trash all the data from your disk !!!
 
 On an OSD, the puppet agent must be ran at least 4 times for the OSD to be formatted, registered on the OSDs and in the crushmap.
+
+Puppet manifest for a RADOSGW (RHEL only)
+-----------------------------------------
+
+A radosgw is has a name and gets a client key using the mon_secret (from MON above)::
+
+    ceph::radosgw { "$::hostname":
+      monitor_secret => 'JJHAAJHD++',
+      admin_email    => 'ceph-admins@yoursite.com'
+    }
 
 Testing
 =======

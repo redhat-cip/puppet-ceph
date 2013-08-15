@@ -45,9 +45,7 @@ size=1024m -n size=64k ${name}1",
   }
 
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
-  notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
   $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
-  notify { "BLKID ${devname}: ${blkid}": }
 
   if $blkid != 'undefined'  and defined( Ceph::Key['admin'] ){
     exec { "ceph_osd_create_${devname}":
@@ -57,9 +55,7 @@ size=1024m -n size=64k ${name}1",
     }
 
     $osd_id_fact = "ceph_osd_id_${devname}1"
-    notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
     $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
-    notify { "OSD ID ${devname}: ${osd_id}":}
 
     if $osd_id != 'undefined' {
 
@@ -106,13 +102,8 @@ size=1024m -n size=64k ${name}1",
         command => "\
 ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
 -i ${osd_data}/keyring",
+        unless  => "ceph auth list | egrep '^osd.${osd_id}$'",
         require => Exec["ceph-osd-mkfs-${osd_id}"],
-      }
-
-      exec { "ceph-osd-crush-${osd_id}":
-        command => "\
-ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
-        require => Exec["ceph-osd-register-${osd_id}"],
       }
 
       service { "ceph-osd.${osd_id}":
@@ -121,7 +112,7 @@ ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
         start     => "service ceph start osd.${osd_id}",
         stop      => "service ceph stop osd.${osd_id}",
         status    => "service ceph status osd.${osd_id}",
-        require   => Exec["ceph-osd-crush-${osd_id}"],
+        require   => Exec["ceph-osd-register-${osd_id}"],
         subscribe => Concat['/etc/ceph/ceph.conf'],
       }
 

@@ -7,7 +7,7 @@ describe 'ceph::osd::device' do
   end
 
   let :pre_condition do
-    "class { 'ceph::conf': fsid => '12345' }
+    "class { 'ceph::conf': fsid => '12345', osd_crush_location => 'room=dummy-room' }
 class { 'ceph::osd':
   public_address  => '10.1.0.156',
   cluster_address => '10.0.0.56'
@@ -80,7 +80,8 @@ ceph::key { 'admin':
           :concat_basedir      => '/var/lib/puppet/lib/concat',
           :blkid_uuid_device1  => 'dummy-uuid-1234',
           :ceph_osd_id_device1 => '56',
-          :hostname            => 'dummy-host'
+          :hostname            => 'dummy-host',
+          :blocks_device1      => '1073741824'
         }
       end
 
@@ -113,12 +114,8 @@ ceph::key { 'admin':
 
       it { should contain_exec('ceph-osd-register-56').with(
         'command' => "ceph auth add osd.56 osd 'allow *' mon 'allow rwx' -i /var/lib/ceph/osd/osd.56/keyring",
+        'unless'  => "ceph auth list | egrep '^osd.56$'",
         'require' => 'Exec[ceph-osd-mkfs-56]'
-      ) }
-
-      it { should contain_exec('ceph-osd-crush-56').with(
-        'command' => 'ceph osd crush set 56 1 root=default host=dummy-host',
-        'require' => 'Exec[ceph-osd-register-56]'
       ) }
 
       it { should contain_service('ceph-osd.56').with(
@@ -126,7 +123,7 @@ ceph::key { 'admin':
         'start'     => 'service ceph start osd.56',
         'stop'      => 'service ceph stop osd.56',
         'status'    => 'service ceph status osd.56',
-        'require'   => 'Exec[ceph-osd-crush-56]',
+        'require'   => 'Exec[ceph-osd-register-56]',
         'subscribe' => 'Concat[/etc/ceph/ceph.conf]'
       ) }
     end
