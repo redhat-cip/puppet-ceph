@@ -4,6 +4,18 @@
   auth service required = <%= @auth_type %>
   auth client required = <%= @auth_type %>
 <% end -%>
+<% if @signatures_require -%>
+  cephx require signatures = <%= @signatures_require %>
+<% end -%>
+<% if @signatures_cluster -%>
+  cephx cluster require signatures = <%= @signatures_cluster %>
+<% end -%>
+<% if @signatures_service -%>
+  cephx service require signatures = <%= @signatures_service %>
+<% end -%>
+<% if @signatures_sign_msgs -%>
+  cephx sign messages = <%= @signatures_sign_msgs %>
+<% end -%>
   keyring = /etc/ceph/keyring
 <% if @cluster_network && @public_network -%>
   cluster network = <%= @cluster_network %>

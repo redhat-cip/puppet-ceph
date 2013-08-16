@@ -23,6 +23,10 @@
 class ceph::conf (
   $fsid,
   $auth_type               = 'cephx',
+  $signatures_require      = undef,
+  $signatures_cluster      = undef,
+  $signatures_service      = undef,
+  $signatures_sign_msgs    = undef,
   $pool_default_size       = undef,
   $pool_default_pg_num     = undef,
   $pool_default_pgp_num    = undef,
