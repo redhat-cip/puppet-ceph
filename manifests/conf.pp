@@ -5,7 +5,7 @@
 #   Mandatory. Get one with `uuidgen -r`.
 #
 # [*auth_type*] Auth type.
-#   Optional. undef or 'cephx'. Defaults to 'cephx'.
+#   Optional. none or 'cephx'. Defaults to 'cephx'.
 #
 # == Dependencies
 #
