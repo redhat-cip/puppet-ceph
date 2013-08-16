@@ -63,17 +63,21 @@ describe 'ceph::conf' do
 
     let :params do
       {
-        :fsid              => 'qwertyuiop',
-        :auth_type         => 'dummy',
-        :pool_default_size => 3,
-        :journal_size_mb   => 8192,
-        :cluster_network   => '10.0.0.0/16',
-        :public_network    => '10.1.0.0/16',
-        :mon_data          => '/opt/ceph/mon._id',
-        :mon_init_members  => 'a , b , c',
-        :osd_data          => '/opt/ceph/osd._id',
-        :osd_journal       => '/opt/ceph/journal/osd._id',
-        :mds_data          => '/opt/ceph/mds._id'
+        :fsid                    => 'qwertyuiop',
+        :auth_type               => 'dummy',
+        :pool_default_pg_num     => 16,
+        :pool_default_pgp_num    => 16,
+        :pool_default_size       => 3,
+        :pool_default_min_size   => 8,
+        :pool_default_crush_rule => 1,
+        :journal_size_mb         => 8192,
+        :cluster_network         => '10.0.0.0/16',
+        :public_network          => '10.1.0.0/16',
+        :mon_data                => '/opt/ceph/mon._id',
+        :mon_init_members        => 'a , b , c',
+        :osd_data                => '/opt/ceph/osd._id',
+        :osd_journal             => '/opt/ceph/journal/osd._id',
+        :mds_data                => '/opt/ceph/mds._id'
       }
     end
 
@@ -94,9 +98,13 @@ describe 'ceph::conf' do
           '  auth service required = dummy',
           '  auth client required = dummy',
           '  keyring = /etc/ceph/keyring',
-          '  osd pool default size = 3',
           '  cluster network = 10.0.0.0/16',
           '  public network = 10.1.0.0/16',
+          '  osd pool default pg num = 16',
+          '  osd pool default pgp num = 16',
+          '  osd pool default size = 3',
+          '  osd pool default min size = 8',
+          '  osd pool default crush rule = 1',
           '  fsid = qwertyuiop',
           '[mon]',
           '  mon initial members = a , b , c',

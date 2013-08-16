@@ -5,13 +5,26 @@
   auth client required = <%= @auth_type %>
 <% end -%>
   keyring = /etc/ceph/keyring
-<% if @pool_default_size -%>
-  osd pool default size = <%= @pool_default_size %>
-<% end -%>
 <% if @cluster_network && @public_network -%>
   cluster network = <%= @cluster_network %>
   public network = <%= @public_network %>
 <% end -%>
+<% if @pool_default_pg_num -%>
+  osd pool default pg num = <%= @pool_default_pg_num %>
+<% end -%>
+<% if @pool_default_pgp_num -%>
+  osd pool default pgp num = <%= @pool_default_pgp_num %>
+<% end -%>
+<% if @pool_default_size -%>
+  osd pool default size = <%= @pool_default_size %>
+<% end -%>
+<% if @pool_default_min_size -%>
+  osd pool default min size = <%= @pool_default_min_size %>
+<% end -%>
+<% if @pool_default_crush_rule -%>
+  osd pool default crush rule = <%= @pool_default_crush_rule %>
+<% end -%>
+
   fsid = <%= @fsid %>
 
 [mon]
