@@ -1,0 +1,9 @@
+[client.radosgw.<%= @name %>]
+  host = <%= @hostname %>
+  rgw socket path = /var/run/ceph/radosgw.<%= @hostname %>
+  keyring = /etc/ceph/ceph.client.radosgw.<%= @hostname %>.keyring
+  log file = /var/log/ceph/radosgw.log
+  rgw print continue = false
+  debug rgw = 2
+  user = root
+
