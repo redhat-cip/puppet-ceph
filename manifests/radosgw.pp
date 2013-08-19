@@ -15,10 +15,12 @@
 #
 # == Authors
 #
-#  Dan van der Ster daniel.vanderster@cern.ch
+# Stas Alekseev <stas.alekseev@gmail.com>
+# Dan van der Ster daniel.vanderster@cern.ch
 #
 # == Copyright
 #
+# Copyright 2013 Stas Alekseev <stas.alekseev@gmail.com>
 # Copyright 2013 CERN
 #
 
