@@ -5,7 +5,7 @@
 #   Mandatory. Get one with `uuidgen -r`.
 #
 # [*auth_type*] Auth type.
-#   Optional. undef or 'cephx'. Defaults to 'cephx'.
+#   Optional. none or 'cephx'. Defaults to 'cephx'.
 #
 # == Dependencies
 #
@@ -22,16 +22,24 @@
 #
 class ceph::conf (
   $fsid,
-  $auth_type         = 'cephx',
-  $pool_default_size = undef,
-  $journal_size_mb   = 4096,
-  $cluster_network   = undef,
-  $public_network    = undef,
-  $mon_data          = '/var/lib/ceph/mon/mon.$id',
-  $mon_init_members  = undef,
-  $osd_data          = '/var/lib/ceph/osd/osd.$id',
-  $osd_journal       = undef,
-  $mds_data          = '/var/lib/ceph/mds/mds.$id'
+  $auth_type               = 'cephx',
+  $signatures_require      = undef,
+  $signatures_cluster      = undef,
+  $signatures_service      = undef,
+  $signatures_sign_msgs    = undef,
+  $pool_default_size       = undef,
+  $pool_default_pg_num     = undef,
+  $pool_default_pgp_num    = undef,
+  $pool_default_min_size   = undef,
+  $pool_default_crush_rule = undef,
+  $journal_size_mb         = 4096,
+  $cluster_network         = undef,
+  $public_network          = undef,
+  $mon_data                = '/var/lib/ceph/mon/mon.$id',
+  $mon_init_members        = undef,
+  $osd_data                = '/var/lib/ceph/osd/osd.$id',
+  $osd_journal             = undef,
+  $mds_data                = '/var/lib/ceph/mds/mds.$id'
 ) {
 
   include 'ceph::package'

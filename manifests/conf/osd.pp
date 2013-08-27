@@ -1,7 +1,7 @@
 define ceph::conf::osd (
   $device,
-  $cluster_addr,
-  $public_addr,
+  $cluster_addr = undef,
+  $public_addr  = undef,
 ) {
 
   concat::fragment { "ceph-osd-${name}.conf":
