@@ -39,6 +39,9 @@ class ceph::conf (
   $mon_init_members        = undef,
   $osd_data                = '/var/lib/ceph/osd/osd.$id',
   $osd_journal             = undef,
+  $osd_mkfs_type           = 'xfs',
+  $osd_mkfs_options        = '-f',
+  $osd_mount_options       = 'rw,noatime,inode64',
   $mds_data                = '/var/lib/ceph/mds/mds.$id'
 ) {
 

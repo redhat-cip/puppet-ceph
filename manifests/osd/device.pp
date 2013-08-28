@@ -37,11 +37,12 @@ define ceph::osd::device (
     require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
   }
 
-  exec { "mkfs_${devname}":
-    command => "mkfs.xfs -f -d agcount=${::processorcount} -l \
-size=1024m -n size=64k ${name}1",
-    unless  => "xfs_admin -l ${name}1",
-    require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
+  if $::ceph::conf::osd_mkfs_type == "xfs" {
+    exec { "mkfs_${devname}":
+      command => "mkfs.xfs ${::ceph::conf::osd_mkfs_options} ${name}1",
+      unless  => "xfs_admin -l ${name}1",
+      require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
+    }
   }
 
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
@@ -79,8 +80,8 @@ size=1024m -n size=64k ${name}1",
         ensure  => mounted,
         device  => "${name}1",
         atboot  => true,
-        fstype  => 'xfs',
-        options => 'rw,noatime,inode64',
+        fstype  => $::ceph::conf::osd_mkfs_type,
+        options => $::ceph::conf::osd_mount_options,
         pass    => 2,
         require => [
           Exec["mkfs_${devname}"],

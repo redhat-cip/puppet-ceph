@@ -50,7 +50,13 @@
   filestore flusher = false
   osd data = <%= @osd_data %>
   osd journal = <%= @osd_journal_real %>
-  osd mkfs type = xfs
+  osd mkfs type = <%= @osd_mkfs_type %>
+<% if @osd_mkfs_options && @osd_mkfs_type -%>
+  osd mkfs options <%= @osd_mkfs_type %> = <%= @osd_mkfs_options %>
+<% end -%>
+<% if @osd_mount_options && @osd_mkfs_type -%>
+  osd mount options <%= @osd_mkfs_type %> = <%= @osd_mount_options %>
+<% end -%>
   keyring = <%= @osd_data %>/keyring
 
 [mds]

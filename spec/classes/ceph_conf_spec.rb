@@ -49,6 +49,8 @@ describe 'ceph::conf' do
           '  osd data = /var/lib/ceph/osd/osd.$id',
           '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
           '  osd mkfs type = xfs',
+          '  osd mkfs options xfs = -f',
+          '  osd mount options xfs = rw,noatime,inode64',
           '  keyring = /var/lib/ceph/osd/osd.$id/keyring',
           '[mds]',
           '  mds data = /var/lib/ceph/mds/mds.$id',
@@ -81,6 +83,8 @@ describe 'ceph::conf' do
         :mon_init_members        => 'a , b , c',
         :osd_data                => '/opt/ceph/osd._id',
         :osd_journal             => '/opt/ceph/journal/osd._id',
+        :osd_mkfs_type           => 'ext4',
+        :osd_mount_options       => 'user_xattr,rw,noatime,nodiratime',
         :mds_data                => '/opt/ceph/mds._id'
       }
     end
@@ -122,7 +126,8 @@ describe 'ceph::conf' do
           '  filestore flusher = false',
           '  osd data = /opt/ceph/osd._id',
           '  osd journal = /opt/ceph/journal/osd._id',
-          '  osd mkfs type = xfs',
+          '  osd mkfs type = ext4',
+          '  osd mount options ext4 = user_xattr,rw,noatime,nodiratime',
           '  keyring = /opt/ceph/osd._id/keyring',
           '[mds]',
           '  mds data = /opt/ceph/mds._id',
