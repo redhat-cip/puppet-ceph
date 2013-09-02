@@ -116,7 +116,7 @@ APT configuration to install from the official Ceph repositories::
 Puppet manifest for a MON
 -------------------------
 
-A MON host also needs the MONs secret : get it with `ceph-authtool --create /path/to/keyring --gen-key -n mon.`::
+A MON host also needs the MONs secret : get it with `ceph-authtool --gen-print-key`::
 
     $mon_secret = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdw=='
 
