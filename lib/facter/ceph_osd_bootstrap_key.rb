@@ -15,11 +15,11 @@ timeout = 10
 ## ceph_osd_bootstrap_key
 ## Fact that gets the ceph key "client.bootstrap-osd"
 
-Facter.add(:ceph_admin_key, :timeout => timeout) do
-  setcode do
-    Facter::Util::Resolution.exec("ceph auth get-key client.admin")
-  end
-end
+#Facter.add(:ceph_admin_key, :timeout => timeout) do
+#  setcode do
+#    Facter::Util::Resolution.exec("ceph auth get-key client.admin")
+#  end
+#end
 
 ## blkid_uuid_#{device} / ceph_osd_id_#{device}
 ## Facts that export partitions uuids & ceph osd id of device
