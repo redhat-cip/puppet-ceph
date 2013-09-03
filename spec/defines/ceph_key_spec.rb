@@ -10,7 +10,7 @@ describe 'ceph::key' do
     it { expect { should raise_error(Puppet::Error) } }
   end
 
-  describe 'wen setting secret' do
+  describe 'when setting secret' do
     let :params do
       { :secret => 'shhh_dont_tell_anyone' }
     end
@@ -21,7 +21,7 @@ describe 'ceph::key' do
     )}
   end
 
-  describe 'wen overriding keyring_path' do
+  describe 'when overriding keyring_path' do
     let :params do
     {
       'secret'       => 'shhh_dont_tell_anyone',
@@ -35,7 +35,7 @@ describe 'ceph::key' do
     )}
   end
 
-  describe 'wen setting caps' do
+  describe 'when setting caps' do
     let :params do
     {
       'secret'       => 'shhh_dont_tell_anyone',
@@ -51,7 +51,7 @@ describe 'ceph::key' do
     )}
   end
 
-  describe 'wen set to inject key' do
+  describe 'when set to inject key' do
     let :params do
     {
       'secret'         => 'shhh_dont_tell_anyone',
