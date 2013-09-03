@@ -61,6 +61,59 @@ describe 'ceph::conf' do
 
   end
 
+
+
+  describe "with default parameter and mds section disabled" do
+
+    let :params do
+      { 
+        :fsid         => 'qwertyuiop',
+        :mds_activate => 'false'
+      }
+    end
+
+    it { should contain_concat('/etc/ceph/ceph.conf').with(
+      'owner'   => 'root',
+      'group'   => 0,
+      'mode'    => '0664',
+      'require' => 'Package[ceph]'
+    ) }
+
+    it { should contain_concat__fragment('ceph.conf').with(
+      'target'  => '/etc/ceph/ceph.conf',
+      'order'   => '01'
+    ) }
+
+    it 'should create the configuration fragment with the correct content' do
+      verify_contents(
+        subject,
+        fragment_path,
+        [
+          '[global]',
+          '  auth cluster required = cephx',
+          '  auth service required = cephx',
+          '  auth client required = cephx',
+          '  keyring = /etc/ceph/keyring',
+          '  fsid = qwertyuiop',
+          '[mon]',
+          '  mon data = /var/lib/ceph/mon/mon.$id',
+          '[osd]',
+          '  osd journal size = 4096',
+          '  filestore flusher = false',
+          '  osd data = /var/lib/ceph/osd/osd.$id',
+          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
+          '  osd mkfs type = xfs',
+          '  osd mkfs options xfs = -f',
+          '  osd mount options xfs = rw,noatime,inode64',
+          '  keyring = /var/lib/ceph/osd/osd.$id/keyring'
+        ]
+      )
+    end
+
+  end
+
+
+
   describe "when overriding default parameters" do
 
     let :params do

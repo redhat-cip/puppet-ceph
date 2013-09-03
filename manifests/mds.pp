@@ -36,8 +36,9 @@ define ceph::mds (
   include 'ceph::params'
 
   class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
+    fsid         => $fsid,
+    auth_type    => $auth_type,
+    mds_activate => true,
   }
 
   $mds_data_expanded = "${mds_data}/mds.${name}"

@@ -42,6 +42,7 @@ class ceph::conf (
   $osd_mkfs_type           = 'xfs',
   $osd_mkfs_options        = '-f',
   $osd_mount_options       = 'rw,noatime,inode64',
+  $mds_activate            = true,
   $mds_data                = '/var/lib/ceph/mds/mds.$id'
 ) {
 

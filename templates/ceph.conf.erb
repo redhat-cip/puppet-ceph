@@ -59,7 +59,9 @@
 <% end -%>
   keyring = <%= @osd_data %>/keyring
 
+<% if @mds_activate -%>
 [mds]
   mds data = <%= @mds_data %>
   keyring = <%= @mds_data %>/keyring
+<% end -%>
 
