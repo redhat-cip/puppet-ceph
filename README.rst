@@ -79,7 +79,7 @@ Contributions are welcome, just fork on GitHub and send a pull-request !
 
 * Please try to keep each new feature / change / fix in a separate pull-request, it will greatly help speeding the merge of the pull-requests ;)
 
-* When adding features, don't forget to add unit tests.
+* When adding features, don't forget to add unit tests. Use `bundle exec rake spec` to run the existing tests.
 
 * puppet-lint (https://github.com/rodjek/puppet-lint) should not produce too much errors too :)
 
