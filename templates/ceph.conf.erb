@@ -36,6 +36,12 @@
 <% if @pool_default_crush_rule -%>
   osd pool default crush rule = <%= @pool_default_crush_rule %>
 <% end -%>
+<% if @mon_osd_full_ratio -%>
+  mon osd full ratio = .<%= @mon_osd_full_ratio %>
+<% end -%>
+<% if @mon_osd_nearfull_ratio -%>
+  mon osd nearfull ratio = .<%= @mon_osd_nearfull_ratio %>
+<% end -%>
 
   fsid = <%= @fsid %>
 
