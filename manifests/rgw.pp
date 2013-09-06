@@ -6,6 +6,12 @@
 # [*fsid*] The cluster's fsid.
 #   Mandatory. Get one with `uuidgen -r`.
 #
+# [*admin_secret*] The admin key
+#   Mandatory.
+#
+# [*rgw_secret*] The radosgw key
+#   Mandatory.
+#
 # [*rgw_data*] The path where the radosgw data should be stored
 #   Optional.
 #
@@ -26,15 +32,12 @@
 
 class ceph::rgw (
   $fsid,
+  $admin_secret,
+  $rgw_secret,
   $rgw_data  = '/var/lib/ceph/radosgw',
   $fcgi_file = '/var/www/s3gw.fcgi'
 ) {
-
-  include 'ceph::package'
-
   ensure_packages( [ 'radosgw', 'ceph-common', 'ceph' ] )
-
-  Package['ceph'] -> Ceph::Key <<| title == 'admin' |>>
 
   file { $::ceph::rgw::rgw_data:
     ensure  => directory,
@@ -43,31 +46,23 @@ class ceph::rgw (
     mode    => '0755',
   }
 
-  class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
-  }
-
   ceph::conf::rgw {$name:}
 
-  exec { 'ceph-rgw-keyring':
-    command => "ceph-authtool /var/lib/ceph/radosgw/keyring.rgw \
---create-keyring \
---gen-key \
---name client.radosgw.gateway \
---cap osd 'allow rwx' \
---cap mon 'allow r'",
-    creates => "/var/lib/ceph/radosgw/keyring.rgw",
-    require => Package['ceph', 'ceph-common'],
+  ceph::key { 'client.admin':
+    secret         => $admin_secret,
+    keyring_path   => '/etc/ceph/keyring',
+    require        => Package['ceph']
   }
 
-  exec { 'ceph-add-key':
-    command => "ceph -k /etc/ceph/keyring \
-auth add client.radosgw.gateway -i /var/lib/ceph/radosgw/keyring.rgw \
-mon 'allow r' \
-osd 'allow rwx'
-",
-    require => Exec['ceph-rgw-keyring'] ,
+  ceph::key { 'client.radosgw.gateway':
+    secret         => $rgw_secret,
+    keyring_path   => '/var/lib/ceph/radosgw/keyring.rgw',
+    cap_mon        => 'allow rwx',
+    cap_osd        => 'allow rw',
+    inject         => true,
+    inject_as_id   => 'client.admin',
+    inject_keyring => '/etc/ceph/keyring',
+    require        => Package['ceph']
   }
 
   file { $fcgi_file:
@@ -77,18 +72,13 @@ osd 'allow rwx'
 exec /usr/bin/radosgw -c /etc/ceph/ceph.conf -n client.radosgw.gateway'
   }
 
-  # NOTE(mkoderer): seems hasstatus doesn't work with all puppet versions
-  # service { 'radosgw':
-  #    ensure    => running,
-  #    start     => '/etc/init.d/radosgw start',
-  #    stop      => '/etc/init.d/radosgw stop',
-  #    hasstatus => false,
-  #    pattern   => 'radosgw',
-  #  }
-
-  exec {'start_radosgw':
-    command => '/etc/init.d/radosgw start',
-    unless  => 'ps -ef|grep radosgw|grep -q grep',
+  service { 'radosgw':
+    ensure    => running,
+    start     => '/etc/init.d/radosgw start',
+    stop      => '/etc/init.d/radosgw stop',
+    hasstatus => false,
+    provider  => 'init',
+    require   => [ Package['ceph'], Ceph::Key['client.radosgw.gateway'] ]
   }
 
 }

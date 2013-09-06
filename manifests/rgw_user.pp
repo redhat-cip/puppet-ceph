@@ -43,7 +43,7 @@ class ceph::rgw_user (
   exec { 'add-user':
     command => "radosgw-admin user create --uid=${user} \
  ${key_opt} --display-name ${user}",
-    require => Exec['start_radosgw'],
+    require => Service['radosgw'],
     unless  => "radosgw-admin user info --uid=admin"
   }
 
