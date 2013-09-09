@@ -26,21 +26,21 @@ define ceph::osd::device (
   $devname = regsubst($name, '.*/', '')
 
   exec { "mktable_gpt_${devname}":
-    command => "parted -a optimal --script ${name} mktable gpt",
-    unless  => "parted --script ${name} print|grep -sq 'Partition Table: gpt'",
+    command => "/sbin/parted -a optimal --script ${name} mktable gpt",
+    unless  => "/sbin/parted --script ${name} print|grep -sq 'Partition Table: gpt'",
     require => Package['parted']
   }
 
   exec { "mkpart_${devname}":
-    command => "parted -a optimal -s ${name} mkpart ceph 0% 100%",
-    unless  => "parted ${name} print | egrep '^ 1.*ceph$'",
+    command => "/sbin/parted -a optimal -s ${name} mkpart ceph 0% 100%",
+    unless  => "/sbin/parted ${name} print | egrep '^ 1.*ceph$'",
     require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
   }
 
   exec { "mkfs_${devname}":
-    command => "mkfs.xfs -f -d agcount=${::processorcount} -l \
+    command => "/sbin/mkfs.xfs -f -d agcount=${::processorcount} -l \
 size=1024m -n size=64k ${name}1",
-    unless  => "xfs_admin -l ${name}1",
+    unless  => "/usr/sbin/xfs_admin -l ${name}1",
     require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
   }
 
