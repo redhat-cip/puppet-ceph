@@ -8,7 +8,9 @@ describe "ceph::rgw" do
 
   let :params do
     {
-      :fsid  => '000000',
+      :fsid         => '000000',
+      :admin_secret => 'shhh_dont_tell_anyone',
+      :rgw_secret   => 'shhh_my_rgw_secret',
     }
   end
 
