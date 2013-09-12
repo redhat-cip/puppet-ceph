@@ -66,9 +66,16 @@ define ceph::osd::device (
     }
   }
 
-  notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
-  $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
-  notify { "BLKID ${devname}: ${tmp_blkid}": }
+  $tmp_blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
+  
+  if $tmp_blkid == 'undefined' {
+    $osd_conf_id_fact = regsubst($osd_id_fact, 'ceph_osd_id', 'ceph_osd_conf_id')
+    $osd_conf_id = inline_template('<%= scope.lookupvar(osd_conf_id_fact) or "undefined" %>')
+    $uuid_conf_fact = "ceph_osd_conf_uuids_osd.${osd_conf_id}"
+    $blkid = inline_template('<%= scope.lookupvar(uuid_conf_fact) or "undefined" %>')
+  } else {
+    $blkid = "${tmp_blkid}"
+  }
 
   if $blkid == 'undefined' {
     # workaround for e.g. /dev/mapper/mydmdevice devices!
@@ -93,9 +100,13 @@ define ceph::osd::device (
     }
   }
 
-  notify { "OSD ID FACT ${devname}: ${osd_id_fact}": }
-  $osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
-  notify { "OSD ID ${devname}: ${osd_id}":}
+  $tmp_osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
+
+  if $tmp_osd_id == 'undefined' {
+     $osd_id = "${osd_conf_id}"
+  } else {
+     $osd_id = "${tmp_osd_id}"
+  }
 
   if $blkid != 'undefined'  and defined( Ceph::Key['client.admin'] ){
 
