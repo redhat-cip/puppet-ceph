@@ -50,9 +50,9 @@ class ceph::rgw_user (
   if (swift_user){
 
      if $swift_key != '--gen-secret'{
-       $swift_key_opt = "--secret ${key}"
+       $swift_key_opt = "--secret ${swift_key}"
      } else{
-       $swift_key_opt = $key
+       $swift_key_opt = $swift_key
      }
 
      exec { 'add-swift-subuser':
