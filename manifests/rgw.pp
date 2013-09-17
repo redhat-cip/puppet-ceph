@@ -57,8 +57,8 @@ class ceph::rgw (
   ceph::key { 'client.radosgw.gateway':
     secret         => $rgw_secret,
     keyring_path   => '/var/lib/ceph/radosgw/keyring.rgw',
-    cap_mon        => 'allow rwx',
-    cap_osd        => 'allow rw',
+    cap_mon        => 'allow rw',
+    cap_osd        => 'allow rwx',
     inject         => true,
     inject_as_id   => 'client.admin',
     inject_keyring => '/etc/ceph/keyring',
