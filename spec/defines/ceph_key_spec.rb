@@ -72,4 +72,21 @@ describe 'ceph::key' do
     )}
   end
 
+  describe 'when add key to ceph.conf' do
+    let :params do
+    {
+      'secret'        => 'shhh_dont_tell_anyone',
+      'keyring_path'  => '/dummy/path/for/keyring',
+      'add_to_config' => true,
+    }
+    end
+    it { should contain_exec('ceph-key-client.dummy').with(
+      'command' => "ceph-authtool /var/lib/ceph/tmp/client.dummy.keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' ",
+      'creates' => '/var/lib/ceph/tmp/client.dummy.keyring',
+      'require' => 'Package[ceph]'
+    )}
+
+    # TODO add check for ceph.conf changes
+  end
+
 end

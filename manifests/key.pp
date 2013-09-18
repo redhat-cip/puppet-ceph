@@ -51,6 +51,11 @@
 #   case it's mandatory.  Absolute file path incl. the file name.
 #   Defaults to 'undef'.
 #
+# [*add_to_config*] if the key should be added to ceph.conf
+#   Adds an entry to ceph.conf with the user/client name and the path
+#   to the users keyring file.
+#   Optional. Defaults to false.
+#
 # == Dependencies
 #
 # none
@@ -75,6 +80,7 @@ define ceph::key (
   $inject         = false,
   $inject_as_id   = undef,
   $inject_keyring = undef,
+  $add_to_config  = false,
 ) {
 
   # to concat the capability settings
@@ -112,6 +118,12 @@ define ceph::key (
       command => "ceph --name '${inject_as_id}' --keyring '${$inject_keyring}' auth add '${name}' --in-file='${keyring_path}'",
       onlyif  => "ceph --name '${inject_as_id}' --keyring '${$inject_keyring}' -s",
       require => [ Package['ceph'], File["${keyring_path}"] ]
+    }
+  }
+
+  if $add_to_config == true {
+    ceph::conf::client { $name:
+      keyring => $keyring_path,
     }
   }
 }
