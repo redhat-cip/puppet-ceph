@@ -78,6 +78,7 @@ define ceph::pool (
   if $increase_pg_num == true {
     exec { "ceph-pool-increase_pg_num-${pool_name}":
       command => "ceph osd pool set ${pool_name} pg_num ${pg_num}",
+      onlyif  => "ceph osd lspools | grep -q ' ${pool_name},' && ceph osd dump | grep ${pool_name} | grep -vq 'pg_num ${pg_num} '",
       unless  => "ceph osd lspools | grep ' ${pool_name},'",
       require => Package['ceph']
     }
@@ -87,11 +88,12 @@ define ceph::pool (
     exec { "ceph-pool-increase_pgp_num-${pool_name}":
       # isn't ready: still creating pgs, wait
       # ready:       set pool 0 pgp_num to 512
-      # wait maximal 20 seconds to get the command pushed to the cluster!
-      command   => "ceph osd pool set ${pool_name} pgp_num $pgp_num | grep -sq 'set pool '",
+      # wait maximal 60 seconds to get the command pushed to the cluster!
+      command   => "ceph osd pool set ${pool_name} pgp_num ${pgp_num}",
+      onlyif    => "ceph osd lspools | grep -q ' ${pool_name},' && ceph osd dump | grep ${pool_name} | grep -vq 'pgp_num ${pgp_num} '",
       unless    => "ceph osd lspools | grep ' ${pool_name},'",
-      tries     => 10,
-      try_sleep => 2,
+      tries     => 12,
+      try_sleep => 5,
       require   => Package['ceph']
     }
   }

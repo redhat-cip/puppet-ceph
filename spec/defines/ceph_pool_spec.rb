@@ -40,6 +40,7 @@ describe 'ceph::pool' do
     it do
       should contain_exec('ceph-pool-increase_pg_num-rbd_testing_pool').with({
         'command' => 'ceph osd pool set rbd_testing_pool pg_num 256',
+        'onlyif'  => "ceph osd lspools | grep -q ' rbd_testing_pool,' && ceph osd dump | grep rbd_testing_pool | grep -vq 'pg_num 256 '",
         'unless'  => "ceph osd lspools | grep ' rbd_testing_pool,'",
         'require' => 'Package[ceph]'
     })
@@ -52,10 +53,10 @@ describe 'ceph::pool' do
 
     it do
       should contain_exec('ceph-pool-increase_pgp_num-rbd_testing_pool').with({
-        'command'   => "ceph osd pool set rbd_testing_pool pgp_num 256 | grep -sq 'set pool '",
-        'unless'    => "ceph osd lspools | grep ' rbd_testing_pool,'",
-        'tries'     => '10',
-        'try_sleep' => '2',
+        'command'   => "ceph osd pool set rbd_testing_pool pgp_num 256",
+        'onlyif'    => "ceph osd lspools | grep -q ' rbd_testing_pool,' && ceph osd dump | grep rbd_testing_pool | grep -vq 'pgp_num 256 '",
+        'tries'     => '12',
+        'try_sleep' => '5',
         'require'   => 'Package[ceph]'
     })
     end
