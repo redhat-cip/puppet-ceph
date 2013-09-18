@@ -100,7 +100,7 @@ define ceph::key (
   exec { "ceph-key-${name}":
     command => "ceph-authtool ${keyring_path} --create-keyring --name='${name}' --add-key='${secret}' ${concat_caps}",
     creates => $keyring_path,
-    require => Package['ceph'],
+    require => Package['ceph-common'],
   }
 
   # set the correct mask for the keyring file
