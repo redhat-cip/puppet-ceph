@@ -62,7 +62,7 @@ define ceph::pool (
   if $create_pool == true {
     exec { "ceph-pool-create-${pool_name}":
       command => "ceph osd pool create ${pool_name} ${pg_num} ${pgp_num}",
-      onlyif  => "ceph osd lspools | grep ' ${pool_name},'",
+      onlyif  => "ceph osd lspools | grep -v ' ${pool_name},'",
       require => Package['ceph']
     }
   }
@@ -70,7 +70,7 @@ define ceph::pool (
   if $delete_pool == true {
     exec { "ceph-pool-delete-${pool_name}":
       command => "ceph osd pool delete ${pool_name} ${pool_name} --yes-i-really-really-mean-it",
-      unless  => "ceph osd lspools | grep ' ${pool_name},'",
+      onlyif  => "ceph osd lspools | grep ' ${pool_name},'",
       require => Package['ceph']
     }
   }
@@ -79,7 +79,6 @@ define ceph::pool (
     exec { "ceph-pool-increase_pg_num-${pool_name}":
       command => "ceph osd pool set ${pool_name} pg_num ${pg_num}",
       onlyif  => "ceph osd lspools | grep -q ' ${pool_name},' && ceph osd dump | grep ${pool_name} | grep -vq 'pg_num ${pg_num} '",
-      unless  => "ceph osd lspools | grep ' ${pool_name},'",
       require => Package['ceph']
     }
   }
@@ -91,7 +90,6 @@ define ceph::pool (
       # wait maximal 60 seconds to get the command pushed to the cluster!
       command   => "ceph osd pool set ${pool_name} pgp_num ${pgp_num}",
       onlyif    => "ceph osd lspools | grep -q ' ${pool_name},' && ceph osd dump | grep ${pool_name} | grep -vq 'pgp_num ${pgp_num} '",
-      unless    => "ceph osd lspools | grep ' ${pool_name},'",
       tries     => 12,
       try_sleep => 5,
       require   => Package['ceph']
