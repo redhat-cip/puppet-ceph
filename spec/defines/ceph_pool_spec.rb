@@ -14,7 +14,7 @@ describe 'ceph::pool' do
     it do 
       should contain_exec('ceph-pool-create-rbd_testing_pool').with({
         'command' => 'ceph osd pool create rbd_testing_pool 128 128',
-        'onlyif'  => "ceph osd lspools | grep ' rbd_testing_pool,'",
+        'onlyif'  => "ceph osd lspools | grep -v ' rbd_testing_pool,'",
         'require' => 'Package[ceph]'
       })
     end
@@ -27,7 +27,7 @@ describe 'ceph::pool' do
     it do
       should contain_exec('ceph-pool-delete-rbd_testing_pool').with({
         'command' => 'ceph osd pool delete rbd_testing_pool rbd_testing_pool --yes-i-really-really-mean-it',
-        'unless'  => "ceph osd lspools | grep ' rbd_testing_pool,'",
+        'onlyif'  => "ceph osd lspools | grep ' rbd_testing_pool,'",
         'require' => 'Package[ceph]'
     })
     end
@@ -41,7 +41,6 @@ describe 'ceph::pool' do
       should contain_exec('ceph-pool-increase_pg_num-rbd_testing_pool').with({
         'command' => 'ceph osd pool set rbd_testing_pool pg_num 256',
         'onlyif'  => "ceph osd lspools | grep -q ' rbd_testing_pool,' && ceph osd dump | grep rbd_testing_pool | grep -vq 'pg_num 256 '",
-        'unless'  => "ceph osd lspools | grep ' rbd_testing_pool,'",
         'require' => 'Package[ceph]'
     })
     end
