@@ -17,7 +17,7 @@ describe 'ceph::key' do
     it { should contain_exec('ceph-key-client.dummy').with(
       'command' => "ceph-authtool /var/lib/ceph/tmp/client.dummy.keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' ",
       'creates' => '/var/lib/ceph/tmp/client.dummy.keyring',
-      'require' => 'Package[ceph]'
+      'require' => 'Package[ceph-common]'
     )}
   end
 
@@ -31,7 +31,7 @@ describe 'ceph::key' do
     it { should contain_exec('ceph-key-client.dummy').with(
       'command' => "ceph-authtool /dummy/path/for/keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' ",
       'creates' => '/dummy/path/for/keyring',
-      'require' => 'Package[ceph]'
+      'require' => 'Package[ceph-common]'
     )}
   end
 
@@ -47,7 +47,7 @@ describe 'ceph::key' do
     it { should contain_exec('ceph-key-client.dummy').with(
       'command' => "ceph-authtool /var/lib/ceph/tmp/client.dummy.keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' --cap mon 'x' --cap osd 'y' --cap mds 'z' ",
       'creates' => '/var/lib/ceph/tmp/client.dummy.keyring',
-      'require' => 'Package[ceph]'
+      'require' => 'Package[ceph-common]'
     )}
   end
 
@@ -63,7 +63,7 @@ describe 'ceph::key' do
     it { should contain_exec('ceph-key-client.dummy').with(
       'command' => "ceph-authtool /var/lib/ceph/tmp/client.dummy.keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' ",
       'creates' => '/var/lib/ceph/tmp/client.dummy.keyring',
-      'require' => 'Package[ceph]'
+      'require' => 'Package[ceph-common]'
     )}
     it { should contain_exec('ceph-inject-key-client.dummy').with(
       'command' => "ceph --name 'mon.' --keyring '/etc/ceph/mykeyring' auth add 'client.dummy' --in-file='/var/lib/ceph/tmp/client.dummy.keyring'",
@@ -76,14 +76,14 @@ describe 'ceph::key' do
     let :params do
     {
       'secret'        => 'shhh_dont_tell_anyone',
-      'keyring_path'  => '/dummy/path/for/keyring',
+      'keyring_path'  => '/etc/ceph/client.dummy.keyring',
       'add_to_config' => true,
     }
     end
     it { should contain_exec('ceph-key-client.dummy').with(
-      'command' => "ceph-authtool /var/lib/ceph/tmp/client.dummy.keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' ",
-      'creates' => '/var/lib/ceph/tmp/client.dummy.keyring',
-      'require' => 'Package[ceph]'
+      'command' => "ceph-authtool /etc/ceph/client.dummy.keyring --create-keyring --name='client.dummy' --add-key='shhh_dont_tell_anyone' ",
+      'creates' => '/etc/ceph/client.dummy.keyring',
+      'require' => 'Package[ceph-common]'
     )}
 
     # TODO add check for ceph.conf changes
