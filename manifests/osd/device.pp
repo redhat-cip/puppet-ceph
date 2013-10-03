@@ -51,14 +51,14 @@ define ceph::osd::device (
     $osd_id_fact = "ceph_osd_id_${devname}1"
     $mkfs_require = [Package['xfsprogs'], Exec["mkpart_${devname}"]]
   } else {
-    $dev_path = "${name}"
+    $dev_path = $name
     $blkid_uuid_fact = "blkid_uuid_${devname}"
     $osd_id_fact = "ceph_osd_id_${devname}"
     $mkfs_require = [Package['xfsprogs']]
   }
 
   # TODO: add other file systems ... otherwise fail!
-  if $::ceph::conf::osd_mkfs_type == "xfs" {
+  if $::ceph::conf::osd_mkfs_type == 'xfs' {
     exec { "mkfs_${devname}":
       command => "mkfs.xfs ${::ceph::conf::osd_mkfs_options} ${dev_path}",
       unless  => "xfs_admin -l ${dev_path}",
@@ -67,14 +67,14 @@ define ceph::osd::device (
   }
 
   $tmp_blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
-  
+
   if $tmp_blkid == 'undefined' {
     $osd_conf_id_fact = regsubst($osd_id_fact, 'ceph_osd_id', 'ceph_osd_conf_id')
     $osd_conf_id = inline_template('<%= scope.lookupvar(osd_conf_id_fact) or "undefined" %>')
     $uuid_conf_fact = "ceph_osd_conf_uuids_osd.${osd_conf_id}"
     $blkid = inline_template('<%= scope.lookupvar(uuid_conf_fact) or "undefined" %>')
   } else {
-    $blkid = "${tmp_blkid}"
+    $blkid = $tmp_blkid
   }
 
   if $blkid == 'undefined' {
@@ -86,7 +86,7 @@ define ceph::osd::device (
     }
 
     exec { "ceph_osd_create_${devname}":
-      path    => "/usr/sbin:/usr/bin:/sbin:/bin:",
+      path    => '/usr/sbin:/usr/bin:/sbin:/bin:',
       command => "ceph osd create `cat /var/lib/ceph/tmp/${blkid_file}`",
       unless  => "ceph osd dump | grep -sq `cat /var/lib/ceph/tmp/${blkid_file}`",
       require => [Ceph::Key['client.admin'], Exec["get_blkid_${devname}"]],
@@ -103,9 +103,9 @@ define ceph::osd::device (
   $tmp_osd_id = inline_template('<%= scope.lookupvar(osd_id_fact) or "undefined" %>')
 
   if $tmp_osd_id == 'undefined' {
-     $osd_id = "${osd_conf_id}"
+    $osd_id = $osd_conf_id
   } else {
-     $osd_id = "${tmp_osd_id}"
+    $osd_id = $tmp_osd_id
   }
 
   if $blkid != 'undefined'  and defined( Ceph::Key['client.admin'] ){
