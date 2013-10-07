@@ -24,6 +24,10 @@ class ceph::package (
     ensure => $package_ensure
   }
 
+  package { 'ceph-common':
+    ensure => $package_ensure
+  }
+
   #FIXME: Ensure ceph user/group
 
   file { '/var/lib/ceph':

@@ -7,15 +7,15 @@
 # [*auth_type*] Auth type.
 #   Optional. none or 'cephx'. Defaults to 'cephx'.
 #
-# [*signatures_require*] If Ceph requires signatures on all 
+# [*signatures_require*] If Ceph requires signatures on all
 #   message traffic (client<->cluster and between cluster daemons).
 #   Optional. Boolean.
 #
-# [*signatures_cluster*] If Ceph requires signatures on all 
+# [*signatures_cluster*] If Ceph requires signatures on all
 #   message traffic between the cluster daemons.
 #   Optional. Boolean.
 #
-# [*signatures_service*] If Ceph requires signatures on all 
+# [*signatures_service*] If Ceph requires signatures on all
 #   message traffic between clients and the cluster.
 #   Optional. Boolean.
 #
@@ -34,16 +34,16 @@
 # [*pool_default_min_size*] The default minimum num of replicas.
 #   Optional. Integer
 #
-# [*pool_default_crush_rule*] The default CRUSH ruleset to use 
+# [*pool_default_crush_rule*] The default CRUSH ruleset to use
 #   when creating a pool.
 #   Optional. Integer
 #
-# [*mon_osd_full_ratio*] Percentage of disk space used before 
-#   an OSD considered full 
+# [*mon_osd_full_ratio*] Percentage of disk space used before
+#   an OSD considered full
 #   Optional. Integer e.g. 95, NOTE: ends in config as .95
 #
-# [*mon_osd_nearfull_ratio*] Percentage of disk space used before 
-#   an OSD considered nearfull 
+# [*mon_osd_nearfull_ratio*] Percentage of disk space used before
+#   an OSD considered nearfull
 #   Optional. Float e.g. 90, NOTE: ends in config as .90
 #
 # [*journal_size_mb*] The size of the journal in megabytes.
@@ -56,7 +56,7 @@
 #   Optional. {public-network-ip/netmask}
 #
 # [*mon_data*] The monitor’s data location.
-#   Optional. Defaults to '/var/lib/ceph/mon/mon.$id'. 
+#   Optional. Defaults to '/var/lib/ceph/mon/mon.$id'.
 #
 # [*mon_init_members*] The IDs of initial MONs in the cluster during startup.
 #   Optional. String like e.g. 'a, b, c'.
@@ -71,13 +71,13 @@
 #   Optional. Defaults to 'xfs'.
 #
 # [*osd_mkfs_options*] The options used to format the OSD fs.
-#   Optional. Defaults to '-f' for XFS. 
+#   Optional. Defaults to '-f' for XFS.
 #
 # [*osd_mount_options*] The options used to mount the OSD fs.
 #   Optional. Defaults to 'rw,noatime,inode64' for XFS.
 #
 # [*mds_activate*] Switch to activate the '[mds]' section in the config.
-#   Optional. Defaults to 'true'. 
+#   Optional. Defaults to 'true'.
 #
 # [*mds_data*] The path to the MDS data.
 #   Optional. Defaults to '/var/lib/ceph/mds/mds.$id'

@@ -85,27 +85,27 @@ define ceph::key (
 
   # to concat the capability settings
   if $cap_mon {
-    $mon_caps += "--cap mon '${cap_mon}' "
+    $mon_caps = "--cap mon '${cap_mon}' "
   }
   if $cap_osd {
-    $osd_caps += "--cap osd '${cap_osd}' "
+    $osd_caps = "--cap osd '${cap_osd}' "
   }
   if $cap_mds {
-    $mds_caps += "--cap mds '${cap_mds}' "
+    $mds_caps = "--cap mds '${cap_mds}' "
   }
 
-  $concat_caps = "$mon_caps$osd_caps$mds_caps"
+  $concat_caps = "${mon_caps}${osd_caps}${mds_caps}"
 
   # generate the keyring file
   exec { "ceph-key-${name}":
     command => "ceph-authtool ${keyring_path} --create-keyring --name='${name}' --add-key='${secret}' ${concat_caps}",
     creates => $keyring_path,
-    require => Package['ceph'],
+    require => Package['ceph-common'],
   }
 
   # set the correct mask for the keyring file
   # TODO: make sure the user/group exists
-  file { "${keyring_path}":
+  file { $keyring_path:
     ensure  => file,
     owner   => $user,
     group   => $group,
@@ -117,7 +117,7 @@ define ceph::key (
     exec { "ceph-inject-key-${name}":
       command => "ceph --name '${inject_as_id}' --keyring '${$inject_keyring}' auth add '${name}' --in-file='${keyring_path}'",
       onlyif  => "ceph --name '${inject_as_id}' --keyring '${$inject_keyring}' -s",
-      require => [ Package['ceph'], File["${keyring_path}"] ]
+      require => [ Package['ceph'], File[$keyring_path] ]
     }
   }
 
