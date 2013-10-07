@@ -29,8 +29,8 @@
 
 
 class ceph::rgw_user (
-  $user = "admin",
-  $key  = "--gen-secret",
+  $user = 'admin',
+  $key  = '--gen-secret',
   $swift_user = undef,
   $swift_key  = '--gen-secret',
 ) {
@@ -44,24 +44,24 @@ class ceph::rgw_user (
     command => "radosgw-admin user create --uid=${user} \
  ${key_opt} --display-name ${user}",
     require => Service['radosgw'],
-    unless  => "radosgw-admin user info --uid=admin"
+    unless  => 'radosgw-admin user info --uid=admin'
   }
 
   if (swift_user){
 
-     if $swift_key != '--gen-secret'{
-       $swift_key_opt = "--secret ${swift_key}"
-     } else{
-       $swift_key_opt = $swift_key
-     }
+    if $swift_key != '--gen-secret'{
+      $swift_key_opt = "--secret ${swift_key}"
+    } else{
+      $swift_key_opt = $swift_key
+    }
 
-     exec { 'add-swift-subuser':
-       command => "radosgw-admin subuser create \
+    exec { 'add-swift-subuser':
+      command => "radosgw-admin subuser create \
 --uid=${user} --subuser=${swift_user} \
 ${swift_key_opt} --display-name ${swift_user} \
 --key-type swift --access=full",
-       require => Exec['add-user'] ,
-       unless  => "radosgw-admin user info --uid=admin|grep admin:${swift_user}"
-     }
+      require => Exec['add-user'] ,
+      unless  => "radosgw-admin user info --uid=admin|grep admin:${swift_user}"
+    }
   }
 }
