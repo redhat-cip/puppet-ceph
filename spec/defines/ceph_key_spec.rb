@@ -6,6 +6,10 @@ describe 'ceph::key' do
     'client.dummy'
   end
 
+  let :facts do 
+    { :concat_basedir => '/var/lib/puppet/concat' }
+  end
+
   describe 'with default parameters' do
     it { expect { should raise_error(Puppet::Error) } }
   end
