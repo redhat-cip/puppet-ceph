@@ -9,6 +9,9 @@
 #  Optional. Boolean (true or false).
 #  Defaults to 'false.'
 #
+# [*journal*] path to place the journal
+#  Optional. Defaults to undef.
+#
 # == Dependencies
 #
 # ceph::osd need to be called for the node beforehand. The
@@ -26,6 +29,7 @@
 
 define ceph::osd::device (
   $partition_device = true,
+  $journal          = undef,
 ) {
 
   include ceph::osd
@@ -116,6 +120,7 @@ define ceph::osd::device (
         device       => $dev_path,
         cluster_addr => $::ceph::osd::cluster_address,
         public_addr  => $::ceph::osd::public_address,
+        journal      => $journal,
       }
 
       $osd_data = regsubst($::ceph::conf::osd_data, '\$id', $osd_id)
