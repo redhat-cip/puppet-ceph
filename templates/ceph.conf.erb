@@ -55,7 +55,9 @@
   osd journal size = <%= @journal_size_mb %>
   filestore flusher = false
   osd data = <%= @osd_data %>
+<% if @osd_journal_real -%>
   osd journal = <%= @osd_journal_real %>
+<% end -%>
   osd mkfs type = <%= @osd_mkfs_type %>
 <% if @osd_mkfs_options && @osd_mkfs_type -%>
   osd mkfs options <%= @osd_mkfs_type %> = <%= @osd_mkfs_options %>

@@ -7,7 +7,7 @@ node default {
     # setup some secrets needed for ceph and since we might reuse them on different
     # other nodes, let define them here.
 
-    # puppet-secret generates values for ceph for you ... 
+    # puppet-secret generates values for ceph for you ...
     # https://github.com/TelekomCloud/puppet-secret.git
     $monitor_secret = secret('monitor_secret', {
                   'method' => 'ceph',
@@ -26,9 +26,9 @@ node default {
     $secret_images_value = loadyaml('/secrets/shared/images')
 
     # As alternative use e.g. the following variables and fill it with values from 'ceph-authtool --gen-print-key':
-    # $monitor_secret_value      = 
-    # $client_admin_secret_value = 
-    # $secret_images_value       = 
+    # $monitor_secret_value      =
+    # $client_admin_secret_value =
+    # $secret_images_value       =
 }
 
 ######################## CEPH pseudo NODES ###########################
@@ -74,23 +74,23 @@ node 'cephosd' inherits cephconf {
     cluster_address     => $::ipaddress_eth3,
   }
 
-  # I hope that works for you ... we use that slightly different since we use our 
+  # I hope that works for you ... we use that slightly different since we use our
   # puppet-dmcrypt module here to setup crypted disks and call then ceph::osd::device
   # You can find puppet-dmcrypt here as soon as I find the time to push it:
-  #  https://github.com/TelekomCloud/puppet-dmcrypt 
-  ceph::osd::device { "/dev/sdb":
+  #  https://github.com/TelekomCloud/puppet-dmcrypt
+  ceph::osd::device { '/dev/sdb':
     partition_device    => false,
   }
-  ceph::osd::device { "/dev/sdc":
+  ceph::osd::device { '/dev/sdc':
     partition_device    => false,
   }
-  ceph::osd::device { "/dev/sdd":
+  ceph::osd::device { '/dev/sdd':
     partition_device    => false,
   }
 
   Class['ceph::package']
-   -> Class['ceph::conf']
-   -> Class['ceph::osd']
+    -> Class['ceph::conf']
+    -> Class['ceph::osd']
 }
 
 ######################## CEPH real NODES ###########################
@@ -125,9 +125,9 @@ node /cephmon1/ inherits cephmon {
 }
 
 node /cephmon[2-3]/ inherits cephmon {
-   # NOTHING SPECIAL TO DO HERE
+  # NOTHING SPECIAL TO DO HERE
 }
 
 node /cephosd[1-3]/ inherits cephosd {
-   # NOTHING SPECIAL TO DO HERE
+  # NOTHING SPECIAL TO DO HERE
 }
