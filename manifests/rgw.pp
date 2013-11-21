@@ -13,7 +13,31 @@
 #   Mandatory.
 #
 # [*rgw_data*] The path where the radosgw data should be stored
-#   Optional.
+#   Optional. Defaults to '/var/lib/ceph/radosgw'
+#
+# [*fcgi_file*] The path where the fcgi file is found
+#   Optional. Defaults to '/var/www/s3gw.fcgi'.
+#
+# [*keystone*] Wether or not to activate openstack keystone integration.
+#   Optional. Defaults to false
+#
+# [*keystone_url*] The URL for the keystone endpoint
+#   Mandatory if keystone integration is activated
+#
+# [*keystone_admin_token*] The keystone admin token
+#   Optional. Defaults to 'admin'
+#
+# [*keystone_accepted_roles*] The keystone accepted roles
+#   Optional. Defaults to '_member_, Member, admin, swiftoperator'
+#
+# [*keytone_token_cache_size*] Amount of tokens to keep in cache
+#   Optional. Defaults to '10'
+#
+# [*keystone_revocation_interval*] Number of seconds before checking revoked tickets
+#   Optional. Defaults to '60'
+#
+# [*nss_db_path*] Path to the nss db
+#   Optional. Defaults to '/var/lib/ceph/nss'
 #
 # == ToDo
 #
@@ -34,10 +58,21 @@ class ceph::rgw (
   $fsid,
   $admin_secret,
   $rgw_secret,
-  $rgw_data  = '/var/lib/ceph/radosgw',
-  $fcgi_file = '/var/www/s3gw.fcgi'
+  $rgw_data                     = '/var/lib/ceph/radosgw',
+  $fcgi_file                    = '/var/www/s3gw.fcgi',
+  $keystone                     = false,
+  $keystone_url                 = undef,
+  $keystone_admin_token         = 'admin',
+  $keystone_accepted_roles      = '_member_, Member, admin, swiftoperator',
+  $keystone_token_cache_size    = 10,
+  $keystone_revocation_interval = 60,
+  $nss_db_path                  = '/var/lib/ceph/nss'
 ) {
   ensure_packages( [ 'radosgw', 'ceph-common', 'ceph' ] )
+
+  if $keystone and !$keystone_url {
+    fail("Keystone integration activated but keystone_url is not set")
+  }
 
   file { $::ceph::rgw::rgw_data:
     ensure  => directory,

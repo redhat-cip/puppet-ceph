@@ -11,3 +11,12 @@
   rgw socket path = /tmp/radosgw.sock
   log file = /var/log/ceph/radosgw.log
 
+<% if @keystone -%>
+  rgw keystone url = <%= @keystone_url %>
+  rgw keystone admin token = <%= @keystone_admin_token %>
+  rgw keystone accepted roles = <%= @keystone_accepted_roles %>
+  rgw keystone token cache size = <%= @keystone_token_cache_size %>
+  rgw keystone revocation interval = <%= @keystone_revocation_interval %>
+  rgw s3 auth use keystone = true
+  nss db path = <%= @nss_db_path %>
+<% end -%>
