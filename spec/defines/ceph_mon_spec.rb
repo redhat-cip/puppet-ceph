@@ -6,6 +6,10 @@ describe 'ceph::mon' do
     '42'
   end
 
+  describe 'with default parameters' do
+    it { expect { should raise_error(Puppet::Error) } }
+  end
+
   let :pre_condition do
 '
 class { "ceph::conf": fsid => "1234567890" }
@@ -13,7 +17,10 @@ class { "ceph::conf": fsid => "1234567890" }
   end
 
   let :default_params do
-    { :monitor_secret => 'hardtoguess' }
+    {
+      :monitor_secret      => 'hardtoguess',
+      :client_admin_secret => 'shhh_dont_tell_anyone'
+    }
   end
 
   let :params do
@@ -30,15 +37,22 @@ class { "ceph::conf": fsid => "1234567890" }
   it { should include_class('ceph::package') }
   it { should include_class('ceph::conf') }
 
-
-  describe 'with default parameters' do
+  describe 'with secrets set' do
     it { should contain_ceph__conf__mon('42').with_mon_addr('169.254.0.1') }
 
-    it { should contain_exec('ceph-mon-keyring').with(
-      'command' => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.42 \
---create-keyring --name=mon. --add-key='hardtoguess' \
---cap mon 'allow *'",
-      'creates' => '/var/lib/ceph/tmp/keyring.mon.42',
+    it { should contain_ceph__key('mon.').with(
+      'secret'       => 'hardtoguess',
+      'keyring_path' => '/var/lib/ceph/tmp/keyring.mon.42',
+      'cap_mon'      => 'allow *',
+      'before'       => 'Exec[ceph-mon-mkfs]',
+      'require'      => 'Package[ceph]'
+    )}
+
+    it { should contain_file('/var/lib/ceph/mon/mon.42').with(
+      'ensure'  => 'directory',
+      'owner'   => 'root',
+      'group'   => 'root',
+      'mode'    => '0755',
       'before'  => 'Exec[ceph-mon-mkfs]',
       'require' => 'Package[ceph]'
     )}
@@ -50,12 +64,6 @@ class { "ceph::conf": fsid => "1234567890" }
         'File[/var/lib/ceph/mon/mon.42]']
     )}
 
-    it { should contain_file('/var/lib/ceph/mon/mon.42').with(
-      'ensure' => 'directory',
-      'owner'  => 'root',
-      'group'  => 'root',
-      'mode'   => '0755'
-    )}
 
     it { should contain_service('ceph-mon.42').with(
       'ensure'  => 'running',
@@ -65,18 +73,16 @@ class { "ceph::conf": fsid => "1234567890" }
       'require' => 'Exec[ceph-mon-mkfs]'
     )}
 
-    it { should contain_exec('ceph-admin-key').with(
-      'command' => "ceph-authtool /etc/ceph/keyring \
---create-keyring --name=client.admin --add-key \
-$(ceph --name mon. --keyring /var/lib/ceph/mon/mon.42/keyring \
-  auth get-or-create-key client.admin \
-    mon 'allow *' \
-    osd 'allow *' \
-    mds allow)",
-      'creates' => '/etc/ceph/keyring',
-      'require' => 'Package[ceph]',
-      'onlyif'  => "ceph --admin-daemon /var/run/ceph/ceph-mon.42.asok \
-mon_status|egrep -v '\"state\": \"(leader|peon)\"'"
+    it { should contain_ceph__key('client.admin').with(
+      'secret'         => 'shhh_dont_tell_anyone',
+      'keyring_path'   => '/etc/ceph/keyring',
+      'cap_mon'        => 'allow *',
+      'cap_osd'        => 'allow *',
+      'cap_mds'        => 'allow',
+      'inject'         => true,
+      'inject_as_id'   => 'mon.',
+      'inject_keyring' => "/var/lib/ceph/tmp/keyring.mon.42",
+      'require'        => ['Package[ceph]', 'Service[ceph-mon.42]']
     )}
   end
 

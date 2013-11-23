@@ -1,15 +1,17 @@
 # Configure a ceph mds
 #
 # == Name
-#   This resource's name is the mon's id and must be numeric.
+#   This resource's name is the mds's id and must be numeric.
 # == Parameters
-# [*fsid*] The cluster's fsid.
-#   Mandatory. Get one with `uuidgen -r`.
+# [*client_admin_secret*] The client.admin secret
+#  Mandatory. The client.admin secret to generate a
+#  keyring under '/etc/ceph/keyring' if needed to
+#  setup and start the MDSs.
+
+# [*mds_secret*] The cluster's mds's secret key.
+#   Mandatory. Get one with `ceph-authtool --gen-print-key`.
 #
-# [*auth_type*] Auth type.
-#   Optional. undef or 'cephx'. Defaults to 'cephx'.
-#
-# [*mds_data*] Base path for mon data. Data will be put in a mon.$id folder.
+# [*mds_data*] Base path for mds data. Data will be put in a mds.$id folder.
 #   Optional. Defaults to '/var/lib/ceph/mds.
 #
 # == Dependencies
@@ -20,6 +22,7 @@
 #
 #  Sébastien Han sebastien.han@enovance.com
 #  François Charlier francois.charlier@enovance.com
+#  David Moreau Simard dmsimard@iweb.com
 #
 # == Copyright
 #
@@ -27,33 +30,50 @@
 #
 
 define ceph::mds (
-  $fsid,
-  $auth_type = 'cephx',
+  $client_admin_secret,
+  $mds_secret,
   $mds_data = '/var/lib/ceph/mds',
 ) {
 
+  include 'ceph::conf'
   include 'ceph::package'
   include 'ceph::params'
 
-  class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
-  }
-
   $mds_data_expanded = "${mds_data}/mds.${name}"
 
-  file { $mds_data_expanded:
+  file {
+    [
+    $mds_data,
+    $mds_data_expanded,
+    ]:
     ensure  => directory,
     owner   => 'root',
     group   => 0,
     mode    => '0755',
+    before  => Ceph::Key["mds.${name}"]
   }
 
-  exec { 'ceph-mds-keyring':
-    command =>"ceph auth get-or-create mds.${name} mds 'allow ' osd 'allow *' mon 'allow rwx'",
-    creates => "/var/lib/ceph/mds/mds.${name}/keyring",
-    before  => Service["ceph-mds.${name}"],
-    require => Package['ceph'],
+  ceph::key { 'client.admin':
+    secret         => $client_admin_secret,
+    keyring_path   => '/etc/ceph/keyring',
+    require        => Package['ceph']
+  }
+
+  ceph::key { "mds.${name}":
+    secret         => $mds_secret,
+    keyring_path   => "${mds_data_expanded}/keyring",
+    cap_mon        => 'allow rwx',
+    cap_osd        => 'allow *',
+    cap_mds        => 'allow *',
+    inject         => true,
+    inject_as_id   => 'client.admin',
+    inject_keyring => '/etc/ceph/keyring',
+    require        => Package['ceph']
+  }
+
+  ceph::conf::mds { $name:
+    mds_data => $mds_data,
+    before   => Service["ceph-mds.${name}"]
   }
 
   service { "ceph-mds.${name}":
@@ -62,6 +82,6 @@ define ceph::mds (
     start    => "service ceph start mds.${name}",
     stop     => "service ceph stop mds.${name}",
     status   => "service ceph status mds.${name}",
-    require  => Exec['ceph-mds-keyring'],
+    require  => [ Package['ceph'], Ceph::Key["mds.${name}"] ]
   }
 }

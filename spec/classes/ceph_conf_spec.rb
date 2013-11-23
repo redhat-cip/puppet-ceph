@@ -49,6 +49,8 @@ describe 'ceph::conf' do
           '  osd data = /var/lib/ceph/osd/osd.$id',
           '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
           '  osd mkfs type = xfs',
+          '  osd mkfs options xfs = -f',
+          '  osd mount options xfs = rw,noatime,inode64',
           '  keyring = /var/lib/ceph/osd/osd.$id/keyring',
           '[mds]',
           '  mds data = /var/lib/ceph/mds/mds.$id',
@@ -58,6 +60,59 @@ describe 'ceph::conf' do
     end
 
   end
+
+
+
+  describe "with default parameter and mds section disabled" do
+
+    let :params do
+      { 
+        :fsid         => 'qwertyuiop',
+        :mds_activate => 'false'
+      }
+    end
+
+    it { should contain_concat('/etc/ceph/ceph.conf').with(
+      'owner'   => 'root',
+      'group'   => 0,
+      'mode'    => '0664',
+      'require' => 'Package[ceph]'
+    ) }
+
+    it { should contain_concat__fragment('ceph.conf').with(
+      'target'  => '/etc/ceph/ceph.conf',
+      'order'   => '01'
+    ) }
+
+    it 'should create the configuration fragment with the correct content' do
+      verify_contents(
+        subject,
+        fragment_path,
+        [
+          '[global]',
+          '  auth cluster required = cephx',
+          '  auth service required = cephx',
+          '  auth client required = cephx',
+          '  keyring = /etc/ceph/keyring',
+          '  fsid = qwertyuiop',
+          '[mon]',
+          '  mon data = /var/lib/ceph/mon/mon.$id',
+          '[osd]',
+          '  osd journal size = 4096',
+          '  filestore flusher = false',
+          '  osd data = /var/lib/ceph/osd/osd.$id',
+          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
+          '  osd mkfs type = xfs',
+          '  osd mkfs options xfs = -f',
+          '  osd mount options xfs = rw,noatime,inode64',
+          '  keyring = /var/lib/ceph/osd/osd.$id/keyring'
+        ]
+      )
+    end
+
+  end
+
+
 
   describe "when overriding default parameters" do
 
@@ -74,6 +129,8 @@ describe 'ceph::conf' do
         :pool_default_size       => 3,
         :pool_default_min_size   => 8,
         :pool_default_crush_rule => 1,
+        :mon_osd_full_ratio      => 90,
+        :mon_osd_nearfull_ratio  => 80,
         :journal_size_mb         => 8192,
         :cluster_network         => '10.0.0.0/16',
         :public_network          => '10.1.0.0/16',
@@ -81,6 +138,8 @@ describe 'ceph::conf' do
         :mon_init_members        => 'a , b , c',
         :osd_data                => '/opt/ceph/osd._id',
         :osd_journal             => '/opt/ceph/journal/osd._id',
+        :osd_mkfs_type           => 'ext4',
+        :osd_mount_options       => 'user_xattr,rw,noatime,nodiratime',
         :mds_data                => '/opt/ceph/mds._id'
       }
     end
@@ -113,6 +172,8 @@ describe 'ceph::conf' do
           '  osd pool default size = 3',
           '  osd pool default min size = 8',
           '  osd pool default crush rule = 1',
+          '  mon osd full ratio = .90',
+          '  mon osd nearfull ratio = .80',
           '  fsid = qwertyuiop',
           '[mon]',
           '  mon initial members = a , b , c',
@@ -122,7 +183,8 @@ describe 'ceph::conf' do
           '  filestore flusher = false',
           '  osd data = /opt/ceph/osd._id',
           '  osd journal = /opt/ceph/journal/osd._id',
-          '  osd mkfs type = xfs',
+          '  osd mkfs type = ext4',
+          '  osd mount options ext4 = user_xattr,rw,noatime,nodiratime',
           '  keyring = /opt/ceph/osd._id/keyring',
           '[mds]',
           '  mds data = /opt/ceph/mds._id',

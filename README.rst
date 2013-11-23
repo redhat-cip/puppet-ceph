@@ -63,6 +63,12 @@ Features
 
   • Working OSD ✓
 
+* RadosGW ✓
+
+  • Setup service ✓
+
+  • User handling ✓
+
 TODO
 ====
 
@@ -70,7 +76,7 @@ TODO
 
 * Better OSD device placement possibilities
 
-* Test/finish MDS/RadosGW code
+* Test/finish MDS code
 
 Contributing
 ============
@@ -79,7 +85,7 @@ Contributions are welcome, just fork on GitHub and send a pull-request !
 
 * Please try to keep each new feature / change / fix in a separate pull-request, it will greatly help speeding the merge of the pull-requests ;)
 
-* When adding features, don't forget to add unit tests.
+* When adding features, don't forget to add unit tests. Use `bundle exec rake spec` to run the existing tests.
 
 * puppet-lint (https://github.com/rodjek/puppet-lint) should not produce too much errors too :)
 
@@ -116,9 +122,10 @@ APT configuration to install from the official Ceph repositories::
 Puppet manifest for a MON
 -------------------------
 
-A MON host also needs the MONs secret : get it with `ceph-authtool --create /path/to/keyring --gen-key -n mon.`::
+A MON host also needs the MONs and client.admin secret : get them with `ceph-authtool --gen-print-key`::
 
-    $mon_secret = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdw=='
+    $mon_secret   = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdw=='
+    $admin_secret = 'AQD7kyJQQGoOBhAAqrPAqSopSwPrrfMMomzVdx=='
 
 An Id::
 
@@ -127,21 +134,10 @@ An Id::
 And the mon declaration::
 
     ceph::mon { $id:
-      monitor_secret => $mon_secret,
-      mon_addr       => '192.168.0.10', # The host's «public» IP address
+      monitor_secret      => $mon_secret,
+      client_admin_secret => $admin_secret,
+      mon_addr            => '192.168.0.10', # The host's «public» IP address
     }
-
-Then on **ONLY ONE** MON, export the admin key (required by the OSDs)::
-
-    if !empty($::ceph_admin_key) {
-      @@ceph::key { 'admin':
-        secret       => $::ceph_admin_key,
-        keyring_path => '/etc/ceph/keyring',
-      }
-    }
-
-
-**NOTE**: The puppet agent needs to be ran 3 times for the MON to be up and the admin key exported.
 
 Puppet manifest for an OSD
 --------------------------
@@ -149,8 +145,9 @@ Puppet manifest for an OSD
 An OSD host also needs the global host configuration for OSDs::
 
     class { 'ceph::osd':
-      public_address  => '192.168.0.100',
-      cluster_address => '10.0.0.100',
+      client_admin_secret => $admin_secret,
+      public_address      => '192.168.0.100',
+      cluster_address     => '10.0.0.100',
     }
 
 And for each disk/device the path of the physical device to format::

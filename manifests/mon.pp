@@ -1,13 +1,15 @@
-# Configure a ceph mon
+# Configure and starts a ceph mon
 #
 # == Name
-#   This resource's name is the mon's id and must be numeric.
-# == Parameters
-# [*fsid*] The cluster's fsid.
-#   Mandatory. Get one with `uuidgen -r`.
+#   This resource's name is the mon's id and must be alphanumric.
 #
+# == Parameters
 # [*mon_secret*] The cluster's mon's secret key.
-#   Mandatory. Get one with `ceph-authtool /dev/stdout --name=mon. --gen-key`.
+#   Mandatory. Get one with `ceph-authtool --gen-print-key`.
+#
+# [*client_admin_secret*] The cluster's client.admin secret key.
+#   Mandatory. Get one with `ceph-authtool --gen-print-key`.
+#   Make sure it's the same key for all MONs on your cluster.
 #
 # [*mon_port*] The mon's port.
 #   Optional. Defaults to 6789.
@@ -29,6 +31,7 @@
 #
 define ceph::mon (
   $monitor_secret,
+  $client_admin_secret,
   $mon_port = 6789,
   $mon_addr = $ipaddress
 ) {
@@ -45,26 +48,12 @@ define ceph::mon (
   }
 
   #FIXME: monitor_secret will appear in "ps" output …
-  exec { 'ceph-mon-keyring':
-    command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
---create-keyring \
---name=mon. \
---add-key='${monitor_secret}' \
---cap mon 'allow *'",
-    creates => "/var/lib/ceph/tmp/keyring.mon.${name}",
-    before  => Exec['ceph-mon-mkfs'],
-    require => Package['ceph'],
-  }
-
-  exec { 'ceph-mon-mkfs':
-    command => "ceph-mon --mkfs -i ${name} \
---keyring /var/lib/ceph/tmp/keyring.mon.${name}",
-    creates => "${mon_data_real}/keyring",
-    require => [
-      Package['ceph'],
-      Concat['/etc/ceph/ceph.conf'],
-      File[$mon_data_real]
-    ],
+  ceph::key { 'mon.':
+    secret       => $monitor_secret,
+    keyring_path => "/var/lib/ceph/tmp/keyring.mon.${name}",
+    cap_mon      => 'allow *',
+    before       => Exec['ceph-mon-mkfs'],
+    require      => Package['ceph'],
   }
 
   file { $mon_data_real:
@@ -72,7 +61,18 @@ define ceph::mon (
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
+    before  => Exec['ceph-mon-mkfs'],
     require => Package['ceph']
+  }
+
+  exec { 'ceph-mon-mkfs':
+    command => "ceph-mon --mkfs -i ${name} --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
+    creates => "${mon_data_real}/keyring",
+    require => [
+      Package['ceph'],
+      Concat['/etc/ceph/ceph.conf'],
+      File[$mon_data_real]
+    ],
   }
 
   service { "ceph-mon.${name}":
@@ -84,20 +84,15 @@ define ceph::mon (
     require  => Exec['ceph-mon-mkfs'],
   }
 
-  exec { 'ceph-admin-key':
-    command => "ceph-authtool /etc/ceph/keyring \
---create-keyring \
---name=client.admin \
---add-key \
-$(ceph --name mon. --keyring ${mon_data_real}/keyring \
-  auth get-or-create-key client.admin \
-    mon 'allow *' \
-    osd 'allow *' \
-    mds allow)",
-    creates => '/etc/ceph/keyring',
-    require => Package['ceph'],
-    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
-mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
+  ceph::key { 'client.admin':
+    secret         => $client_admin_secret,
+    keyring_path   => '/etc/ceph/keyring',
+    cap_mon        => 'allow *',
+    cap_osd        => 'allow *',
+    cap_mds        => 'allow',
+    inject         => true,
+    inject_as_id   => 'mon.',
+    inject_keyring => "/var/lib/ceph/tmp/keyring.mon.${name}",
+    require        => [ Package['ceph'], Service["ceph-mon.${name}"] ],
   }
-
 }

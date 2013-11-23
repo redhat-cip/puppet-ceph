@@ -1,0 +1,13 @@
+[client.radosgw.gateway]
+  # Need this parameter for the default apache2 packages
+  rgw print continue = false
+
+  rgw enable usage log = true
+  rgw enable ops log = true
+  rgw usage log tick interval = 30
+  rgw usage log flush threshold = 1024
+  host = <%= @hostname %>
+  keyring = <%= @rgw_data %>/keyring.rgw
+  rgw socket path = /tmp/radosgw.sock
+  log file = /var/log/ceph/radosgw.log
+

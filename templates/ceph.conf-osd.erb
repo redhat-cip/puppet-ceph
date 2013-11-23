@@ -1,10 +1,13 @@
 [osd.<%= @name %>]
    host = <%= @hostname %>
-   devs = <%= @device %>1
+   devs = <%= @device %>
 <% if @cluster_addr -%>
    cluster addr = <%= @cluster_addr %>
 <% end -%>
 <% if @public_addr -%>
    public addr = <%= @public_addr %>
+<% end -%>
+<% if @journal_real -%>
+   osd journal = <%= @journal_real %>
 <% end -%>
 

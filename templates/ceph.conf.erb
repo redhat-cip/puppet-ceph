@@ -36,6 +36,12 @@
 <% if @pool_default_crush_rule -%>
   osd pool default crush rule = <%= @pool_default_crush_rule %>
 <% end -%>
+<% if @mon_osd_full_ratio -%>
+  mon osd full ratio = .<%= @mon_osd_full_ratio %>
+<% end -%>
+<% if @mon_osd_nearfull_ratio -%>
+  mon osd nearfull ratio = .<%= @mon_osd_nearfull_ratio %>
+<% end -%>
 
   fsid = <%= @fsid %>
 
@@ -49,11 +55,21 @@
   osd journal size = <%= @journal_size_mb %>
   filestore flusher = false
   osd data = <%= @osd_data %>
+<% if @osd_journal_real -%>
   osd journal = <%= @osd_journal_real %>
-  osd mkfs type = xfs
+<% end -%>
+  osd mkfs type = <%= @osd_mkfs_type %>
+<% if @osd_mkfs_options && @osd_mkfs_type -%>
+  osd mkfs options <%= @osd_mkfs_type %> = <%= @osd_mkfs_options %>
+<% end -%>
+<% if @osd_mount_options && @osd_mkfs_type -%>
+  osd mount options <%= @osd_mkfs_type %> = <%= @osd_mount_options %>
+<% end -%>
   keyring = <%= @osd_data %>/keyring
 
+<% if @mds_activate -%>
 [mds]
   mds data = <%= @mds_data %>
   keyring = <%= @mds_data %>/keyring
+<% end -%>
 
