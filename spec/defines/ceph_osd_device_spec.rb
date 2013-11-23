@@ -118,7 +118,14 @@ class { 'ceph::osd':
         'require' => 'Exec[ceph-osd-mkfs-56]'
       ) }
 
-      it { should contain_exec('ceph-osd-crush-56').with(
+      it { should contain_exec('ceph-osd-crush-add-56').with(
+        'command' => 'ceph osd crush add 56 1 root=default host=dummy-host',
+        'onlyif'  => "ceph osd dump |grep -q 'new dummy-uuid-1234'",
+        'before'  => 'Exec[ceph-osd-crush-set-56]',
+        'require' => 'Exec[ceph-osd-register-56]'
+      ) }
+
+      it { should contain_exec('ceph-osd-crush-set-56').with(
         'command' => 'ceph osd crush set 56 1 root=default host=dummy-host',
         'require' => 'Exec[ceph-osd-register-56]'
       ) }
@@ -128,7 +135,7 @@ class { 'ceph::osd':
         'start'     => 'service ceph start osd.56',
         'stop'      => 'service ceph stop osd.56',
         'status'    => 'service ceph status osd.56',
-        'require'   => 'Exec[ceph-osd-crush-56]',
+        'require'   => 'Exec[ceph-osd-crush-set-56]',
         'subscribe' => 'Concat[/etc/ceph/ceph.conf]'
       ) }
     end
