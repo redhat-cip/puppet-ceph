@@ -11,6 +11,15 @@
 # [*mount_point*] the path the disk mount to
 #  Optional. If not set the disks isn't mounted
 #
+# [*mkfs_type*] Type of the journal disks filesystem.
+#   Optional. Defaults to ceph::conf::osd_mkfs_type.
+#
+# [*mkfs_options*] The options used to format the journal fs.
+#   Optional. Defaults to ceph::conf::osd_mkfs_options.
+#
+# [*mount_options*] The options used to mount the journal fs.
+#   Optional. Defaults to ceph::conf::osd_mount_options.
+#
 # == Dependencies
 #
 # == Authors
@@ -23,7 +32,10 @@
 #
 
 define ceph::osd::journal (
-  $mount_point = undef,
+  $mount_point   = undef,
+  $mkfs_type     = $ceph::conf::osd_mkfs_type,
+  $mkfs_options  = $ceph::conf::osd_mkfs_options,
+  $mount_options = $ceph::conf::osd_mount_options,
 ) {
 
   $dev_path = $name
@@ -32,12 +44,16 @@ define ceph::osd::journal (
   ensure_packages (['ceph'])
 
   # TODO: add other file systems ... otherwise fail!
-  if $::ceph::conf::osd_mkfs_type == 'xfs' {
+  if $mkfs_type == 'xfs' {
     exec { "mkfs_${devname}":
-      command => "mkfs.xfs ${::ceph::conf::osd_mkfs_options} ${dev_path}",
+      command => "mkfs.xfs ${mkfs_options} ${dev_path}",
       unless  => "xfs_admin -l ${dev_path}",
       require => [Package['xfsprogs']],
     }
+    $mount_require = [ Exec["mkfs_${devname}"], File[$mount_point] ]
+  } else {
+    # fall back to default to be able to use tmpfs
+    $mount_require = [File[$mount_point]]
   }
 
   if $mount_point {
@@ -50,10 +66,10 @@ define ceph::osd::journal (
       ensure  => mounted,
       device  => $dev_path,
       atboot  => true,
-      fstype  => $::ceph::conf::osd_mkfs_type,
-      options => $::ceph::conf::osd_mount_options,
+      fstype  => $mkfs_type,
+      options => $mount_options,
       pass    => 2,
-      require => [ Exec["mkfs_${devname}"], File[$mount_point] ],
+      require => $mount_require,
     }
   }
 }
