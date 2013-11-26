@@ -1,11 +1,16 @@
 [client.radosgw.gateway]
   # Need this parameter for the default apache2 packages
   rgw print continue = false
-
+  
+<% if @debug_log -%>
   rgw enable usage log = true
   rgw enable ops log = true
   rgw usage log tick interval = 30
   rgw usage log flush threshold = 1024
+<% else -%>
+  debug rgw = 0/5
+<% end -%>
+
   host = <%= @hostname %>
   keyring = <%= @rgw_data %>/keyring.rgw
   rgw socket path = /tmp/radosgw.sock
