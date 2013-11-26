@@ -33,11 +33,15 @@
 # [*keytone_token_cache_size*] Amount of tokens to keep in cache
 #   Optional. Defaults to '10'
 #
-# [*keystone_revocation_interval*] Number of seconds before checking revoked tickets
+# [*keystone_revocation_interval*] Number of seconds before checking
+#                                  revoked tickets
 #   Optional. Defaults to '60'
 #
 # [*nss_db_path*] Path to the nss db
 #   Optional. Defaults to '/var/lib/ceph/nss'
+#
+# [*debug_log*] Activates radosgw logging
+#   Optional. Default is false.
 #
 # == ToDo
 #
@@ -66,12 +70,13 @@ class ceph::rgw (
   $keystone_accepted_roles      = '_member_, Member, admin, swiftoperator',
   $keystone_token_cache_size    = 10,
   $keystone_revocation_interval = 60,
-  $nss_db_path                  = '/var/lib/ceph/nss'
+  $nss_db_path                  = '/var/lib/ceph/nss',
+  $debug_log                    = false
 ) {
   ensure_packages( [ 'radosgw', 'ceph-common', 'ceph' ] )
 
   if $keystone and !$keystone_url {
-    fail("Keystone integration activated but keystone_url is not set")
+    fail('Keystone integration activated but keystone_url is not set')
   }
 
   file { $::ceph::rgw::rgw_data:
