@@ -53,6 +53,7 @@
 
 [osd]
   osd journal size = <%= @journal_size_mb %>
+  journal dio = <%= @osd_journal_dio %>
   filestore flusher = false
   osd data = <%= @osd_data %>
 <% if @osd_journal_real -%>
