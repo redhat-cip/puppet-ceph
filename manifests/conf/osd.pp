@@ -1,3 +1,5 @@
+# Define a osd
+#
 define ceph::conf::osd (
   $device,
   $cluster_addr = undef,

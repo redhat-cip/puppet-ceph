@@ -1,3 +1,5 @@
+# Define a mds
+#
 define ceph::conf::mds (
   $mds_data
 ) {

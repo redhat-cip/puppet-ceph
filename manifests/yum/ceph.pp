@@ -1,3 +1,5 @@
+# Configure yum repository
+#
 class ceph::yum::ceph (
   $release = 'cuttlefish'
 ) {

@@ -1,1 +1,3 @@
 *.vdi
+*.swp
+Gemfile.lock

@@ -5,6 +5,7 @@ Exec {
   path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
 }
 
+#
 class role_ceph (
   $fsid,
   $auth_type = 'cephx'
@@ -21,6 +22,7 @@ class role_ceph (
 
 }
 
+#
 class role_ceph_mon (
   $id
 ) {

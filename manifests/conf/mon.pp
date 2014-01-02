@@ -1,3 +1,5 @@
+# Define a mon
+#
 define ceph::conf::mon (
   $mon_addr,
   $mon_port,

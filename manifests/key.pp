@@ -1,3 +1,5 @@
+# Create the ceph keyring
+#
 define ceph::key (
   $secret       = undef,
   $keyring_path = "/var/lib/ceph/tmp/${name}.keyring",

@@ -1,3 +1,22 @@
+# Configure ceph APT repository
+#
+# == Parameters
+#
+# [*release*] The ceph release name
+#   Optional. Default to bobtail
+#
+# == Dependencies
+#
+# none
+#
+# == Authors
+#
+#  François Charlier francois.charlier@enovance.com
+#
+# == Copyright
+#
+# Copyright 2012 eNovance <licensing@enovance.com>
+#
 class ceph::apt::ceph (
   $release = 'bobtail'
 ) {
