@@ -46,13 +46,13 @@ describe 'ceph::conf' do
           '[osd]',
           '  osd journal size = 4096',
           '  filestore flusher = false',
-          '  osd data = /var/lib/ceph/osd/osd.$id',
-          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
+          '  osd data = /var/lib/ceph/osd/ceph-$id',
+          '  osd journal = /var/lib/ceph/osd/ceph-$id/journal',
           '  osd mkfs type = xfs',
-          '  keyring = /var/lib/ceph/osd/osd.$id/keyring',
+          '  keyring = /var/lib/ceph/osd/ceph-$id/keyring',
           '[mds]',
-          '  mds data = /var/lib/ceph/mds/mds.$id',
-          '  keyring = /var/lib/ceph/mds/mds.$id/keyring'
+          '  mds data = /var/lib/ceph/mds/ceph-$id',
+          '  keyring = /var/lib/ceph/mds/ceph-$id/keyring'
         ]
       )
     end

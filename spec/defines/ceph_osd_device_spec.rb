@@ -90,29 +90,29 @@ ceph::key { 'admin':
         'cluster_addr' => '10.0.0.56'
       ) }
 
-      it { should contain_file('/var/lib/ceph/osd/osd.56').with(
+      it { should contain_file('/var/lib/ceph/osd/ceph-56').with(
         'ensure' => 'directory'
       ) }
 
-      it { should contain_mount('/var/lib/ceph/osd/osd.56').with(
+      it { should contain_mount('/var/lib/ceph/osd/ceph-56').with(
         'ensure'  => 'mounted',
         'device'  => '/dev/device1',
         'atboot'  => true,
         'fstype'  => 'xfs',
         'options' => 'rw,noatime,inode64',
         'pass'    => 2,
-        'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
+        'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/ceph-56]']
       ) }
 
       it { should contain_exec('ceph-osd-mkfs-56').with(
         'command' => 'ceph-osd -c /etc/ceph/ceph.conf -i 56 --mkfs --mkkey --osd-uuid dummy-uuid-1234
 ',
-        'creates' => '/var/lib/ceph/osd/osd.56/keyring',
-        'require' => ['Mount[/var/lib/ceph/osd/osd.56]', 'Concat[/etc/ceph/ceph.conf]']
+        'creates' => '/var/lib/ceph/osd/ceph-56/keyring',
+        'require' => ['Mount[/var/lib/ceph/osd/ceph-56]', 'Concat[/etc/ceph/ceph.conf]']
       ) }
 
       it { should contain_exec('ceph-osd-register-56').with(
-        'command' => "ceph auth add osd.56 osd 'allow *' mon 'allow rwx' -i /var/lib/ceph/osd/osd.56/keyring",
+        'command' => "ceph auth add osd.56 osd 'allow *' mon 'allow rwx' -i /var/lib/ceph/osd/ceph-56/keyring",
         'require' => 'Exec[ceph-osd-mkfs-56]'
       ) }
 

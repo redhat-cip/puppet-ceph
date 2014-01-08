@@ -27,9 +27,9 @@ class ceph::conf (
   $signatures_cluster      = undef,
   $signatures_service      = undef,
   $signatures_sign_msgs    = undef,
-  $pool_default_size       = undef,
-  $pool_default_pg_num     = undef,
-  $pool_default_pgp_num    = undef,
+  $pool_default_size       = 3,
+  $pool_default_pg_num     = 1024,
+  $pool_default_pgp_num    = 1024,
   $pool_default_min_size   = undef,
   $pool_default_crush_rule = undef,
   $journal_size_mb         = 4096,
@@ -37,9 +37,9 @@ class ceph::conf (
   $public_network          = undef,
   $mon_data                = '/var/lib/ceph/mon/mon.$id',
   $mon_init_members        = undef,
-  $osd_data                = '/var/lib/ceph/osd/osd.$id',
+  $osd_data                = '/var/lib/ceph/osd/ceph-$id',
   $osd_journal             = undef,
-  $mds_data                = '/var/lib/ceph/mds/mds.$id'
+  $mds_data                = '/var/lib/ceph/mds/ceph-$id'
 ) {
 
   include 'ceph::package'
