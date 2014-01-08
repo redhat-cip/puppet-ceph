@@ -75,6 +75,16 @@ size=1024m -n size=64k ${name}1",
         ensure => directory,
       }
 
+      file { "${osd_data}/journal":
+        ensure  => link,
+        target  => "/dev/mapper/rootfs-journal--${devname}1",
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0660',
+        require => Mount[$osd_data],
+        before  => Service["ceph-osd.${osd_id}"];
+      }
+
       mount { $osd_data:
         ensure  => mounted,
         device  => "${name}1",
