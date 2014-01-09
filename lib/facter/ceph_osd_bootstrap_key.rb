@@ -16,7 +16,7 @@ timeout = 10
 # Fact that gets the ceph key "client.bootstrap-osd"
 
 Facter.add(:ceph_admin_key, :timeout => timeout) do
-  if system("ceph -s 2>/dev/null")
+  if system("ceph -s > /dev/null 2>&1")
     setcode { Facter::Util::Resolution.exec("ceph auth get-key client.admin") }
   end
 end
@@ -28,7 +28,7 @@ end
 
 begin
   Timeout::timeout(timeout) {
-    if system("ceph -s 2>/dev/null")
+    if system("ceph -s > /dev/null 2>&1")
       ceph_osds = Hash.new
       ceph_osd_dump = Facter::Util::Resolution.exec("ceph osd dump")
       ceph_osd_dump and ceph_osd_dump.each_line do |line|

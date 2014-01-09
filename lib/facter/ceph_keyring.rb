@@ -7,7 +7,7 @@ require 'facter'
 require 'json'
 
 # if ceph isn't configured => Error initializing cluster client: Error
-if system("ceph -s 2>/dev/null")
+if system("ceph -s > /dev/null 2>&1")
   raw_auth = %x(ceph auth list -f json)
   json_auth = JSON.parse(raw_auth)
   json_auth['auth_dump'].each do |k|
