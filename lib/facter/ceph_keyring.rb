@@ -6,8 +6,11 @@
 require 'facter'
 require 'json'
 
+# issue with Facter::Util::Resolution.exec
+# http://downloads.puppetlabs.com/facter/apidocs/classes/Facter/Util/Resolution.html
+# if ceph isn't configured => Error initializing cluster client: Error
 if system("ceph -s > /dev/null 2>&1")
-  raw_auth = Facter::Util::Resolution.exec("ceph auth list -f json")
+  raw_auth = %x(ceph auth list -f json)
   json_auth = JSON.parse(raw_auth)
   json_auth['auth_dump'].each do |k|
     if k['entity'] =~ /client(.*)/
