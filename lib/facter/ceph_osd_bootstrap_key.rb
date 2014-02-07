@@ -24,6 +24,19 @@ end
 ## blkid_uuid_#{device} / ceph_osd_id_#{device}
 ## Facts that export partitions uuids & ceph osd id of device
 
+# Load the disks uuids
+
+blkid = Facter::Util::Resolution.exec("blkid")
+blkid and blkid.each_line do |line|
+  if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
+    device = $1
+    uuid = $2
+
+    Facter.add("blkid_uuid_#{device}") { setcode { uuid } }
+    Facter.add("ceph_osd_id_#{device}") { setcode { ceph_osds[uuid] } }
+  end
+end
+
 # Load the osds/uuids from ceph
 
 begin
@@ -37,16 +50,6 @@ begin
         end
       end
 
-      blkid = Facter::Util::Resolution.exec("blkid")
-      blkid and blkid.each_line do |line|
-        if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
-          device = $1
-          uuid = $2
-
-          Facter.add("blkid_uuid_#{device}") { setcode { uuid } }
-          Facter.add("ceph_osd_id_#{device}") { setcode { ceph_osds[uuid] } }
-        end
-      end
     end
   }
 rescue Timeout::Error
