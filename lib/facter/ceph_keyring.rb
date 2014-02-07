@@ -6,13 +6,14 @@
 require 'facter'
 require 'json'
 
-timeout = 10
+timeout = 2
+cmd_timeout = 2
 
 begin
   Timeout::timeout(timeout) {
     # if ceph isn't configured => Error initializing cluster client: Error
-    if system("timeout 5 ceph -s > /dev/null 2>&1")
-      raw_auth = %x(ceph auth list -f json)
+    if system("timeout #{cmd_timeout} ceph -s > /dev/null 2>&1")
+      raw_auth = %x(timeout #{cmd_timeout} ceph auth list -f json)
       json_auth = JSON.parse(raw_auth)
       json_auth['auth_dump'].each do |k|
         if k['entity'] =~ /client(.*)/
