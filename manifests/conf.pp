@@ -39,7 +39,8 @@ class ceph::conf (
   $mon_init_members        = undef,
   $osd_data                = '/var/lib/ceph/osd/ceph-$id',
   $osd_journal             = undef,
-  $mds_data                = '/var/lib/ceph/mds/ceph-$id'
+  $mds_data                = '/var/lib/ceph/mds/mds.$id',
+  $enable_service          = false,
 ) {
 
   include 'ceph::package'
@@ -65,4 +66,5 @@ class ceph::conf (
     content => template('ceph/ceph.conf.erb'),
   }
 
+  service { 'ceph': enable => $enable_service }
 }
