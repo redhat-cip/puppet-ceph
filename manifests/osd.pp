@@ -28,7 +28,4 @@ class ceph::osd (
   ensure_packages( [ 'xfsprogs', 'parted' ] )
 
   Package['ceph'] -> Ceph::Key <<| title == 'admin' |>>
-
-  service { 'ceph': enable => true }
 }
-
