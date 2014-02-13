@@ -29,5 +29,6 @@ class ceph::osd (
 
   Package['ceph'] -> Ceph::Key <<| title == 'admin' |>>
 
+  service { 'ceph': enable => true }
 }
 
