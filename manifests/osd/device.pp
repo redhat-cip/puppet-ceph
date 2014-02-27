@@ -28,12 +28,14 @@ define ceph::osd::device (
   exec { "mktable_gpt_${devname}":
     command => "parted -a optimal --script ${name} mktable gpt",
     unless  => "parted --script ${name} print|grep -sq 'Partition Table: gpt'",
+    path    => ['/sbin', '/bin'],
     require => Package['parted']
   }
 
   exec { "mkpart_${devname}":
     command => "parted -a optimal -s ${name} mkpart ceph 0% 100%",
     unless  => "parted ${name} print | egrep '^ 1.*ceph$'",
+    path    => ['/sbin', '/bin'],
     require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
   }
 
@@ -41,6 +43,7 @@ define ceph::osd::device (
     command => "mkfs.xfs -f -d agcount=${::processorcount} -l \
 size=1024m -n size=64k ${name}1",
     unless  => "xfs_admin -l ${name}1",
+    path    => ['/sbin', '/usr/sbin'],
     require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
   }
 
@@ -53,6 +56,7 @@ size=1024m -n size=64k ${name}1",
     exec { "ceph_osd_create_${devname}":
       command => "ceph osd create ${blkid}",
       unless  => "ceph osd dump | grep -sq ${blkid}",
+      path    => ['/bin', '/usr/bin'],
       require => Ceph::Key['admin'],
     }
 
@@ -107,6 +111,7 @@ size=1024m -n size=64k ${name}1",
 ",
         creates => "${osd_data}/keyring",
         unless  => "ceph auth list | egrep '^osd.${osd_id}$'",
+        path    => ['/bin', '/usr/bin'],
         require => [
           Mount[$osd_data],
           Concat['/etc/ceph/ceph.conf'],
@@ -118,6 +123,7 @@ size=1024m -n size=64k ${name}1",
 ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
 -i ${osd_data}/keyring",
         unless  => "ceph auth list | egrep '^osd.${osd_id}$'",
+        path    => ['/bin', '/usr/bin'],
         require => Exec["ceph-osd-mkfs-${osd_id}"],
       }
 
