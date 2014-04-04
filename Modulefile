@@ -1,5 +1,5 @@
 name    'enovance-ceph'
-version '0.0.1'
+version '1.0.0'
 source 'git://github.com/enovance/puppet-ceph.git'
 author 'François Charlier <francois.charlier@enovance.com>'
 license 'AGPLv3'
