@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 #
-NAME = 'enovance-ceph'
+NAME = 'eNovance-ceph'
 TDIR = File.expand_path(File.dirname(__FILE__))
 
 require 'puppetlabs_spec_helper/rake_tasks'

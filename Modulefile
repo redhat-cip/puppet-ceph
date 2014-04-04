@@ -1,4 +1,4 @@
-name    'enovance-ceph'
+name    'eNovance-ceph'
 version '1.0.0'
 source 'git://github.com/enovance/puppet-ceph.git'
 author 'François Charlier <francois.charlier@enovance.com>'
