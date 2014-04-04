@@ -1,12 +1,20 @@
+language: ruby
+bundler_args: --without development
+script: "bundle exec rake SPEC_OPTS='--format n --color --backtrace'"
 rvm:
   - 1.8.7
   - 1.9.3
-notifications:
-  email:
-    - <your email address>
+  - 2.0.0
 env:
-  - PUPPET_VERSION=2.7.21
-  - PUPPET_VERSION=3.1.1
-  - PUPPET_VERSION=3.2.4
-  - PUPPET_VERSION=3.3.2
-  - PUPPET_VERSION=3.4.2
+  matrix:
+    - PUPPET_VERSION="~> 2.7.0"
+    - PUPPET_VERSION="~> 3.3.0"
+    - PUPPET_VERSION="~> 3.4.0"
+matrix:
+  exclude:
+    - rvm: 1.9.3
+      env: PUPPET_VERSION="~> 2.7.0"
+    - rvm: 2.0.0
+      env: PUPPET_VERSION="~> 2.7.0"
+notifications:
+  email: false
