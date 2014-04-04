@@ -1,7 +1,7 @@
 name    'eNovance-ceph'
 version '1.0.0'
 source 'git://github.com/enovance/puppet-ceph.git'
-author 'François Charlier <francois.charlier@enovance.com>'
+author 'Francois Charlier <francois.charlier@enovance.com>'
 license 'AGPLv3'
 summary 'A puppet module to install & configure Ceph'
 description 'A puppet module to install & configure Ceph'
