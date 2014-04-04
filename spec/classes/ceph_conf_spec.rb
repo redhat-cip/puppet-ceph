@@ -51,8 +51,8 @@ describe 'ceph::conf' do
           '  osd mkfs type = xfs',
           '  keyring = /var/lib/ceph/osd/ceph-$id/keyring',
           '[mds]',
-          '  mds data = /var/lib/ceph/mds/ceph-$id',
-          '  keyring = /var/lib/ceph/mds/ceph-$id/keyring'
+          '  mds data = /var/lib/ceph/mds/mds.$id',
+          '  keyring = /var/lib/ceph/mds/mds.$id/keyring'
         ]
       )
     end
