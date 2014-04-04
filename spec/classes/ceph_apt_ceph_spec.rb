@@ -5,7 +5,10 @@ describe 'ceph::apt::ceph' do
   describe "when dist codename is wheezy" do
 
     let :facts do
-      { :lsbdistcodename => 'wheezy' }
+      {
+        :lsbdistcodename => 'wheezy',
+        :lsbdistid       => 'debian'
+      }
     end
 
     describe "with default params" do
