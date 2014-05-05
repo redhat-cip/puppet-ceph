@@ -4,6 +4,8 @@ define ceph::conf::osd (
   $device,
   $cluster_addr = undef,
   $public_addr  = undef,
+  $journal = undef,
+  $journalsize = undef,
 ) {
 
   concat::fragment { "ceph-osd-${name}.conf":
