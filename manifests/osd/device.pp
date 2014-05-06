@@ -17,6 +17,8 @@
 #
 
 define ceph::osd::device (
+    $journal = undef,
+    $journalsize = undef,
 ) {
 
   include ceph::osd
@@ -67,6 +69,8 @@ size=1024m -n size=64k ${name}1",
         device       => $name,
         cluster_addr => $::ceph::osd::cluster_address,
         public_addr  => $::ceph::osd::public_address,
+        journal      => $journal,
+        journalsize  => $journalsize,
       }
 
       $osd_data = regsubst($::ceph::conf::osd_data, '\$id', $osd_id)

@@ -7,4 +7,10 @@
 <% if @public_addr -%>
    public addr = <%= @public_addr %>
 <% end -%>
+<% if @journal -%>
+   osd journal = <%= @journal %>
+<% end -%>
+<% if @journalsize -%>
+   osd journal size = <%= @journalsize %>
+<% end -%>
 
