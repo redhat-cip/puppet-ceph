@@ -18,15 +18,25 @@
 # Copyright 2012 eNovance <licensing@enovance.com>
 #
 class ceph::apt::ceph (
-  $release = 'bobtail'
+  $release             = 'bobtail',
+  $apt_key_source      = 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc',
+  $apt_key_id          = '17ED316D',
+  $apt_source_location = undef
 ) {
+
+  if (undef == $apt_source_location) {
+    $real_apt_source_location = "http://ceph.com/debian-${release}/"
+  } else {
+    $real_apt_source_location = $apt_source_location
+  }
+
   apt::key { 'ceph':
-    key        => '17ED316D',
-    key_source => 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc',
+    key        => $apt_key_id,
+    key_source => $apt_key_source,
   }
 
   apt::source { 'ceph':
-    location => "http://ceph.com/debian-${release}/",
+    location => $real_apt_source_location,
     release  => $::lsbdistcodename,
     require  => Apt::Key['ceph'],
     before   => Package['ceph'],
