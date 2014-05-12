@@ -69,6 +69,13 @@ define ceph::osd::device (
       require => $mkfs_require,
     }
   }
+  elsif $::ceph::conf::osd_mkfs_type == 'btrfs' {
+    exec { "mkfs_${devname}":
+      command => "mkfs.btrfs ${::ceph::conf::osd_mkfs_options} ${dev_path}",
+      unless  => "btrfs device scan ${dev_path}",
+      require => $mkfs_require,
+    }
+  }
 
   $tmp_blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
 
