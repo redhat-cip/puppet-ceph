@@ -6,7 +6,9 @@ define ceph::conf::osd (
   $public_addr  = undef,
   $journal = undef,
   $journalsize = undef,
+  $config = {},
 ) {
+  validate_hash($config)
 
   concat::fragment { "ceph-osd-${name}.conf":
     target  => '/etc/ceph/ceph.conf',
