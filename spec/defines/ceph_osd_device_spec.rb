@@ -43,7 +43,7 @@ class { 'ceph::osd':
     ) }
 
     it { should contain_exec('mkfs_device').with(
-      'command' => 'mkfs.xfs -f /dev/device1',
+      'command' => 'mkfs.xfs -f -i size=2048 -n size=64k /dev/device1',
       'unless'  => 'xfs_admin -l /dev/device1',
       'require' => ['Package[xfsprogs]', 'Exec[mkpart_device]']
     ) }
@@ -102,7 +102,7 @@ class { 'ceph::osd':
         'device'  => '/dev/device1',
         'atboot'  => true,
         'fstype'  => 'xfs',
-        'options' => 'rw,noatime,inode64',
+        'options' => 'rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
         'pass'    => 2,
         'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
       ) }
