@@ -13,7 +13,7 @@
 <% if @journalsize -%>
    osd journal size = <%= @journalsize %>
 <% end -%>
-<% @config.each do |key, value| -%>
+<% @config.sort.each do |key, value| -%>
   <%= key %> = <%= value %>
 <% end %>
 

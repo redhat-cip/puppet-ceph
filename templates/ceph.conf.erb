@@ -36,7 +36,7 @@
 <% if @pool_default_crush_rule -%>
   osd pool default crush rule = <%= @pool_default_crush_rule %>
 <% end -%>
-<% @config.each do |key, value| -%>
+<% @config.sort.each do |key, value| -%>
   <%= key %> = <%= value %>
 <% end %>
 

@@ -1,6 +1,6 @@
 [mds.<%= @name %>]
   host = <%= @hostname %>
-<% @config.each do |key, value| -%>
+<% @config.sort.each do |key, value| -%>
   <%= key %> = <%= value %>
 <% end %>
 
