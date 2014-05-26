@@ -81,7 +81,11 @@ describe 'ceph::conf' do
         :mon_init_members        => 'a , b , c',
         :osd_data                => '/opt/ceph/osd._id',
         :osd_journal             => '/opt/ceph/journal/osd._id',
-        :mds_data                => '/opt/ceph/mds._id'
+        :mds_data                => '/opt/ceph/mds._id',
+        :config                  => {
+          'osd max backfills'       => 1,
+          'osd recovery max active' => 1
+        }
       }
     end
 
@@ -113,6 +117,8 @@ describe 'ceph::conf' do
           '  osd pool default size = 3',
           '  osd pool default min size = 8',
           '  osd pool default crush rule = 1',
+          '  osd max backfills = 1',
+          '  osd recovery max active = 1',
           '  fsid = qwertyuiop',
           '[mon]',
           '  mon initial members = a , b , c',
