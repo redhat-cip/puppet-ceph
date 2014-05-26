@@ -43,7 +43,9 @@ class ceph::conf (
   $enable_service          = false,
   $conf_owner              = 'root',
   $conf_group              = 0,
+  $config                  = {},
 ) {
+  validate_hash($config)
 
   include 'ceph::package'
 

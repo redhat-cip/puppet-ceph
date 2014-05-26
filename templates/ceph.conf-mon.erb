@@ -1,4 +1,7 @@
 [mon.<%= @name %>]
   host = <%= @hostname %>
   mon addr = <%= @mon_addr %>:<%= @mon_port %>
+<% @config.sort.each do |key, value| -%>
+  <%= key %> = <%= value %>
+<% end %>
 
