@@ -11,6 +11,20 @@ describe 'ceph::package' do
       'mode'   => '0755'
     ) }
 
+    it { should contain_file('/var/lib/ceph/mon').with(
+      'ensure' => 'directory',
+      'owner'  => 'root',
+      'group'  => 0,
+      'mode'   => '0755'
+    ) }
+
+    it { should contain_file('/var/lib/ceph/osd').with(
+      'ensure' => 'directory',
+      'owner'  => 'root',
+      'group'  => 0,
+      'mode'   => '0755'
+    ) }
+
     it { should contain_file('/var/run/ceph').with(
       'ensure' => 'directory',
       'owner'  => 'root',
