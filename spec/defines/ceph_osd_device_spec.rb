@@ -27,8 +27,8 @@ class { 'ceph::osd':
 
   describe 'when the device is empty' do
 
-    it { should include_class('ceph::osd') }
-    it { should include_class('ceph::conf') }
+    it { should contain_class('ceph::osd') }
+    it { should contain_class('ceph::conf') }
 
     it { should contain_exec('mktable_gpt_device').with(
       'command' => 'parted -a optimal --script /dev/device mktable gpt',

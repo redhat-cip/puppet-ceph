@@ -27,8 +27,8 @@ class { "ceph::conf": fsid => "1234567890" }
     }
   end
 
-  it { should include_class('ceph::package') }
-  it { should include_class('ceph::conf') }
+  it { should contain_class('ceph::package') }
+  it { should contain_class('ceph::conf') }
 
 
   describe 'with default parameters' do
