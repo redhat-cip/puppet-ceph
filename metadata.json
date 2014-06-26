@@ -1,0 +1,25 @@
+{
+  "name": "eNovance-ceph",
+  "version": "1.1.0",
+  "author": "Francois Charlier <francois.charlier@enovance.com>",
+  "summary": "A puppet module to install & configure Ceph",
+  "license": "AGPLv3",
+  "source": "https://github.com/enovance/puppet-ceph",
+  "project_page": "https://github.com/enovance/puppet-ceph",
+  "issues_url": "https://github.com/enovance/puppet-ceph/issues",
+  "operatingsystem_support": [
+    {"operatingsystem": "Debian"},
+    {"operatingsystem": "Ubuntu"},
+    {"operatingsystem": "RedHat"}
+  ],
+  "requirements": [
+    {"name": "pe","version_requirement": "3.2.x"},
+    {"name": "puppet","version_requirement": "3.x"}
+  ],
+  "description": "A puppet module to install & configure Ceph",
+  "dependencies": [
+    {"name":"puppetlabs/apt","version_requirement":">= 1.1.0"},
+    {"name":"puppetlabs/concat","version_requirement":">= 0.2.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.1.0"}
+  ]
+}
