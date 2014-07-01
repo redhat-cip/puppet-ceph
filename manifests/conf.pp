@@ -123,7 +123,7 @@ class ceph::conf (
   $osd_journal_dio         = true,
   $osd_mkfs_type           = 'xfs',
   $osd_mkfs_options        = '-f -i size=2048 -n size=64k',
-  $osd_mount_options       = 'rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
+  $osd_mount_options       = 'rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog',
   $mds_activate            = true,
   $mds_data                = '/var/lib/ceph/mds/mds.$id'
 ) {
