@@ -6,8 +6,8 @@
 require 'facter'
 require 'json'
 
-timeout = 2
-cmd_timeout = 2
+timeout = 10
+cmd_timeout = 10
 
 begin
   Timeout::timeout(timeout) {
