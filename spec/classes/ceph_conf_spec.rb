@@ -118,6 +118,7 @@ describe 'ceph::conf' do
           '  osd pool default min size = 8',
           '  osd pool default crush rule = 1',
           '  osd max backfills = 1',
+          '  osd recovery op priority = 1',
           '  osd recovery max active = 1',
           '  fsid = qwertyuiop',
           '[mon]',
