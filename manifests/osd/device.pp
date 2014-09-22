@@ -79,19 +79,6 @@ size=1024m -n size=64k ${name}1",
         ensure => directory,
       }
 
-      file { "${osd_data}/journal":
-        ensure  => link,
-        target  => "/dev/mapper/rootfs-journal--${devname}1",
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0660',
-        require => Mount[$osd_data],
-        before  => [
-          Service["ceph-osd.${osd_id}"],
-          Exec["ceph-osd-mkfs-${osd_id}"]
-        ]
-      }
-
       mount { $osd_data:
         ensure  => mounted,
         device  => "${name}1",
@@ -134,7 +121,6 @@ ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
         start     => "service ceph start osd.${osd_id}",
         stop      => "service ceph stop osd.${osd_id}",
         status    => "service ceph status osd.${osd_id}",
-        require   => Exec["ceph-osd-register-${osd_id}"],
         subscribe => Concat['/etc/ceph/ceph.conf'],
       }
 
