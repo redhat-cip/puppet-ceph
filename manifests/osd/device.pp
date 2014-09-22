@@ -48,7 +48,7 @@ size=1024m -n size=64k ${name}1",
 
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
   notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
-  $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
+  $blkid = inline_template('<%= scope.lookupvar(@blkid_uuid_fact) or "undefined" %>')
   notify { "BLKID ${devname}: ${blkid}": }
 
   if $blkid != 'undefined'  and defined( Ceph::Key['admin'] ){
