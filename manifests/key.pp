@@ -9,7 +9,7 @@ define ceph::key (
 
   exec { "ceph-key-${name}":
     command => "ceph-authtool ${keyring_path} --create-keyring --name=${name} --add-key='${secret}' ${capabilities_str}",
-    creates => $keyring_path,
+    unless => "grep ${secret} ${keyring_path}",
     require => Pacakge['ceph'],
   }
 
