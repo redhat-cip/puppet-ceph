@@ -56,6 +56,11 @@
   osd mkfs type = xfs
   keyring = <%= @osd_data %>/keyring
 
+  # reduce recovery priority (less CPU impact)
+  osd recovery max active = <%= @osd_recovery_max_active %>
+  osd max backfills = <%= @osd_max_backfills %>
+  osd recovery op priority = <%= @osd_recovery_op_priority %>
+
 [mds]
   mds data = <%= @mds_data %>
   keyring = <%= @mds_data %>/keyring

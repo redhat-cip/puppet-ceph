@@ -130,6 +130,7 @@ describe 'ceph::conf' do
           '  osd journal = /opt/ceph/journal/osd._id',
           '  osd mkfs type = xfs',
           '  keyring = /opt/ceph/osd._id/keyring',
+          '  osd recovery op priority = 1',
           '[mds]',
           '  mds data = /opt/ceph/mds._id',
           '  keyring = /opt/ceph/mds._id/keyring'
