@@ -74,7 +74,7 @@ $(ceph --name mon. --keyring /var/lib/ceph/mon/mon.42/keyring \
     osd 'allow *' \
     mds allow)",
       'creates' => '/etc/ceph/keyring',
-      'require' => 'Package[ceph]',
+      'require' => ['Package[ceph]', 'Service[ceph-mon.42]'],
       'onlyif'  => "ceph --admin-daemon /var/run/ceph/ceph-mon.42.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'"
     )}
