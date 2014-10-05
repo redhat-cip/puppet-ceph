@@ -43,7 +43,7 @@ class { 'ceph::osd':
     ) }
 
     it { should contain_exec('mkfs_device').with(
-      'command' => 'mkfs.xfs -f -d agcount=8 -l size=1024m -n size=64k /dev/device1',
+      'command' => 'mkfs.xfs -f -i size=2048 /dev/device1',
       'unless'  => 'xfs_admin -l /dev/device1',
       'require' => ['Package[xfsprogs]', 'Exec[mkpart_device]']
     ) }
