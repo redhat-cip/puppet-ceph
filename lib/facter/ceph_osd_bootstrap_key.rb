@@ -10,8 +10,8 @@
 require 'facter'
 require 'timeout'
 
-timeout = 2
-cmd_timeout = 2
+timeout = 10
+cmd_timeout = 10
 
 # ceph_osd_bootstrap_key
 # Fact that gets the ceph key "client.bootstrap-osd"
