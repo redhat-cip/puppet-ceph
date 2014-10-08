@@ -5,10 +5,14 @@ puppet-ceph
 About
 =====
 
-|BuildStatus|_
+|BuildStatus|_ |PuppetForge|_ |License|_
 
-.. |BuildStatus| image:: https://travis-ci.org/enovance/puppet-ceph.png?branch=master
+.. |BuildStatus| image:: https://api.travis-ci.org/enovance/puppet-ceph.png?branch=master
 .. _BuildStatus: https://travis-ci.org/enovance/puppet-ceph
+.. |PuppetForge| image:: http://img.shields.io/puppetforge/v/eNovance/cloud.svg
+.. _PuppetForge: https://forge.puppetlabs.com/eNovance/ceph
+.. |License| image:: http://img.shields.io/:license-agpl-blue.svg
+.. _License: https://gnu.org/licenses/agpl.html
 
 This is a Puppet_ module to install a Ceph_ cluster.
 

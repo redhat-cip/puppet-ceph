@@ -1,6 +1,6 @@
 {
   "name": "eNovance-ceph",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "Francois Charlier <francois.charlier@enovance.com>",
   "summary": "A puppet module to install & configure Ceph",
   "license": "AGPLv3",
