@@ -30,7 +30,8 @@
 define ceph::mon (
   $monitor_secret,
   $mon_port = 6789,
-  $mon_addr = $ipaddress
+  $mon_addr = $ipaddress,
+  $admin_secret
 ) {
 
   include 'ceph::package'
@@ -44,7 +45,7 @@ define ceph::mon (
     mon_port => $mon_port,
   }
 
-  #FIXME: monitor_secret will appear in "ps" output …
+  #FIXME: monitor_secret will appear in "ps" output
   exec { 'ceph-mon-keyring':
     command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
 --create-keyring \
@@ -52,8 +53,24 @@ define ceph::mon (
 --add-key='${monitor_secret}' \
 --cap mon 'allow *'",
     creates => "/var/lib/ceph/tmp/keyring.mon.${name}",
-    before  => Exec['ceph-mon-mkfs'],
+    before  => Exec['ceph-mon-mkfs', 'ceph-admin-keyring'],
     require => Package['ceph'],
+  }
+
+  #FIXME: admin_secret will appear in "ps" output
+  exec { 'ceph-admin-keyring':
+    command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
+--name=client.admin \
+--add-key='${admin_secret}' \
+--cap mon 'allow *' \
+--cap osd 'allow *' \
+--cap mds 'allow'",
+    unless => "grep ${admin_secret} /var/lib/ceph/tmp/keyring.mon.${name}",
+    before  => Exec['ceph-mon-mkfs'],
+    require => [
+      Package['ceph'],
+      Exec['ceph-mon-keyring'],
+    ],
   }
 
   exec { 'ceph-mon-mkfs':
@@ -61,6 +78,7 @@ define ceph::mon (
 --keyring /var/lib/ceph/tmp/keyring.mon.${name}",
     creates => "${mon_data_real}/keyring",
     require => [
+      Exec['ceph-admin-keyring'],
       Package['ceph'],
       Concat['/etc/ceph/ceph.conf'],
       File[$mon_data_real]
