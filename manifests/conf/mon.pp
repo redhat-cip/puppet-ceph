@@ -13,4 +13,10 @@ define ceph::conf::mon (
     content => template('ceph/ceph.conf-mon.erb'),
   }
 
+  @@ceph::add_mon { "cluster-${name}":
+    mon_id   => $name,
+    mon_addr => $mon_addr,
+    mon_port => $mon_port,
+  }
+
 }
