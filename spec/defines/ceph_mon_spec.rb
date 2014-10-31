@@ -13,7 +13,8 @@ class { "ceph::conf": fsid => "1234567890" }
   end
 
   let :default_params do
-    { :monitor_secret => 'hardtoguess' }
+    { :monitor_secret => 'hardtoguess',
+      :admin_secret   => 'veryhardtoguess' }
   end
 
   let :params do
@@ -39,14 +40,22 @@ class { "ceph::conf": fsid => "1234567890" }
 --create-keyring --name=mon. --add-key='hardtoguess' \
 --cap mon 'allow *'",
       'creates' => '/var/lib/ceph/tmp/keyring.mon.42',
-      'before'  => 'Exec[ceph-mon-mkfs]',
+      'before'  => ['Exec[ceph-mon-mkfs]', 'Exec[ceph-admin-keyring]'],
       'require' => 'Package[ceph]'
+    )}
+
+    it { should contain_exec('ceph-admin-keyring').with(
+      'command' => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.42 \
+--name=client.admin --add-key='veryhardtoguess' \
+--cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow'",
+      'before'  => 'Exec[ceph-mon-mkfs]',
+      'require' => ['Package[ceph]', 'Exec[ceph-mon-keyring]']
     )}
 
     it { should contain_exec('ceph-mon-mkfs').with(
       'command' => "ceph-mon --mkfs -i 42 --keyring /var/lib/ceph/tmp/keyring.mon.42",
       'creates' => '/var/lib/ceph/mon/mon.42/keyring',
-      'require' => ['Package[ceph]','Concat[/etc/ceph/ceph.conf]',
+      'require' => ['Exec[ceph-admin-keyring]', 'Package[ceph]','Concat[/etc/ceph/ceph.conf]',
         'File[/var/lib/ceph/mon/mon.42]']
     )}
 
