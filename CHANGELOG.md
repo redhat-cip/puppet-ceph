@@ -1,3 +1,14 @@
+##2014-12-10 - release 1.3.0
+
+###Summary
+* Added ceph::client class (to configure ceph clients)
+* Drop unit-testing on puppet 2.7 series
+* Added puppet header in generated configs files
+
+####Bugfixes
+* Bugfix with uuid detection (ceph_osd_bootstrap_key fact), introduced with blkid >= v2.22
+* Remove non-UTF8 chars, refs https://tickets.puppetlabs.com/browse/PUP-1386
+
 ##2014-10-08 - release 1.2.0
 
 ###Summary
