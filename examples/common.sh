@@ -29,7 +29,7 @@ aptitude install -y ruby1.8
 update-alternatives --set ruby /usr/bin/ruby1.8
 
 
-# Install puppetmaster, etc. …
+# Install puppetmaster, etc. ...
 if hostname | grep -q "ceph-mon0"; then
     aptitude install -y puppetmaster sqlite3 libsqlite3-ruby libactiverecord-ruby git augeas-tools puppet ruby1.8-dev libruby1.8
 
@@ -75,7 +75,7 @@ if hostname | grep -q "ceph-mon"; then
     puppet agent $AGENT_OPTIONS
 fi
 
-# Run 4/5 more times on OSD servers to get the admin key, format devices, get osd ids, etc. …
+# Run 4/5 more times on OSD servers to get the admin key, format devices, get osd ids, etc. ...
 if hostname | grep -q "ceph-osd"; then
     for STEP in $(seq 0 4); do
         echo ================

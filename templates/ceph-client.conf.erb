@@ -1,0 +1,14 @@
+# This file is managed by Puppet
+# Please do not edit
+[global]
+mon_host = <%= @monitors.join(', ') %>
+
+auth_supported = cephx
+
+<% if @keys -%>
+<% @keys.sort_by { |name, key| name }.each do |name, key| -%>
+[client.<%= name %>]
+    keyring = <% if key['keyring_path'].nil? %>/var/lib/ceph/tmp/<%= name %>.keyring<% else %><%= key['keyring_path'] %><% end %>
+
+<% end -%>
+<% end -%>
