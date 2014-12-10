@@ -21,7 +21,7 @@
 #
 # == Authors
 #
-#  François Charlier francois.charlier@enovance.com
+#  Francois Charlier francois.charlier@enovance.com
 #
 # == Copyright
 #
@@ -44,7 +44,7 @@ define ceph::mon (
     mon_port => $mon_port,
   }
 
-  #FIXME: monitor_secret will appear in "ps" output …
+  #FIXME: monitor_secret will appear in "ps" output ...
   exec { 'ceph-mon-keyring':
     command => "ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
 --create-keyring \

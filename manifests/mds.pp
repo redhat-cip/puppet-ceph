@@ -18,8 +18,8 @@
 #
 # == Authors
 #
-#  Sébastien Han sebastien.han@enovance.com
-#  François Charlier francois.charlier@enovance.com
+#  Sebastien Han sebastien.han@enovance.com
+#  Francois Charlier francois.charlier@enovance.com
 #
 # == Copyright
 #

@@ -1,5 +1,5 @@
 #
-# Author: François Charlier <francois.charlier@enovance.com>
+# Author: Francois Charlier <francois.charlier@enovance.com>
 #
 # Copyright (C) 2014 eNovance SAS <licensing@enovance.com>
 #
@@ -24,9 +24,9 @@
 # [*monitors*]
 #   (required) List of monitors addresses (not validated, can be plain IPv4,
 #   IPv6 or hostnames)
-#   Example: ['[2a07:9a03:1:1:ec15:7aff:fe6e:41f0]', …]
-#            ['10.10.26.3', '10.10.26.4', …]
-#            ['mon0.example.com', 'mon1.example.com', …]
+#   Example: ['[2a07:9a03:1:1:ec15:7aff:fe6e:41f0]', ...]
+#            ['10.10.26.3', '10.10.26.4', ...]
+#            ['mon0.example.com', 'mon1.example.com', ...]
 #
 # [*keys*]
 #   (required) List of pairs of key names & secrets.
