@@ -43,8 +43,6 @@
 #            }
 #   Note: if path is ommited, the current default from enovance/puppet-ceph
 #   will be used: '/var/lib/ceph/tmp/${name}.keyring' which might be unsafe
-#
-
 class ceph::client (
   $monitors,
   $keys
