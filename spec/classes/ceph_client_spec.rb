@@ -49,7 +49,9 @@ describe 'ceph::client' do
         :owner   => 'root',
         :group   => '0',
         :mode    => '0644',
-        :content => '[global]
+        :content => '# This file is managed by Puppet
+# Please do not edit
+[global]
 mon_host = 10.0.0.1, host2.example.com, [fe80::288:65ff:fd36:ec52]
 
 auth_supported = cephx
