@@ -48,7 +48,7 @@ class ceph::client (
   $keys
 ) {
 
-  package { 'ceph-common':
+  package { 'ceph':
     ensure => present
   }
 
@@ -57,7 +57,7 @@ class ceph::client (
     group   => '0',
     mode    => '0644',
     content => template('ceph/ceph-client.conf.erb'),
-    require => Package['ceph-common']
+    require => Package['ceph']
   }
 
   create_resources('ceph::key', $keys)

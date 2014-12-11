@@ -40,8 +40,8 @@ describe 'ceph::client' do
       }
     end
 
-    it 'installs the ceph-common package' do
-      should contain_package('ceph-common').with_ensure('present')
+    it 'installs the ceph package' do
+      should contain_package('ceph').with_ensure('present')
     end
 
     it 'creates a correct configuration file' do
@@ -63,7 +63,18 @@ auth_supported = cephx
     keyring = /var/lib/ceph/tmp/user1.keyring
 
 ',
-        :require => 'Package[ceph-common]'
+        :require => 'Package[ceph]'
+      )
+    end
+
+    it 'creates the keys' do
+      should contain_ceph__key('admin').with(
+        :secret       => 'some-secret',
+        :keyring_path => '/etc/ceph/ceph.client.admin.keyring'
+      )
+      should contain_ceph__key('user1').with(
+        :secret       => 'some-other-secret',
+        :keyring_path => '/var/lib/ceph/tmp/user1.keyring'
       )
     end
 
