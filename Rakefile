@@ -16,8 +16,14 @@ exclude_tests_paths = ['pkg/**/*','vendor/**/*','spec/**/*','examples/**/*']
 PuppetLint.configuration.ignore_paths = exclude_tests_paths
 PuppetSyntax.exclude_paths = exclude_tests_paths
 
+desc "Validate the metadata.json syntax"
+task :validate_metadata_json do
+  $stderr.puts "---> syntax:metadata.json"
+  sh "metadata-json-lint metadata.json"
+end
+
 task(:default).clear
-task :default => [:syntax,:lint,:spec]
+task :default => [:syntax,:lint,:validate_metadata_json,:spec]
 
 namespace :module do
   desc "Build #{NAME} module (in a clean env) Please use this for puppetforge"

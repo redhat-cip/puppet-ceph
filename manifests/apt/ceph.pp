@@ -2,8 +2,21 @@
 #
 # == Parameters
 #
-# [*release*] The ceph release name
-#   Optional. Default to bobtail
+# [*release*]
+#   (Optional) The ceph release name
+#   Default to 'bobtail'
+#
+# [*apt_key_source*]
+#   (Optional) The source URL of APT GPG key
+#   Defaults to 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc'
+#
+# [*apt_key_id*]
+#   (Optional) The GPG ID of Ceph key
+#   Defaults to '17ED316D'
+#
+# [*apt_source_location*]
+#   (Optional) A custom APT repository for Ceph packages
+#   Defaults to 'http://ceph.com/debian-${release}/'
 #
 # == Dependencies
 #

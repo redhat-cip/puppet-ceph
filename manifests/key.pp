@@ -7,7 +7,7 @@ define ceph::key (
 
   exec { "ceph-key-${name}":
     command => "ceph-authtool ${keyring_path} --create-keyring --name='client.${name}' --add-key='${secret}'",
-    unless => "grep ${secret} ${keyring_path}",
+    unless  => "grep ${secret} ${keyring_path}",
     require => Package['ceph'],
   }
 
