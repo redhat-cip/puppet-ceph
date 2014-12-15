@@ -1,5 +1,23 @@
 # Configure yum repository
 #
+# == Parameters
+#
+# [*release*]
+#   (Optional) The ceph release name
+#   Default to 'cuttlefish'
+#
+# == Dependencies
+#
+# none
+#
+# == Authors
+#
+#  Francois Charlier francois.charlier@enovance.com
+#
+# == Copyright
+#
+# Copyright 2012 eNovance <licensing@enovance.com>
+#
 class ceph::yum::ceph (
   $release = 'cuttlefish'
 ) {

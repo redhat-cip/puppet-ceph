@@ -2,8 +2,13 @@
 #
 # == Parameters
 #
-# [*osd_addr*] The osd's address.
-#   Optional. Defaults to the $ipaddress fact.
+# [*public_address*]
+#  (Optional) The IP address for the public (front-side) network. Set for each daemon.
+#  Defaults to '$::ipaddress'
+#
+# [*cluster_address*]
+#  (Optional) The IP address for the cluster (back-side) network. Set for each daemon.
+#  Defaults to '$::ipaddress'
 #
 # == Dependencies
 #

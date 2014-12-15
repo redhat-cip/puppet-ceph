@@ -28,14 +28,14 @@ class role_ceph_mon (
 ) {
 
   class { 'role_ceph':
-    fsid           => $::fsid,
-    auth_type      => 'cephx',
+    fsid      => $::fsid,
+    auth_type => 'cephx',
   }
 
   ceph::mon { $id:
     monitor_secret => $::mon_secret,
     mon_port       => 6789,
-    mon_addr       => $ipaddress_eth2,
+    mon_addr       => $::ipaddress_eth2,
   }
 
 }
@@ -61,8 +61,8 @@ node 'ceph-mon2.test' {
 node /ceph-osd.?\.test/ {
 
   class { 'role_ceph':
-    fsid           => $::fsid,
-    auth_type      => 'cephx',
+    fsid      => $::fsid,
+    auth_type => 'cephx',
   }
 
   class { 'ceph::osd' :
