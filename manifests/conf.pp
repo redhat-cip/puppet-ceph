@@ -79,6 +79,15 @@
 # [*osd_mount_options*] The options used to mount the OSD fs.
 #   Optional. Defaults to 'rw,noatime,inode64' for XFS.
 #
+# [*osd_max_backfills*] The number of active recovery
+#   requests per OSD at one time. More requests will accelerate recovery,
+#   but the requests places an increased load on the cluster.
+#   Optional. Defaults to 5 .
+#
+# [*osd_recovery_max_active*] The maximum number of
+#   backfills allowed to or from a single OSD.
+#   Optional. Defaults to 10 .
+#
 # [*mds_activate*] Switch to activate the '[mds]' section in the config.
 #   Optional. Defaults to 'true'.
 #
@@ -124,11 +133,23 @@ class ceph::conf (
   $osd_mkfs_type           = 'xfs',
   $osd_mkfs_options        = '-f -i size=2048 -n size=64k',
   $osd_mount_options       = 'rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog',
+  $osd_max_backfills       = undef,
+  $osd_recovery_max_active = undef,
   $mds_activate            = true,
   $mds_data                = '/var/lib/ceph/mds/mds.$id'
 ) {
 
   include 'ceph::package'
+
+  # Ensure that when the $osd_max_backfills is define that's neither empty or integers.
+  if $osd_max_backfills != '' and !is_integer($osd_max_backfills) {
+    fail('Only integers are allowed in the ceph::conf::osd_max_backfills order param')
+  }
+
+  # Ensure that when the $osd_recovery_max_active is define that's neither empty or integers.
+  if $osd_recovery_max_active != '' and !is_integer($osd_recovery_max_active) {
+    fail('Only integers are allowed in the ceph::conf::osd_recovery_max_active order param')
+  }
 
   if $osd_journal {
     $osd_journal_real = $osd_journal

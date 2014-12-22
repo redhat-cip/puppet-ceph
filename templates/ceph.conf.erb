@@ -66,6 +66,12 @@
 <% if @osd_mount_options && @osd_mkfs_type -%>
   osd mount options <%= @osd_mkfs_type %> = <%= @osd_mount_options %>
 <% end -%>
+<% if @osd_recovery_max_active -%>
+  osd recovery max active = <%= @osd_recovery_max_active %>
+<% end -%>
+<% if @osd_max_backfills -%>
+  osd max backfills = <%= @osd_max_backfills %>
+<% end -%>
   keyring = <%= @osd_data %>/keyring
 
 <% if @mds_activate -%>
