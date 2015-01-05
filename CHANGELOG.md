@@ -1,3 +1,13 @@
+##2014-12-16 - release 1.3.1
+
+###Summary
+* Lint puppet code, and metadata.json file
+* Added parameter documentation lint
+
+####Bugfixes
+* Add missing test ensuring keys are created
+* Change the dependency to the 'ceph' package instead of the 'ceph-common' package because ceph::key depends on the 'ceph' package.
+
 ##2014-12-10 - release 1.3.0
 
 ###Summary
