@@ -101,7 +101,7 @@ ceph::key { 'admin':
 
       it { should contain_mount('/var/lib/ceph/osd/ceph-56').with(
         'ensure'  => 'mounted',
-        'device'  => '/dev/device1',
+        'device'  => 'UUID=dummy-uuid-1234',
         'atboot'  => true,
         'fstype'  => 'xfs',
         'options' => 'rw,noatime,inode64',

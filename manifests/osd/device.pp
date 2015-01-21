@@ -80,7 +80,7 @@ define ceph::osd::device (
 
       mount { $osd_data:
         ensure  => mounted,
-        device  => "${name}1",
+        device  => "UUID=${blkid}",
         atboot  => true,
         fstype  => 'xfs',
         options => 'rw,noatime,inode64',
