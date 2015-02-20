@@ -7,8 +7,23 @@ auth_supported = cephx
 
 <% if @keys -%>
 <% @keys.sort_by { |name, key| name }.each do |name, key| -%>
+<% if name =~ /radosgw/ -%>
+[client.<%= name %>]
+    host = <%= hostname %>
+    keyring = <% if key['keyring_path'].nil? %>/var/lib/ceph/tmp/<%= name %>.keyring<% else %><%= key['keyring_path'] %><% end %>
+    rgw socket path = /var/run/ceph/ceph.radosgw.<%= hostname %>.fastcgi.sock
+    log file = /var/log/radosgw/client.radosgw.<%= hostname %>.log
+    rgw keystone url = <%= keystone_auth_url %>
+    rgw keystone admin token = <%= keystone_admin_token %>
+    rgw keystone accepted roles = member
+    rgw s3 auth use keystone = true
+    rgw print continue = false
+    nss db path = /var/lib/ceph/nss/
+<% else -%>
 [client.<%= name %>]
     keyring = <% if key['keyring_path'].nil? %>/var/lib/ceph/tmp/<%= name %>.keyring<% else %><%= key['keyring_path'] %><% end %>
+<% end -%>
+<% end -%>
 
 <% end -%>
-<% end -%>
+

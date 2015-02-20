@@ -45,7 +45,9 @@
 #   will be used: '/var/lib/ceph/tmp/${name}.keyring' which might be unsafe
 class ceph::client (
   $monitors,
-  $keys
+  $keys,
+  $keystone_auth_url    = undef,
+  $keystone_admin_token = undef,
 ) {
 
   package { 'ceph':
