@@ -32,7 +32,7 @@ describe 'ceph::conf' do
 
     it 'should create the configuration fragment with the correct content' do
       verify_contents(
-        subject,
+        catalogue,
         fragment_path,
         [
           '[global]',
@@ -98,7 +98,7 @@ describe 'ceph::conf' do
 
     it 'should create the configuration fragment with the correct content' do
       verify_contents(
-        subject,
+        catalogue,
         fragment_path,
         [
           '[global]',
