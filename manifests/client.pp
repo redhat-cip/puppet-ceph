@@ -48,9 +48,7 @@ class ceph::client (
   $keys
 ) {
 
-  package { 'ceph':
-    ensure => present
-  }
+  include 'ceph::package'
 
   file { '/etc/ceph/ceph.conf':
     owner   => 'root',
