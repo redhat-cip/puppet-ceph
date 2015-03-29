@@ -99,5 +99,10 @@ $(ceph --name mon. --keyring ${mon_data_real}/keyring \
     onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
+  
+  Ceph::Add_mon <<| |>> {
+    local_mon_port => $mon_port,
+    local_mon_addr => $mon_addr,
+  }
 
 }
