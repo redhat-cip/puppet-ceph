@@ -19,6 +19,12 @@ auth_supported = cephx
     rgw s3 auth use keystone = true
     rgw print continue = false
     nss db path = /var/lib/ceph/nss/
+<% if radosregion -%>
+    rgw region = <%= radosregion %>
+    rgw region root pool = .<%= radosregion %>.rgw.root
+    rgw zone = <%= radoszone %>
+    rgw zone root pool = .<%= radoszone %>.rgw.root
+<% end -%>
 <% else -%>
 [client.<%= name %>]
     keyring = <% if key['keyring_path'].nil? %>/var/lib/ceph/tmp/<%= name %>.keyring<% else %><%= key['keyring_path'] %><% end %>
