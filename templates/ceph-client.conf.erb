@@ -11,6 +11,7 @@ auth_supported = cephx
     log file = /var/log/qemu/qemu-guest-$pid.log
     rbd concurrent management ops = 20
 
+
 <% if @keys -%>
 <% @keys.sort_by { |name, key| name }.each do |name, key| -%>
 <% if name =~ /radosgw/ -%>
