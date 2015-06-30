@@ -2,8 +2,14 @@
 # Please do not edit
 [global]
 mon_host = <%= @monitors.join(', ') %>
-
 auth_supported = cephx
+
+[client]
+    rbd cache = true
+    rbd cache writethrough until flush = true
+    admin socket = /var/run/ceph/guests/$cluster-$type.$id.$pid.$cctid.asok
+    log file = /var/log/qemu/qemu-guest-$pid.log
+    rbd concurrent management ops = 20
 
 <% if @keys -%>
 <% @keys.sort_by { |name, key| name }.each do |name, key| -%>
