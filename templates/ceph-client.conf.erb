@@ -2,13 +2,41 @@
 # Please do not edit
 [global]
 mon_host = <%= @monitors.join(', ') %>
-
 auth_supported = cephx
+
+[client]
+    rbd cache = true
+    rbd cache writethrough until flush = true
+    admin socket = /var/run/ceph/guests/$cluster-$type.$id.$pid.$cctid.asok
+    log file = /var/log/qemu/qemu-guest-$pid.log
+    rbd concurrent management ops = 20
+
 
 <% if @keys -%>
 <% @keys.sort_by { |name, key| name }.each do |name, key| -%>
+<% if name =~ /radosgw/ -%>
+[client.<%= name %>]
+    host = <%= hostname %>
+    keyring = <% if key['keyring_path'].nil? %>/var/lib/ceph/tmp/<%= name %>.keyring<% else %><%= key['keyring_path'] %><% end %>
+    rgw socket path = /var/run/ceph/ceph.radosgw.<%= hostname %>.fastcgi.sock
+    log file = /var/log/radosgw/client.radosgw.<%= hostname %>.log
+    rgw keystone url = <%= keystone_auth_url %>
+    rgw keystone admin token = <%= keystone_admin_token %>
+    rgw keystone accepted roles = member
+    rgw s3 auth use keystone = true
+    rgw print continue = false
+    nss db path = /var/lib/ceph/nss/
+<% if radosregion -%>
+    rgw region = <%= radosregion %>
+    rgw region root pool = .<%= radosregion %>.rgw.root
+    rgw zone = <%= radoszone %>
+    rgw zone root pool = .<%= radoszone %>.rgw.root
+<% end -%>
+<% else -%>
 [client.<%= name %>]
     keyring = <% if key['keyring_path'].nil? %>/var/lib/ceph/tmp/<%= name %>.keyring<% else %><%= key['keyring_path'] %><% end %>
+<% end -%>
+<% end -%>
 
 <% end -%>
-<% end -%>
+

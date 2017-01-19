@@ -43,9 +43,33 @@
 #            }
 #   Note: if path is ommited, the current default from enovance/puppet-ceph
 #   will be used: '/var/lib/ceph/tmp/${name}.keyring' which might be unsafe
+#   Note: If a radosgw key is given (name radosgw.something) a default
+#   radosgw config is set up.
+#
+# [*keystone_auth_url*]
+#   (optional) If radosgw is configured it uses to keystone authentication.
+#   This parameter is the auth url for keystone.
+#
+# [*keystone_admin_token*]
+#   (optional) If radosgw is configured it uses to keystone authentication.
+#   Radosgw does not have an openstack service account, it needs the keystone
+#   admin token to talk to keystone.
+#
+# [*radosregion*]
+#   (optional) If radosgw is configured, it can be set up in a federated way
+#   with regions and zones. This is the master region.
+#
+# [*radoszone*]
+#   (optional) If radosgw is configured, it can be set up in a federated way
+#   with regions and zones. This is the master zone.
+#
 class ceph::client (
   $monitors,
-  $keys
+  $keys,
+  $keystone_auth_url    = undef,
+  $keystone_admin_token = undef,
+  $radosregion          = undef,
+  $radoszone            = undef,
 ) {
 
   include 'ceph::package'
