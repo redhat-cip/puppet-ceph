@@ -37,7 +37,14 @@ define ceph::mon (
   include 'ceph::conf'
   include 'ceph::params'
 
-  $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
+  $mon_data_real = "/var/lib/ceph/mon/mon.${id}"
+
+  file { $mon_data_real:
+    ensure => directory,
+    owner  => 'root',
+    mode   => 755,
+    require => Exec['ceph-mon-keyring'],
+  }
 
   ceph::conf::mon { $name:
     mon_addr => $mon_addr,
