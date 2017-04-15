@@ -33,6 +33,10 @@ define ceph::mon (
   $mon_addr = $ipaddress
 ) {
 
+  Exec {
+    path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
+  }
+
   include 'ceph::package'
   include 'ceph::conf'
   include 'ceph::params'
